@@ -1,0 +1,19 @@
+{
+	"id": "nodebb-plugin-shoutbox",
+	"name": "Shoutbox",
+	"description": "NodeBB Plugin Shoutbox",
+	"url": "https://github.com/BitBangersCode/nodebb-plugin-shoutbox",
+	"library": "./library.js",
+	"hooks": [
+        { "hook": "filter:admin.header.build", "method": "init.admin.addNavigation", "callbacked": false },
+        { "hook": "filter:admin.create_routes", "method": "init.admin.addRoute", "callbacked": true },
+        { "hook": "filter:header.build", "method": "init.global.addNavigation", "callbacked": false },
+        { "hook": "filter:server.create_routes", "method": "init.global.addRoute", "callbacked": true },
+        { "hook": "filter:scripts.get", "method": "init.global.addScripts", "callbacked": false },
+        { "hook": "action:app.load", "method": "init.load", "callbacked": false }
+	],
+    "staticDir": "./public",
+    "css": [
+        "css/style.css"
+    ]
+}

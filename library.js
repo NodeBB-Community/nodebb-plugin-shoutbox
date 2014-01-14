@@ -20,6 +20,7 @@ var constants = Object.freeze({
 });
 
 var Shoutbox = {};
+Shoutbox.config = {};
 
 Shoutbox.init = {
     "load": function() {

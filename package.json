@@ -1,14 +1,14 @@
 {
     "name": "nodebb-plugin-shoutbox",
     "version": "0.0.1",
-    "description": "NodeBB Plugin Shoutbox",
+    "description": "NodeBB Shoutbox Plugin",
     "main": "library.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/BitBangersCode/nodebb-plugin-shoutbox"
+        "url": "https://github.com/MrWaffle/nodebb-plugin-shoutbox"
     },
     "keywords": [
         "nodebb",
@@ -18,7 +18,7 @@
     "author": "Mr_Waffle <mrwafflewaffle@aim.com>",
     "license": "BSD-2-Clause",
     "bugs": {
-        "url": "https://github.com/BitBangersCode/nodebb-plugin-shoutbox/issues"
+        "url": "https://github.com/MrWaffle/nodebb-plugin-shoutbox/issues"
     },
     "dependencies": {
         "async": "~0.2.9",

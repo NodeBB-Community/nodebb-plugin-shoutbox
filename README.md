@@ -4,4 +4,4 @@ This is a NodeBB plugin that will add a shoutbox to your homepage. It's still a 
 
 ## Installation
 
-    not yet
+    npm install nodebb-plugin-shoutbox

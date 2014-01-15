@@ -1,5 +1,7 @@
 #shoutbox-content {
     font-size: 14px;
+    height: 200px;
+    overflow-y: scroll;
 }
 
 #shoutbox-content p {
@@ -20,4 +22,8 @@
 
 #shoutbox .btn-group {
     margin-top: 5px;
+}
+
+#shoutbox .close {
+    font-size: inherit;
 }

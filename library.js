@@ -6,6 +6,7 @@ var	async = require('async'),
     Meta = module.parent.require('./meta'),
     Plugins = module.parent.parent.require('./plugins'),
     db = module.parent.require('./database'),
+    winston = module.parent.require('winston'),
     ModulesSockets = module.parent.require('./socket.io/modules');
 
 var constants = Object.freeze({
@@ -15,7 +16,11 @@ var constants = Object.freeze({
     },
     'admin': {
         'route': '/plugins/shoutbox',
-        'icon': 'fa-edit'
+        'icon': 'fa-bullhorn'
+    },
+    'config_keys': ['headerlink'],
+    'config_defaults': {
+        'headerlink': '0'
     }
 });
 
@@ -23,17 +28,30 @@ var Shoutbox = {};
 Shoutbox.config = {};
 
 Shoutbox.init = {
+    "setup": function() {
+        var dbkeys = constants.config_keys.map(function (key) {
+            return "shoutbox:" + key;
+        });
+        db.getObjectFields('config', dbkeys, function(err, values) {
+            dbkeys.forEach(function(dbkey) {
+                var realkey = dbkey.split(":")[1];
+                Shoutbox.config[realkey] = values[dbkey] || constants.config_defaults[realkey];
+            });
+        });
+    },
     "load": function() {
         ModulesSockets.shoutbox = Shoutbox.sockets;
     },
     "global": {
         addNavigation: function(custom_header, callback) {
-            custom_header.navigation.push({
-                "class": "",
-                "route": constants.global.route,
-                "text": constants.name
-            });
-
+            if (Shoutbox.config.headerlink === '1') {
+                custom_header.navigation.push({
+                    "class": "",
+                    "iconClass": "fa fa-fw fa-bullhorn",
+                    "route": constants.global.route,
+                    "text": constants.name
+                });
+            }
             return custom_header;
         },
         addRoute: function(custom_routes, callback) {
@@ -61,7 +79,7 @@ Shoutbox.init = {
                     "content": template
                 });
 
-                fs.readFile(path.resolve(__dirname, './partials/page.tpl'), function (err, tpl) {
+                fs.readFile(path.resolve(__dirname, './partials/shoutbox.tpl'), function (err, tpl) {
                     custom_routes.routes.push({
                         route: constants.global.route,
                         method: "get",
@@ -119,52 +137,94 @@ Shoutbox.init = {
         }
     }
 }
-
+Shoutbox.init.setup();
 Shoutbox.sockets = {
     "get": function(callback) {
         Shoutbox.backend.getShouts(function(err, messages) {
-            if (err)
-                return callback(null);
+            try {
+                if (err)
+                    return callback(null);
 
-            callback(messages);
+                callback(messages);
+            } catch (e) {
+                winston.error("Someone did a no-no!: " + e.message);
+            }
+
         });
     },
     "send": function(data, sessionData) {
-        if (sessionData.uid === 0) {
-            return;
-        }
-
-        var msg = S(data.message).stripTags().s;
-        User.getUserField(sessionData.uid, 'username', function(err, username) {
-            if(err) {
+        try {
+            if (sessionData.uid === 0) {
                 return;
             }
 
-            Shoutbox.backend.parse(sessionData.uid, username, msg, function(parsed) {
-                Shoutbox.backend.addShout(sessionData.uid, msg, function(err, message) {
-                    sessionData.server.sockets.in('global').emit('event:shoutbox.receive', {
-                        fromuid: sessionData.uid,
-                        username: username,
-                        message: parsed,
-                        timestamp: Date.now()
+            var msg = S(data.message).stripTags().s;
+            User.getUserField(sessionData.uid, 'username', function(err, username) {
+                if(err) {
+                    return;
+                }
+
+                Shoutbox.backend.parse(sessionData.uid, username, msg, function(parsed) {
+                    Shoutbox.backend.addShout(sessionData.uid, msg, function(err, message) {
+                        sessionData.server.sockets.in('global').emit('event:shoutbox.receive', {
+                            fromuid: sessionData.uid,
+                            username: username,
+                            content: parsed,
+                            timestamp: Date.now()
+                        });
                     });
                 });
             });
+        } catch (e) {
+            winston.error("Someone did a no-no!: " + e.message);
+        }
+    },
+    "remove": function(data, callback, sessionData) {
+        db.getObjectField('shout:' + data.sid, 'fromuid', function(err, uid) {
+            try {
+                if (err) {
+                    return callback("Unknown error", false);
+                }
+                if (uid === sessionData.uid) {
+                    Shoutbox.backend.markRemoved(data.sid, function(err, result) {
+                        try {
+                            if (err) {
+                                return callback("Unknown error", false);
+                            }
+                            return callback(null, true);
+                        } catch (e) {
+                            winston.error("Someone did a no-no!: " + e.message);
+                        }
+                    });
+                } else {
+                    return callback("Shout does not belong to you", false);
+                }
+            } catch (e) {
+                winston.error("Someone did a no-no!: " + e.message);
+            }
         });
     },
     "get_users": function(data, callback, sessionData){
-        var users = [];
-        for(var i in sessionData.userSockets) {
-            if (sessionData.userSockets.hasOwnProperty((i))) {
-                users.push(i);
+        try {
+            var users = [];
+            for(var i in sessionData.userSockets) {
+                if (sessionData.userSockets.hasOwnProperty((i))) {
+                    users.push(i);
+                }
             }
+            User.getMultipleUserFields(users, ['username'], function(err, usersData) {
+                try {
+                    if(err) {
+                        return callback([]);
+                    }
+                    return callback(usersData);
+                } catch (e) {
+                    winston.error("Someone did a no-no!: " + e.message);
+                }
+            });
+        } catch (e) {
+            winston.error("Someone did a no-no!: " + e.message);
         }
-        User.getMultipleUserFields(users, ['username'], function(err, usersData) {
-            if(err) {
-                return callback([]);
-            }
-            return callback(usersData);
-        });
     }
 }
 
@@ -178,7 +238,8 @@ Shoutbox.backend = {
             var shout = {
                 content: content,
                 timestamp: Date.now(),
-                fromuid: fromuid
+                fromuid: fromuid,
+                deleted: '0'
             };
 
             db.setObject('shout:' + sid, shout);
@@ -205,9 +266,13 @@ Shoutbox.backend = {
                     if (err) {
                         return next(err);
                     }
+                    if (message.deleted === '1') {
+                        return next(null);
+                    }
                     User.getUserField(message.fromuid, 'username', function(err, username) {
                         Shoutbox.backend.parse(message.fromuid, username, message.content, function(parsed) {
                             message.content = parsed;
+                            message.sid = sid;
                             messages.push(message);
                             next(null);
                         });
@@ -236,6 +301,11 @@ Shoutbox.backend = {
                 var result = username + parsed;
                 callback(result);
             });
+        });
+    },
+    "markRemoved": function (sid, callback) {
+        db.setObjectField('shout:' + sid, 'deleted', '1', function (err, result) {
+            callback(err, result);
         });
     },
     "updateShoutTime": function(uid, callback) {

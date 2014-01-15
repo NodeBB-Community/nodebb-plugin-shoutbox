@@ -5,7 +5,7 @@
                 <h3 class="panel-title"><a href="/shoutbox" title="Shoutbox">Shoutbox</a></h3>
             </div>
             <div class="panel-body">
-                <div id="shoutbox-content" class="well well-sm" style="height:200px; overflow-y:scroll;"></div>
+                <div id="shoutbox-content" class="well well-sm"></div>
                 <div class="input-group">
                     <input id="shoutbox-message-input" type="text" placeholder="enter message" name="shoutbox-message" class="form-control">
                     <span class="input-group-btn">
@@ -15,6 +15,9 @@
                 <div class="btn-group">
                     <button id="create-gist-button" type="button" class="btn btn-default btn-sm">
                         <span class="fa fa-github-alt"></span> Create Gist
+                    </button>
+                    <button id="view-archive-button" type="button" class="btn btn-default btn-sm">
+                        <span class="fa fa-archive"></span> View archive
                     </button>
                 </div>
             </div>

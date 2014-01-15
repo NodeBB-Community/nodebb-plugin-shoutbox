@@ -167,10 +167,11 @@ Shoutbox.sockets = {
                 Shoutbox.backend.parse(sessionData.uid, username, msg, function(parsed) {
                     Shoutbox.backend.addShout(sessionData.uid, msg, function(err, message) {
                         sessionData.server.sockets.in('global').emit('event:shoutbox.receive', {
-                            fromuid: sessionData.uid,
+                            fromuid: message.fromuid,
                             username: username,
                             content: parsed,
-                            timestamp: Date.now()
+                            sid: message.sid,
+                            timestamp: message.timestamp
                         });
                     });
                 });
@@ -246,6 +247,7 @@ Shoutbox.backend = {
             db.listAppend('shouts', sid);
 
             Shoutbox.backend.updateShoutTime(fromuid);
+            shout.sid = sid;
             callback(null, shout);
         });
     },

@@ -3,8 +3,8 @@ $(document).ready(function() {
         requirejs([
             'plugins/nodebb-plugin-shoutbox/js/shoutbox.js'
         ], function(shoutBox) {
-            shoutBox.init();
-            shoutBox.showUsers();
+            shoutBox.base.init();
+            shoutBox.base.showUserPanel();
         });
     }
 
@@ -14,7 +14,7 @@ $(document).ready(function() {
             requirejs([
                 'plugins/nodebb-plugin-shoutbox/js/shoutbox.js'
             ], function(shoutBox) {
-                shoutBox.init();
+                shoutBox.base.init();
             });
         }
     });

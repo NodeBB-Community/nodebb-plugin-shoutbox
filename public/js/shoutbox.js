@@ -1,214 +1,264 @@
 define(['string'], function(S) {
-    var userCheckIntervalId = 0,
-        loaded = false,
-        socketEntries = {
+    var box = {},
+        module = {};
+
+    box.vars = {
+        "loaded": false,
+        "userCheckIntervalId": 0,
+        "sockets": {
             "get": "api:modules.shoutbox.get",
             "send": "api:modules.shoutbox.send",
             "remove" : "api:modules.shoutbox.remove",
             "get_users": "api:modules.shoutbox.get_users",
             "receive": "event:shoutbox.receive"
         },
+        "titleAlert": "[ %u ] - new shout!",
+        "anonMessage": "You must be logged in to view the shoutbox!"
+    };
 
-        module = {};
-
-    module.hasLoaded = function() {
-        return loaded;
-    }
-
-    module.getShoutPanel = function() {
-        return $('#shoutbox');
-    }
-
-    module.getUsersPanel = function() {
-        return $('#shoutbox-users');
-    }
-
-    module.init = function(callback) {
-        var anon = checkForAnon();
-        if (!anon) {
-            addSendHandler(module.getShoutPanel());
-            addButtonHandlers(module.getShoutPanel());
-        }
-        registerSocket();
-        getShouts(module.getShoutPanel());
-
-        loaded = true;
-        if (callback)
-            callback();
-    }
-
-    module.appendShout = function(shoutBox, shout) {
-        var shoutContent = shoutBox.find('#shoutbox-content');
-
-        var date = new Date(parseInt(shout.timestamp, 10));
-        var prefix = '<span class="shoutbox-timestamp">' + date.toLocaleTimeString() + '</span> ';
-        var options = '';
-        if (shout.fromuid === app.uid) {
-            options = '<button type="button" class="close pull-right" aria-hidden="true">&times;</button>';
-        }
-        var shoutHTML = "<div id='shoutbox-shout-" + shout.sid + "'>" + options + S(prefix + shout.content).stripTags('p').s + "</div>";
-
-        shoutContent.append(shoutHTML);
-        scrollToBottom(shoutContent);
-    }
-
-    module.showUsers = function() {
-        $('#shoutbox-users').parent().removeClass('hidden');
-        checkUsers();
-        checkOnlineUsers();
-    }
-
-    function checkForAnon() {
-        if (app.uid === null) {
-            $('#shoutbox .input-group').hide();
-            $('#shoutbox .btn-group').hide();
-            return true;
-        }
-        return false;
-    }
-
-    function scrollToBottom(shoutContent) {
-        if (module.getShoutPanel().length > 0) {
-            shoutContent.scrollTop(
-                shoutContent[0].scrollHeight - shoutContent.height()
-            );
-        }
-    }
-
-    function getShouts(shoutBox) {
-        socket.emit(socketEntries.get, function(shouts) {
-            for(var i = 0; i<shouts.length; ++i) {
-                module.appendShout(shoutBox, shouts[i]);
-            }
-        });
-    }
-
-    function registerSocket() {
-        if (socket.listeners(socketEntries.receive).length === 0) {
-            socket.on(socketEntries.receive, function(data) {
-                if (module.hasLoaded) {
-                    module.appendShout(module.getShoutPanel(), data);
-                    app.alternatingTitle('[' + data.username + '] - new shout!');
+    module.base = {
+        "init": function(callback) {
+            box.utils.checkAnon(function(isAnon) {
+                var shoutBox = module.base.getShoutPanel();
+                if (isAnon) {
+                    box.utils.hideInputs();
+                    box.utils.showAnonMessage(shoutBox);
+                } else {
+                    box.utils.registerHandlers(shoutBox);
+                    box.base.getShouts(shoutBox);
+                }
+                box.vars.loaded = true;
+                if (callback) {
+                    callback();
                 }
             });
+        },
+
+        "showUserPanel": function() {
+            module.base.getUsersPanel().parent().removeClass('hidden');
+            box.utils.startUserPoll();
+            box.base.updateUsers();
+        },
+
+        "hasLoaded": function() {
+            return box.vars.loaded;
+        },
+
+        "getShoutPanel": function() {
+            return $('#shoutbox');
+        },
+
+        "getUsersPanel": function() {
+            return $('#shoutbox-users');
         }
-    }
+    };
 
-    function addSendHandler(shoutBox) {
-        shoutBox.find('#shoutbox-message-input').off('keypress');
-        shoutBox.find('#shoutbox-message-input').on('keypress', function(e) {
-            if(e.which === 13 && !e.shiftKey) {
-                sendMessage(shoutBox);
-            }
-        });
-
-        shoutBox.find('#shoutbox-message-send-btn').off('click');
-        shoutBox.find('#shoutbox-message-send-btn').on('click', function(e){
-            sendMessage(shoutBox);
-            return false;
-        });
-    }
-
-    function removeShout(sid, node) {
-        socket.emit(socketEntries.remove, {"sid": sid}, function (err, result) {
-            if (result === true) {
-                node.remove();
-            } else if (err) {
-                app.alertError("Error deleting shout: " + err, 3000);
-            }
-        });
-    }
-
-    function addButtonHandlers(shoutBox) {
-        //START DELETE BUTTON
-        shoutBox.find('button.close').off('click');
-        shoutBox.on('click', 'button.close', function(e) {
-            removeShout(e.currentTarget.parentNode.id.match(/\d+/), e.currentTarget.parentNode);
-        });
-        //END DELETE BUTTON
-
-        //START GIST BUTTON
-        var gistModal = $('#create-gist-modal');
-        shoutBox.find('#create-gist-button').off('click');
-        shoutBox.find('#create-gist-button').on('click', function(e) {
-            gistModal.modal('show');
-        });
-        gistModal.find('#create-gist-submit').off('click');
-        gistModal.find('#create-gist-submit').on('click', function(e) {
-            createGist(gistModal.find('textarea').val(), gistModal);
-        });
-        //END GIST BUTTON
-        shoutBox.find('#view-archive-button').off('click');
-        shoutBox.find('#view-archive-button').on('click', function(e) {
-            app.alertError("Not implemented!", 3000);
-        });
-        //START ARCHIVE BUTTON
-
-        //END ARCHIVE BUTTON
-    }
-
-    function createGist(code, gistModal) {
-        if (app.uid === null) {
-            gistModal.modal('hide');
-            app.alertError('Only registered users can create Gists!', 3000);
-            return;
+    module.box = {
+        "addShout": function(shoutBox, shout) {
+            var shoutContent = shoutBox.find('#shoutbox-content');
+            shoutContent.append(box.base.parseShout(shout));
+            box.base.scrollToBottom(shoutContent);
         }
-        var json = {
-            "description": "Gist created from BitBangers shoutbox",
-            "public": true,
-            "files": {
-                "file1.txt": {
-                    "content": code
+    };
+
+    box.base = {
+        "getShouts": function(shoutBox) {
+            socket.emit(box.vars.sockets.get, function(shouts) {
+                for(var i = 0; i<shouts.length; ++i) {
+                    module.box.addShout(shoutBox, shouts[i]);
                 }
-            }
-        }
-        $.post("https://api.github.com/gists", JSON.stringify(json), function(data) {
-            gistModal.modal('hide');
-            var input = $('.shoutbox').find('.shoutbox-message-input');
-            var link = data.html_url;
-            if (input.val().length > 0) {
-                link = " " + link;
-            }
-            input.val(input.val() + link);
-            app.alertSuccess("Successfully created Gist!", 3000);
-            gistModal.find('textarea').val('');
-        }).fail(function(data) {
-                gistModal.modal('hide');
-                app.alertError("Error while creating Gist, try again later!", 3000);
             });
-    }
-
-    function sendMessage(shoutBox) {
-        var msg = S(shoutBox.find('#shoutbox-message-input').val()).stripTags().s;
-        if(msg.length) {
-            socket.emit(socketEntries.send, {message:msg});
-            shoutBox.find('#shoutbox-message-input').val('');
-        }
-    }
-
-    function checkOnlineUsers() {
-        if(userCheckIntervalId === 0) {
-            userCheckIntervalId = setInterval(function() {
-                checkUsers();
-            }, 10000);
-        }
-    }
-
-    function checkUsers() {
-        socket.emit(socketEntries.get_users, {}, function(data) {
-            var userCount = data.length;
-            var usernames = [];
-            for(var i = 0; i < userCount; i++) {
-                var uname = data[i].username;
-                if (uname === null ) {
-                    uname = 'Anonymous';
-                }
-                usernames.push(uname);
+        },
+        "parseShout": function(shout) {
+            var date = new Date(parseInt(shout.timestamp, 10));
+            var prefix = '<span class="shoutbox-timestamp">' + date.toLocaleTimeString() + '</span> ';
+            var options = '';
+            if (shout.fromuid === app.uid) {
+                options = '<button type="button" class="close pull-right" aria-hidden="true">&times;</button>';
             }
-            var userString = usernames.join("; ");
-            module.getUsersPanel().find('.panel-body').text(userString);
-            module.getUsersPanel().find('.panel-title').text('Users (' + userCount + ')');
-        });
+            return "<div id='shoutbox-shout-" + shout.sid + "'>" + options + S(prefix + shout.content).stripTags('p').s + "</div>";
+        },
+        "scrollToBottom": function(shoutContent) {
+            if(shoutContent[0]) {
+                shoutContent.scrollTop(
+                    shoutContent[0].scrollHeight - shoutContent.height()
+                );
+            }
+        },
+        "updateUsers": function() {
+            socket.emit(box.vars.sockets.get_users, {}, function(data) {
+                var userCount = data.length;
+                var usernames = data.map(function(i) {
+                    return (i.username === null ? 'Anonymous' : i.username);
+                });
+                var userString = usernames.join("; ");
+                module.base.getUsersPanel().find('.panel-body').text(userString);
+                module.base.getUsersPanel().find('.panel-title').text('Users (' + userCount + ')');
+            });
+        }
+    };
+
+    box.utils = {
+        "checkAnon": function(callback) {
+            if (app.uid === null) {
+                return callback(true);
+            }
+            return callback(false);
+        },
+        "showAnonMessage": function(shoutBox) {
+            shoutBox.find('#shoutbox-content').html(box.vars.anonMessage);
+        },
+        "startUserPoll": function() {
+            if(box.vars.userCheckIntervalId === 0) {
+                box.vars.userCheckIntervalId = setInterval(function() {
+                    box.base.updateUsers();
+                }, 10000);
+            }
+        },
+        "hideInputs": function() {
+            $('#shoutbox').find('.btn-group, .input-group').hide();
+        },
+        "registerHandlers": function(shoutBox) {
+            box.utils.addActionHandlers(shoutBox);
+            box.utils.addSocketHandlers();
+        },
+        "addActionHandlers": function(shoutBox) {
+            var actions = box.actions;
+            for (var a in actions) {
+                if (actions.hasOwnProperty(a)) {
+                    actions[a].register(shoutBox);
+                }
+            }
+        },
+        "addSocketHandlers": function() {
+            var sockets = box.sockets;
+            for (var s in sockets) {
+                if (sockets.hasOwnProperty(s)) {
+                    sockets[s].register();
+                }
+            }
+        }
+    };
+
+    box.actions = {
+        "send": {
+            "register": function(shoutBox) {
+                var sendMessage = this.handle;
+                shoutBox.find('#shoutbox-message-input').off('keypress');
+                shoutBox.find('#shoutbox-message-input').on('keypress', function(e) {
+                    if(e.which === 13 && !e.shiftKey) {
+                        sendMessage(shoutBox);
+                    }
+                });
+
+                shoutBox.find('#shoutbox-message-send-btn').off('click');
+                shoutBox.find('#shoutbox-message-send-btn').on('click', function(e){
+                    sendMessage(shoutBox);
+                    return false;
+                });
+            },
+            "handle": function(shoutBox) {
+                var msg = S(shoutBox.find('#shoutbox-message-input').val()).stripTags().s;
+                if(msg.length) {
+                    socket.emit(box.vars.sockets.send, {message:msg});
+                    shoutBox.find('#shoutbox-message-input').val('');
+                }
+            }
+        },
+        "delete": {
+            "register": function(shoutBox) {
+                shoutBox.find('button.close').off('click');
+                shoutBox.on('click', 'button.close', this.handle);
+            },
+            "handle": function(e) {
+                var sid = e.currentTarget.parentNode.id.match(/\d+/),
+                    node = e.currentTarget.parentNode;
+                socket.emit(box.vars.sockets.remove, {"sid": sid}, function (err, result) {
+                    if (result === true) {
+                        node.remove();
+                    } else if (err) {
+                        app.alertError("Error deleting shout: " + err, 3000);
+                    }
+                });
+            }
+        },
+        "gist": {
+            "register": function(shoutBox) {
+                var show = this.handle.show,
+                    create = this.handle.create,
+                    gistModal = $('#create-gist-modal');
+                shoutBox.find('#create-gist-button').off('click');
+                shoutBox.find('#create-gist-button').on('click', function(e) {
+                    show(gistModal);
+                });
+                gistModal.find('#create-gist-submit').off('click');
+                gistModal.find('#create-gist-submit').on('click', function(e) {
+                    create(gistModal.find('textarea').val(), gistModal);
+                });
+            },
+            "handle": {
+                "show": function(gistModal) {
+                    gistModal.modal('show');
+                },
+                "create": function(code, gistModal) {
+                    if (app.uid === null) {
+                        gistModal.modal('hide');
+                        app.alertError('Only registered users can create Gists!', 3000);
+                        return;
+                    }
+                    var json = {
+                        "description": "Gist created from BitBangers shoutbox",
+                        "public": true,
+                        "files": {
+                            "file1.txt": {
+                                "content": code
+                            }
+                        }
+                    }
+                    $.post("https://api.github.com/gists", JSON.stringify(json), function(data) {
+                        gistModal.modal('hide');
+                        var input = module.base.getShoutPanel().find('#shoutbox-message-input');
+                        var link = data.html_url;
+                        if (input.val().length > 0) {
+                            link = " " + link;
+                        }
+                        input.val(input.val() + link);
+                        app.alertSuccess("Successfully created Gist!", 3000);
+                        gistModal.find('textarea').val('');
+                    }).fail(function(data) {
+                        gistModal.modal('hide');
+                        app.alertError("Error while creating Gist, try again later!", 3000);
+                    });
+                }
+            }
+        },
+        "archive": {
+            "register": function(shoutBox) {
+                shoutBox.find('#view-archive-button').off('click');
+                shoutBox.find('#view-archive-button').on('click', function(e) {
+                    app.alertError("Not implemented!", 3000);
+                });
+            },
+            "handle": function() {
+
+            }
+        }
+    };
+
+    box.sockets = {
+        "receive": {
+            "register": function() {
+                if (socket.listeners(box.vars.sockets.receive).length === 0) {
+                    socket.on(box.vars.sockets.receive, this.handle);
+                }
+            },
+            "handle": function(data) {
+                if (module.base.hasLoaded) {
+                    module.box.addShout(module.base.getShoutPanel(), data);
+                    app.alternatingTitle(box.vars.titleAlert.replace(/%u/g, data.username));
+                }
+            }
+        }
     }
 
     return module;

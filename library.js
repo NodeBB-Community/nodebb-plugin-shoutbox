@@ -7,6 +7,7 @@ var	async = require('async'),
     Plugins = module.parent.parent.require('./plugins'),
     db = module.parent.require('./database'),
     winston = module.parent.require('winston'),
+    SocketIndex = module.parent.require('./socket.io/index'),
     ModulesSockets = module.parent.require('./socket.io/modules');
 
 var constants = Object.freeze({
@@ -139,86 +140,69 @@ Shoutbox.init = {
 }
 Shoutbox.init.setup();
 Shoutbox.sockets = {
-    "get": function(callback) {
+    "get": function(socket, data, callback) {
         Shoutbox.backend.getShouts(function(err, messages) {
-            try {
-                if (err)
-                    return callback(null);
+            if (err)
+                return callback(null, []);
 
-                callback(messages);
-            } catch (e) {
-                winston.error("Someone did a no-no!: " + e.message);
-            }
-
+            callback(null, messages);
         });
     },
-    "send": function(data, sessionData) {
-        try {
-            if (sessionData.uid === 0) {
+    "send": function(socket, data, callback) {
+        if (socket.uid === 0) {
+            return;
+        }
+
+        var msg = S(data.message).stripTags().s;
+        User.getUserField(socket.uid, 'username', function(err, username) {
+            if(err) {
                 return;
             }
 
-            var msg = S(data.message).stripTags().s;
-            User.getUserField(sessionData.uid, 'username', function(err, username) {
-                if(err) {
-                    return;
-                }
-
-                Shoutbox.backend.parse(sessionData.uid, username, msg, function(parsed) {
-                    Shoutbox.backend.addShout(sessionData.uid, msg, function(err, message) {
-                        sessionData.server.sockets.in('global').emit('event:shoutbox.receive', {
-                            fromuid: message.fromuid,
-                            username: username,
-                            content: parsed,
-                            sid: message.sid,
-                            timestamp: message.timestamp
-                        });
+            Shoutbox.backend.parse(socket.uid, username, msg, function(err, parsed) {
+                Shoutbox.backend.addShout(socket.uid, msg, function(err, message) {
+                    SocketIndex.server.sockets.in('global').emit('event:shoutbox.receive', {
+                        fromuid: message.fromuid,
+                        username: username,
+                        content: parsed,
+                        sid: message.sid,
+                        timestamp: message.timestamp
                     });
                 });
             });
-        } catch (e) {
-            winston.error("Someone did a no-no!: " + e.message);
-        }
+        });
     },
-    "remove": function(data, callback, sessionData) {
+    "remove": function(socket, data, callback) {
         db.getObjectField('shout:' + data.sid, 'fromuid', function(err, uid) {
-            try {
-                if (err) {
-                    return callback("Unknown error", false);
-                }
-                if (uid === sessionData.uid) {
-                    Shoutbox.backend.markRemoved(data.sid, function(err, result) {
-                        try {
-                            if (err) {
-                                return callback("Unknown error", false);
-                            }
-                            return callback(null, true);
-                        } catch (e) {
-                            winston.error("Someone did a no-no!: " + e.message);
-                        }
-                    });
-                } else {
-                    return callback("Shout does not belong to you", false);
-                }
-            } catch (e) {
-                winston.error("Someone did a no-no!: " + e.message);
+            if (err) {
+                return callback("Unknown error", false);
+            }
+            if (uid === socket.uid) {
+                Shoutbox.backend.markRemoved(data.sid, function(err, result) {
+                    if (err) {
+                        return callback("Unknown error", false);
+                    }
+                    return callback(null, true);
+                });
+            } else {
+                return callback("Shout does not belong to you", false);
             }
         });
     },
-    "get_users": function(data, callback, sessionData){
+    "get_users": function(socket, data, callback){
         try {
             var users = [];
-            for(var i in sessionData.userSockets) {
-                if (sessionData.userSockets.hasOwnProperty((i))) {
+            for(var i in socket.userSockets) {
+                if (socket.userSockets.hasOwnProperty((i))) {
                     users.push(i);
                 }
             }
             User.getMultipleUserFields(users, ['username'], function(err, usersData) {
                 try {
                     if(err) {
-                        return callback([]);
+                        return callback(null, []);
                     }
-                    return callback(usersData);
+                    return callback(null, usersData);
                 } catch (e) {
                     winston.error("Someone did a no-no!: " + e.message);
                 }
@@ -272,7 +256,7 @@ Shoutbox.backend = {
                         return next(null);
                     }
                     User.getUserField(message.fromuid, 'username', function(err, username) {
-                        Shoutbox.backend.parse(message.fromuid, username, message.content, function(parsed) {
+                        Shoutbox.backend.parse(message.fromuid, username, message.content, function(err, parsed) {
                             message.content = parsed;
                             message.sid = sid;
                             messages.push(message);
@@ -301,7 +285,7 @@ Shoutbox.backend = {
                 }
                 //var result = parsed.replace("<p>", "<p>" + username + ": ");
                 var result = username + parsed;
-                callback(result);
+                callback(null, result);
             });
         });
     },

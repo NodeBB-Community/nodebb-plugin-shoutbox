@@ -6,10 +6,10 @@ define(['string'], function(S) {
         "loaded": false,
         "userCheckIntervalId": 0,
         "sockets": {
-            "get": "api:modules.shoutbox.get",
-            "send": "api:modules.shoutbox.send",
-            "remove" : "api:modules.shoutbox.remove",
-            "get_users": "api:modules.shoutbox.get_users",
+            "get": "modules.shoutbox.get",
+            "send": "modules.shoutbox.send",
+            "remove" : "modules.shoutbox.remove",
+            "get_users": "modules.shoutbox.get_users",
             "receive": "event:shoutbox.receive"
         },
         "titleAlert": "[ %u ] - new shout!",
@@ -63,7 +63,8 @@ define(['string'], function(S) {
 
     box.base = {
         "getShouts": function(shoutBox) {
-            socket.emit(box.vars.sockets.get, function(shouts) {
+            console.log("Getting");
+            socket.emit(box.vars.sockets.get, function(err, shouts) {
                 for(var i = 0; i<shouts.length; ++i) {
                     module.box.addShout(shoutBox, shouts[i]);
                 }
@@ -86,7 +87,7 @@ define(['string'], function(S) {
             }
         },
         "updateUsers": function() {
-            socket.emit(box.vars.sockets.get_users, {}, function(data) {
+            socket.emit(box.vars.sockets.get_users, {}, function(err, data) {
                 var userCount = data.length;
                 var usernames = data.map(function(i) {
                     return (i.username === null ? 'Anonymous' : i.username);

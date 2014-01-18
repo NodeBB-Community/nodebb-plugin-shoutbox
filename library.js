@@ -190,26 +190,13 @@ Shoutbox.sockets = {
         });
     },
     "get_users": function(socket, data, callback){
-        try {
-            var users = [];
-            for(var i in socket.userSockets) {
-                if (socket.userSockets.hasOwnProperty((i))) {
-                    users.push(i);
-                }
+        var users = Object.keys(SocketIndex.getConnectedClients());
+        User.getMultipleUserFields(users, ['username'], function(err, usersData) {
+            if(err) {
+                return callback(null, []);
             }
-            User.getMultipleUserFields(users, ['username'], function(err, usersData) {
-                try {
-                    if(err) {
-                        return callback(null, []);
-                    }
-                    return callback(null, usersData);
-                } catch (e) {
-                    winston.error("Someone did a no-no!: " + e.message);
-                }
-            });
-        } catch (e) {
-            winston.error("Someone did a no-no!: " + e.message);
-        }
+            return callback(null, usersData);
+        });
     }
 }
 

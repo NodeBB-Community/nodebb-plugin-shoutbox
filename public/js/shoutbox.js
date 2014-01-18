@@ -63,7 +63,6 @@ define(['string'], function(S) {
 
     box.base = {
         "getShouts": function(shoutBox) {
-            console.log("Getting");
             socket.emit(box.vars.sockets.get, function(err, shouts) {
                 for(var i = 0; i<shouts.length; ++i) {
                     module.box.addShout(shoutBox, shouts[i]);

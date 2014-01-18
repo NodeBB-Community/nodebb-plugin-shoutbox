@@ -12,8 +12,8 @@
     color: red;
 }
 
-.shoutbox-user-mod {
-    color: #008000;
+.shoutbox-user, .shoutbox-user-admin {
+    font-weight: bold;
 }
 
 .shoutbox-timestamp {

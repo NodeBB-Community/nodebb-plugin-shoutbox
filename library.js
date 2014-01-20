@@ -19,9 +19,10 @@ var constants = Object.freeze({
         'route': '/plugins/shoutbox',
         'icon': 'fa-bullhorn'
     },
-    'config_keys': ['headerlink'],
+    'config_keys': ['headerlink','pageposition'],
     'config_defaults': {
-        'headerlink': '0'
+        'headerlink': '0',
+        'pageposition': 'top'
     }
 });
 
@@ -73,7 +74,14 @@ Shoutbox.init = {
                     partial = results[1];
 
                 // todo: this line should become a templates.js method, ie. templates.replaceBLock(blockname, partial);
-                template = template.toString().replace(/<div class="row home"/g, partial + "$&");
+                if (Shoutbox.config.pageposition === "top") {
+                    template = template.toString().replace(/<div class="row home"/g, partial + "$&");
+                } else if (Shoutbox.config.pageposition === "bottom") {
+                    template = template.toString().replace(/<div class="row footer-stats"/g, partial + "$&");
+                } else {
+                    template = template;
+                }
+
 
                 custom_routes.templates.push({
                     "template": "home.tpl",

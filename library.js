@@ -324,22 +324,19 @@ Shoutbox.backend = {
 					function deleteShout(sid, next) {
 						db.getObjectField('shout:' + sid, 'deleted', function(err, isDeleted) {
 							if (isDeleted === '1') {
-								db.delete('shout:' + sid, function(err, result) {
-									removedSids.push(sid);
-									next();
-								});
+								db.delete('shout:' + sid);
+								db.listRemoveAll('shouts', sid);
+								next()
 							}
 							next(null);
 						});
 					}
 
 					async.eachSeries(sids, deleteShout, function(err) {
-						db.listRemoveAll('shouts', removedSids, function(err, result) {
-							if (err) {
-								return callback(err, false);
-							}
-							return callback(null, true);
-						});
+						if (err) {
+							return callback(err, false);
+						}
+						return callback(null, true);
 					});
 				});
 			} else {
@@ -356,17 +353,17 @@ Shoutbox.backend = {
 					}
 
 					function deleteShout(sid, next) {
-						db.delete('shout:' + sid, next);
+						db.delete('shout:' + sid);
+						db.listRemoveAll('shouts', sid);
+						next();
 					}
 
 					async.eachSeries(sids, deleteShout, function(err) {
-						db.listRemoveAll('shouts', sids, function(err, result) {
-							db.setObjectField('global', 'nextSid', 0, function(err, result) {
-								if (err) {
-									return callback(err, null);
-								}
-								return callback(null, true);
-							});
+						db.setObjectField('global', 'nextSid', 0, function(err, result) {
+							if (err) {
+								return callback(err, null);
+							}
+							return callback(null, true);
 						});
 					});
 				});

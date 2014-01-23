@@ -33,10 +33,9 @@
     <button class="btn btn-lg btn-primary" id="save">Save</button>
 
     <h3>Actions</h3>
-    <div class="alert alert-danger">These actions don't work yet because of <a target="_blank" href="https://github.com/designcreateplay/NodeBB/pull/860">issue #860</a> on Github</div>
-    <button type="button" class="btn btn-danger" id="shoutbox-remove-deleted-button" disabled>Remove deleted shouts</button>
-    <button type="button" class="btn btn-danger" id="shoutbox-remove-all-button" disabled>Remove all shouts</button>
-    <p class="help-block">Warning: These actions are permanent and <strong>cannot</strong> be undone!</p>
+    <div class="alert alert-danger">Warning: These actions are permanent and <strong>cannot</strong> be undone!</div>
+    <button type="button" class="btn btn-danger" id="shoutbox-remove-deleted-button">Remove deleted shouts</button>
+    <button type="button" class="btn btn-danger" id="shoutbox-remove-all-button">Remove all shouts</button>
 </form>
 
 <script type="text/javascript">

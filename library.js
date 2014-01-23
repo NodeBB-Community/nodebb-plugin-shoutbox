@@ -189,22 +189,20 @@ Shoutbox.sockets = {
         });
     },
     "remove": function(socket, data, callback) {
-        db.getObjectField('shout:' + data.sid, 'fromuid', function(err, uid) {
-            if (err) {
-                return callback("Unknown error", false);
-            }
-            if (uid === socket.uid) {
-                Shoutbox.backend.markRemoved(data.sid, function(err, result) {
-                    if (err) {
-                        return callback("Unknown error", false);
-                    }
-                    return callback(null, true);
-                });
-            } else {
-                return callback("Shout does not belong to you", false);
-            }
-        });
+        Shoutbox.backend.removeShout(data.sid, socket.uid, callback);
     },
+	"removeAll": function(socket, data, callback) {
+		if (data !== null && data !== undefined) {
+			if (typeof(data.which) === "string") {
+				if (data.which === 'deleted') {
+					return Shoutbox.backend.pruneDeleted(socket.uid, callback);
+				} else if (data.which ==='all') {
+					return Shoutbox.backend.removeAll(socket.uid, callback);
+				}
+			}
+		}
+		return callback(null, false);
+	},
     "get_users": function(socket, data, callback){
         var users = Object.keys(SocketIndex.getConnectedClients());
         User.getMultipleUserFields(users, ['username'], function(err, usersData) {
@@ -214,8 +212,13 @@ Shoutbox.sockets = {
             return callback(null, usersData);
         });
     },
-	"getShoutLimit": function(socket, data, callback) {
-		callback(null, Shoutbox.config.shoutlimit);
+	"getConfig": function(socket, data, callback) {
+		User.isAdministrator(socket.uid, function(err, isAdmin) {
+			callback(null, {
+				'limit': parseInt(Shoutbox.config.shoutlimit, 10),
+				'isAdmin': isAdmin
+			});
+		});
 	}
 }
 
@@ -295,11 +298,88 @@ Shoutbox.backend = {
             });
         });
     },
-    "markRemoved": function (sid, callback) {
-        db.setObjectField('shout:' + sid, 'deleted', '1', function (err, result) {
-            callback(err, result);
-        });
-    },
+	"removeShout": function(sid, uid, callback) {
+		User.isAdministrator(uid, function(err, isAdmin) {
+			db.getObjectField('shout:' + sid, 'fromuid', function(err, fromuid) {
+				if (err) {
+					return callback("Unknown error", false);
+				}
+				if (fromuid === uid || isAdmin) {
+					db.setObjectField('shout:' + sid, 'deleted', '1', function (err, result) {
+						if (err) {
+							return callback("Unknown error", false);
+						}
+						return callback(null, true);
+					});
+				} else {
+					return callback("Shout does not belong to you", false);
+				}
+			});
+		});
+	},
+	"pruneDeleted": function(uid, callback) {
+		User.isAdministrator(uid, function(err, isAdmin) {
+			if (isAdmin === true) {
+				db.getListRange('shouts', 0, -1, function(err, sids) {
+					if (err || !sids || !sids.length) {
+						return callback(err, false);
+					}
+					var removedSids = [];
+
+					function deleteShout(sid, next) {
+						db.getObjectField('shout:' + sid, 'deleted', function(err, isDeleted) {
+							if (isDeleted === '1') {
+								db.delete('shout:' + sid, function(err, result) {
+									removedSids.push(sid);
+									next();
+								});
+							}
+							next(null);
+						});
+					}
+
+					async.eachSeries(sids, deleteShout, function(err) {
+						db.listRemoveAll('shouts', removedSids, function(err, result) {
+							if (err) {
+								return callback(err, false);
+							}
+							return callback(null, true);
+						});
+					});
+				});
+			} else {
+				return callback("Not allowed", false);
+			}
+		});
+	},
+	"removeAll": function(uid, callback) {
+		User.isAdministrator(uid, function(err, isAdmin) {
+			if (isAdmin === true) {
+				db.getListRange('shouts', 0, -1, function(err, sids) {
+					if (err || !sids || !sids.length) {
+						return callback(err, false);
+					}
+
+					function deleteShout(sid, next) {
+						db.delete('shout:' + sid, next);
+					}
+
+					async.eachSeries(sids, deleteShout, function(err) {
+						db.listRemoveAll('shouts', sids, function(err, result) {
+							db.setObjectField('global', 'nextSid', 0, function(err, result) {
+								if (err) {
+									return callback(err, null);
+								}
+								return callback(null, true);
+							});
+						});
+					});
+				});
+			} else {
+				return callback("Not allowed", false);
+			}
+		});
+	},
     "updateShoutTime": function(uid, callback) {
         db.sortedSetAdd('uid:' + uid + ':shouts', Date.now(), 0, function(err) {
             if (callback) {

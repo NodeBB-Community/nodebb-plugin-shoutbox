@@ -3,9 +3,11 @@ define(['string'], function(S) {
         module = {};
 
     box.vars = {
+		"config": {
+			"maxShouts": 0
+		},
         "loaded": false,
         "userCheckIntervalId": 0,
-		"maxShouts": 0,
 		"lastSid": 0,
         "sockets": {
             "get": "modules.shoutbox.get",
@@ -77,7 +79,7 @@ define(['string'], function(S) {
             var date = new Date(parseInt(shout.timestamp, 10));
             var prefix = '<span class="shoutbox-timestamp">' + date.toLocaleTimeString() + '</span> ';
             var options = '';
-            if (shout.fromuid === app.uid) {
+            if (shout.fromuid === app.uid || box.vars.config.isAdmin === true) {
                 options = '<button type="button" class="close pull-right" aria-hidden="true">&times;</button>';
             }
             return "<div id='shoutbox-shout-" + shout.sid + "'>" + options + S(prefix + shout.content).stripTags('p').s + "</div>";
@@ -113,8 +115,8 @@ define(['string'], function(S) {
             shoutBox.find('#shoutbox-content').html(box.vars.anonMessage);
         },
 		"getConfig": function() {
-			socket.emit('modules.shoutbox.getShoutLimit', function(err, limit) {
-				box.vars.maxShouts = parseInt(limit, 10);
+			socket.emit('modules.shoutbox.getConfig', function(err, config) {
+				box.vars.config = config;
 			});
 		},
         "startUserPoll": function() {
@@ -174,7 +176,7 @@ define(['string'], function(S) {
         },
         "delete": {
             "register": function(shoutBox) {
-                shoutBox.find('button.close').off('click').on('click', 'button.close', this.handle);
+                shoutBox.off('click', 'button.close').on('click', 'button.close', this.handle);
             },
             "handle": function(e) {
                 var sid = e.currentTarget.parentNode.id.match(/\d+/),
@@ -258,7 +260,7 @@ define(['string'], function(S) {
 				"show": function(archiveModal, handle) {
 					archiveModal.modal('show');
 					if (!archiveModal.data('start')) {
-						archiveModal.data('start', (-(box.vars.maxShouts - 1)).toString());
+						archiveModal.data('start', (-(box.vars.config.maxShouts - 1)).toString());
 						archiveModal.data('end', "-1");
 					}
 					handle.get(archiveModal, handle);
@@ -267,10 +269,10 @@ define(['string'], function(S) {
 					var curStart = parseInt(archiveModal.data('start'), 10);
 					var curEnd = parseInt(archiveModal.data('end'));
 
-					var newStart = curStart - box.vars.maxShouts;
-					var newEnd = curEnd - box.vars.maxShouts;
+					var newStart = curStart - box.vars.config.maxShouts;
+					var newEnd = curEnd - box.vars.config.maxShouts;
 
-					if (Math.abs(newStart) < (parseInt(box.vars.lastSid, 10) + box.vars.maxShouts)) {
+					if (Math.abs(newStart) < (parseInt(box.vars.lastSid, 10) + box.vars.config.maxShouts)) {
 						archiveModal.data('start', newStart);
 						archiveModal.data('end', newEnd);
 
@@ -281,9 +283,9 @@ define(['string'], function(S) {
 					var curStart = parseInt(archiveModal.data('start'), 10);
 					var curEnd = parseInt(archiveModal.data('end'));
 
-					var newStart = curStart + box.vars.maxShouts;
-					var newEnd = curEnd + box.vars.maxShouts;
-					var startLimit = -(box.vars.maxShouts - 1);
+					var newStart = curStart + box.vars.config.maxShouts;
+					var newEnd = curEnd + box.vars.config.maxShouts;
+					var startLimit = -(box.vars.config.maxShouts - 1);
 
 					if (newStart <= startLimit && newEnd < 0) {
 						archiveModal.data('start', newStart);

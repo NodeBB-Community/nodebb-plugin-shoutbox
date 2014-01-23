@@ -2,7 +2,7 @@
 
 <form class="form">
     <h3>Settings</h3>
-    <p class="help-block">Note: Almost all settings require a restart of NodeBB.</p>
+    <p class="help-block">Note: Some of these settings require a restart of NodeBB.</p>
     <div class="form-group">
         <label for="pageposition">Position on the homepage</label>
         <select class="form-control" id="pageposition" data-field="shoutbox:pageposition">
@@ -19,7 +19,7 @@
             <option value="25" selected>25</option>
             <option value="50">50</option>
         </select>
-        <p class="help-block">Shouts marked as deleted will be included</p>
+        <p class="help-block">Shouts marked as deleted will be included in this number</p>
     </div>
 
     <div class="form-group">
@@ -32,6 +32,10 @@
 
     <button class="btn btn-lg btn-primary" id="save">Save</button>
 
+    <h3>Actions</h3>
+        <button type="button" class="btn btn-danger" id="shoutbox-remove-deleted-button">Remove deleted shouts</button>
+        <button type="button" class="btn btn-danger" id="shoutbox-remove-all-button">Remove all shouts</button>
+    <p class="help-block">Warning: These actions are permanent and <strong>cannot</strong> be undone!</p>
 </form>
 
 <script type="text/javascript">
@@ -39,3 +43,4 @@
         Settings.prepare();
     });
 </script>
+<script src="/plugins/nodebb-plugin-shoutbox/js/admin.js"></script>

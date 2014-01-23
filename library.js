@@ -29,26 +29,21 @@ var constants = Object.freeze({
 });
 
 var Shoutbox = {};
-Shoutbox.config = {};
+Shoutbox.config = {
+	'get': function(key) {
+		if (constants.config_keys.indexOf(key) !== -1) {
+			return Meta.config['shoutbox:' + key] || constants.config_defaults[key];
+		}
+	}
+};
 
 Shoutbox.init = {
-	"setup": function() {
-		var dbkeys = constants.config_keys.map(function (key) {
-			return "shoutbox:" + key;
-		});
-		db.getObjectFields('config', dbkeys, function(err, values) {
-			dbkeys.forEach(function(dbkey) {
-				var realkey = dbkey.split(":")[1];
-				Shoutbox.config[realkey] = values[dbkey] || constants.config_defaults[realkey];
-			});
-		});
-	},
 	"load": function() {
 		ModulesSockets.shoutbox = Shoutbox.sockets;
 	},
 	"global": {
 		addNavigation: function(custom_header, callback) {
-			if (Shoutbox.config.headerlink === '1') {
+			if (Shoutbox.config.get('headerlink') === '1') {
 				custom_header.navigation.push({
 					"class": "",
 					"iconClass": "fa fa-fw fa-bullhorn",
@@ -76,9 +71,9 @@ Shoutbox.init = {
 					partial = results[1];
 
 				// todo: this line should become a templates.js method, ie. templates.replaceBLock(blockname, partial);
-				if (Shoutbox.config.pageposition === "top") {
+				if (Shoutbox.config.get('pageposition') === "top") {
 					template = template.toString().replace(/<div class="row home"/g, partial + "$&");
-				} else if (Shoutbox.config.pageposition === "bottom") {
+				} else if (Shoutbox.config.get('pageposition') === "bottom") {
 					template = template.toString().replace(/<div class="row footer-stats"/g, partial + "$&");
 				} else {
 					template = template;
@@ -146,7 +141,7 @@ Shoutbox.init = {
 		}
 	}
 }
-Shoutbox.init.setup();
+
 Shoutbox.sockets = {
 	"get": function(socket, data, callback) {
 		var start, end;
@@ -154,7 +149,7 @@ Shoutbox.sockets = {
 			start = parseInt(data.start, 10);
 			end = parseInt(data.end, 10);
 		} else {
-			start = -(Shoutbox.config.shoutlimit - 1);
+			start = -(parseInt(Shoutbox.config.get('shoutlimit'), 10) - 1);
 			end = -1;
 		}
 		Shoutbox.backend.getShouts(start, end, function(err, messages) {
@@ -215,7 +210,7 @@ Shoutbox.sockets = {
 	"getConfig": function(socket, data, callback) {
 		User.isAdministrator(socket.uid, function(err, isAdmin) {
 			callback(null, {
-				'limit': parseInt(Shoutbox.config.shoutlimit, 10),
+				'limit': parseInt(Shoutbox.config.get('shoutlimit'), 10),
 				'isAdmin': isAdmin
 			});
 		});

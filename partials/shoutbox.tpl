@@ -13,10 +13,10 @@
                     </span>
                 </div>
                 <div class="btn-group">
-                    <button id="create-gist-button" type="button" class="btn btn-default btn-sm">
+                    <button id="shoutbox-button-create-gist" type="button" class="btn btn-default btn-sm">
                         <span class="fa fa-github-alt"></span> Create Gist
                     </button>
-                    <button id="view-archive-button" type="button" class="btn btn-default btn-sm">
+                    <button id="shoutbox-button-archive" type="button" class="btn btn-default btn-sm">
                         <span class="fa fa-archive"></span> View archive
                     </button>
                 </div>
@@ -34,19 +34,39 @@
         </div>
     </div>
 
-    <div class="modal fade" id="create-gist-modal" role="dialog" aria-labelledby="createGistModal" aria-hidden="true">
+
+    <div class="modal fade" id="shoutbox-modal-gist" role="dialog" aria-labelledby="shoutboxModalGist" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="createGistModal">Create Gist</h4>
+                    <h4 class="modal-title" id="shoutboxModalGist">Create Gist</h4>
                 </div>
                 <div class="modal-body">
                     <textarea placeholder="Paste code here" class="form-control" rows="20"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="create-gist-submit">Submit</button>
+                    <button type="button" class="btn btn-primary" id="shoutbox-button-create-gist-submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="shoutbox-archive-modal" role="dialog" aria-labelledby="shoutboxModalArchive" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="shoutboxModalArchive">Archive</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="shoutbox-archive-content" class="well well-sm"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="shoutbox-button-archive-prev" type="button" class="btn btn-default pull-left">&larr; Older</button>
+                    <button id="shoutbox-button-archive-next" type="button" class="btn btn-default pull-right">Newer &rarr;</button>
                 </div>
             </div>
         </div>

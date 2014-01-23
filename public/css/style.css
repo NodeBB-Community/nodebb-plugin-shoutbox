@@ -1,10 +1,14 @@
-#shoutbox-content {
+#shoutbox-content, #shoutbox-archive-content {
     font-size: 14px;
     height: 200px;
     overflow-y: scroll;
 }
 
-#shoutbox-content p {
+#shoutbox-archive-content {
+    height: 300px;
+}
+
+#shoutbox-content p, #shoutbox-archive-content p {
     margin: 0;
 }
 
@@ -24,6 +28,6 @@
     margin-top: 5px;
 }
 
-#shoutbox .close {
+#shoutbox .close, #shoutbox-archive-content .close {
     font-size: inherit;
 }

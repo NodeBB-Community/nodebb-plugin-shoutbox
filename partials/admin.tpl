@@ -13,6 +13,16 @@
     </div>
 
     <div class="form-group">
+        <label for="shoutlimit">Maximum number of shouts that can be returned</label>
+        <select class="form-control" id="shoutlimit" data-field="shoutbox:shoutlimit">
+            <option value="10">10</option>
+            <option value="25" selected>25</option>
+            <option value="50">50</option>
+        </select>
+        <p class="help-block">Shouts marked as deleted will be included</p>
+    </div>
+
+    <div class="form-group">
         <div class="checkbox">
             <label>
                 <input type="checkbox" data-field="shoutbox:headerlink" id="headerlink"> Show navigation link

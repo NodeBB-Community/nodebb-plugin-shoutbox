@@ -5,6 +5,8 @@ define(['string'], function(S) {
     box.vars = {
         "loaded": false,
         "userCheckIntervalId": 0,
+		"maxShouts": 0,
+		"lastSid": 0,
         "sockets": {
             "get": "modules.shoutbox.get",
             "send": "modules.shoutbox.send",
@@ -24,6 +26,7 @@ define(['string'], function(S) {
                     box.utils.hideInputs();
                     box.utils.showAnonMessage(shoutBox);
                 } else {
+					box.utils.getConfig();
                     box.utils.registerHandlers(shoutBox);
                     box.base.getShouts(shoutBox);
                 }
@@ -58,6 +61,7 @@ define(['string'], function(S) {
             var shoutContent = shoutBox.find('#shoutbox-content');
             shoutContent.append(box.base.parseShout(shout));
             box.base.scrollToBottom(shoutContent);
+			box.vars.lastSid = shout.sid;
         }
     };
 
@@ -108,6 +112,11 @@ define(['string'], function(S) {
         "showAnonMessage": function(shoutBox) {
             shoutBox.find('#shoutbox-content').html(box.vars.anonMessage);
         },
+		"getConfig": function() {
+			socket.emit('modules.shoutbox.getShoutLimit', function(err, limit) {
+				box.vars.maxShouts = parseInt(limit, 10);
+			});
+		},
         "startUserPoll": function() {
             if(box.vars.userCheckIntervalId === 0) {
                 box.vars.userCheckIntervalId = setInterval(function() {
@@ -144,15 +153,13 @@ define(['string'], function(S) {
         "send": {
             "register": function(shoutBox) {
                 var sendMessage = this.handle;
-                shoutBox.find('#shoutbox-message-input').off('keypress');
-                shoutBox.find('#shoutbox-message-input').on('keypress', function(e) {
+                shoutBox.find('#shoutbox-message-input').off('keypress').on('keypress', function(e) {
                     if(e.which === 13 && !e.shiftKey) {
                         sendMessage(shoutBox);
                     }
                 });
 
-                shoutBox.find('#shoutbox-message-send-btn').off('click');
-                shoutBox.find('#shoutbox-message-send-btn').on('click', function(e){
+                shoutBox.find('#shoutbox-message-send-btn').off('click').on('click', function(e){
                     sendMessage(shoutBox);
                     return false;
                 });
@@ -167,8 +174,7 @@ define(['string'], function(S) {
         },
         "delete": {
             "register": function(shoutBox) {
-                shoutBox.find('button.close').off('click');
-                shoutBox.on('click', 'button.close', this.handle);
+                shoutBox.find('button.close').off('click').on('click', 'button.close', this.handle);
             },
             "handle": function(e) {
                 var sid = e.currentTarget.parentNode.id.match(/\d+/),
@@ -186,13 +192,11 @@ define(['string'], function(S) {
             "register": function(shoutBox) {
                 var show = this.handle.show,
                     create = this.handle.create,
-                    gistModal = $('#create-gist-modal');
-                shoutBox.find('#create-gist-button').off('click');
-                shoutBox.find('#create-gist-button').on('click', function(e) {
+                    gistModal = $('#shoutbox-modal-gist');
+                shoutBox.find('#shoutbox-button-create-gist').off('click').on('click', function(e) {
                     show(gistModal);
                 });
-                gistModal.find('#create-gist-submit').off('click');
-                gistModal.find('#create-gist-submit').on('click', function(e) {
+                gistModal.find('#shoutbox-button-create-gist-submit').off('click').on('click', function(e) {
                     create(gistModal.find('textarea').val(), gistModal);
                 });
             },
@@ -234,14 +238,77 @@ define(['string'], function(S) {
         },
         "archive": {
             "register": function(shoutBox) {
-                shoutBox.find('#view-archive-button').off('click');
-                shoutBox.find('#view-archive-button').on('click', function(e) {
-                    app.alertError("Not implemented!", 3000);
+				var handle = this.handle,
+					show = this.handle.show,
+					prev = this.handle.prev,
+					next = this.handle.next,
+					archiveModal = $('#shoutbox-archive-modal');
+                shoutBox.find('#shoutbox-button-archive').off('click').on('click', function(e) {
+                    show(archiveModal, handle);
                 });
-            },
-            "handle": function() {
 
-            }
+				archiveModal.find('#shoutbox-button-archive-prev').off('click').on('click', function(e) {
+					prev(archiveModal, handle);
+				});
+				archiveModal.find('#shoutbox-button-archive-next').off('click').on('click', function(e) {
+					next(archiveModal, handle);
+				});
+            },
+            "handle": {
+				"show": function(archiveModal, handle) {
+					archiveModal.modal('show');
+					if (!archiveModal.data('start')) {
+						archiveModal.data('start', (-(box.vars.maxShouts - 1)).toString());
+						archiveModal.data('end', "-1");
+					}
+					handle.get(archiveModal, handle);
+				},
+				"prev": function(archiveModal, handle) {
+					var curStart = parseInt(archiveModal.data('start'), 10);
+					var curEnd = parseInt(archiveModal.data('end'));
+
+					var newStart = curStart - box.vars.maxShouts;
+					var newEnd = curEnd - box.vars.maxShouts;
+
+					if (Math.abs(newStart) < (parseInt(box.vars.lastSid, 10) + box.vars.maxShouts)) {
+						archiveModal.data('start', newStart);
+						archiveModal.data('end', newEnd);
+
+						handle.get(archiveModal, handle);
+					}
+				},
+				"next": function(archiveModal, handle) {
+					var curStart = parseInt(archiveModal.data('start'), 10);
+					var curEnd = parseInt(archiveModal.data('end'));
+
+					var newStart = curStart + box.vars.maxShouts;
+					var newEnd = curEnd + box.vars.maxShouts;
+					var startLimit = -(box.vars.maxShouts - 1);
+
+					if (newStart <= startLimit && newEnd < 0) {
+						archiveModal.data('start', newStart);
+						archiveModal.data('end', newEnd);
+
+						handle.get(archiveModal, handle);
+					}
+				},
+				"get": function(archiveModal, handle) {
+					archiveModal.find('#shoutbox-archive-content').html('');
+					var curStart = archiveModal.data('start');
+					var curEnd = archiveModal.data('end');
+					var addShout = handle.addShout;
+					socket.emit(box.vars.sockets.get, {'start': curStart, 'end': curEnd}, function(err, shouts) {
+						for(var i = 0; i<shouts.length; ++i) {
+							addShout(archiveModal, shouts[i]);
+						}
+					});
+				},
+				"addShout": function(archiveModal, shout) {
+					var archiveContent = archiveModal.find('#shoutbox-archive-content');
+					archiveContent.append(box.base.parseShout(shout));
+					box.base.scrollToBottom(archiveContent);
+				}
+			}
         }
     };
 

@@ -7,6 +7,7 @@ var	async = require('async'),
     Plugins = module.parent.parent.require('./plugins'),
     db = module.parent.require('./database'),
     winston = module.parent.require('winston'),
+	webserver = module.parent.require('./webserver'),
     SocketIndex = module.parent.require('./socket.io/index'),
     ModulesSockets = module.parent.require('./socket.io/modules');
 
@@ -19,10 +20,11 @@ var constants = Object.freeze({
         'route': '/plugins/shoutbox',
         'icon': 'fa-bullhorn'
     },
-    'config_keys': ['headerlink','pageposition'],
+    'config_keys': ['headerlink','pageposition','shoutlimit'],
     'config_defaults': {
         'headerlink': '0',
-        'pageposition': 'top'
+        'pageposition': 'top',
+		'shoutlimit': 25
     }
 });
 
@@ -96,8 +98,6 @@ Shoutbox.init = {
                             callback({
                                 req: req,
                                 res: res,
-                                route: constants.global.route,
-                                name: constants.name,
                                 content: tpl
                             });
                         }
@@ -149,7 +149,15 @@ Shoutbox.init = {
 Shoutbox.init.setup();
 Shoutbox.sockets = {
     "get": function(socket, data, callback) {
-        Shoutbox.backend.getShouts(function(err, messages) {
+		var start, end;
+		if (data && (data.start && data.end)) {
+			start = parseInt(data.start, 10);
+			end = parseInt(data.end, 10);
+		} else {
+			start = -(Shoutbox.config.shoutlimit - 1);
+			end = -1;
+		}
+        Shoutbox.backend.getShouts(start, end, function(err, messages) {
             if (err)
                 return callback(null, []);
 
@@ -205,7 +213,10 @@ Shoutbox.sockets = {
             }
             return callback(null, usersData);
         });
-    }
+    },
+	"getShoutLimit": function(socket, data, callback) {
+		callback(null, Shoutbox.config.shoutlimit);
+	}
 }
 
 Shoutbox.backend = {
@@ -230,8 +241,8 @@ Shoutbox.backend = {
             callback(null, shout);
         });
     },
-    "getShouts": function(callback) {
-        db.getListRange('shouts', -((Meta.config.shoutsToDisplay || 25) - 1), -1, function(err, sids) {
+    "getShouts": function(start, end, callback) {
+        db.getListRange('shouts', start, end, function(err, sids) {
             if (err) {
                 return callback(err, null);
             }

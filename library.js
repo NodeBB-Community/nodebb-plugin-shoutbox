@@ -210,7 +210,7 @@ Shoutbox.sockets = {
 	"getConfig": function(socket, data, callback) {
 		User.isAdministrator(socket.uid, function(err, isAdmin) {
 			callback(null, {
-				'limit': parseInt(Shoutbox.config.get('shoutlimit'), 10),
+				'maxShouts': parseInt(Shoutbox.config.get('shoutlimit'), 10),
 				'isAdmin': isAdmin
 			});
 		});

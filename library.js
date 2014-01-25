@@ -184,7 +184,14 @@ Shoutbox.sockets = {
 		});
 	},
 	"remove": function(socket, data, callback) {
-		Shoutbox.backend.removeShout(data.sid, socket.uid, callback);
+		Shoutbox.backend.removeShout(data.sid, socket.uid, function(err, result) {
+			if (result === true) {
+				SocketIndex.server.sockets.in('global').emit('event:shoutbox.delete', {
+					'id': '#shoutbox-shout-' + data.sid
+				});
+			}
+			callback(err, result);
+		});
 	},
 	"removeAll": function(socket, data, callback) {
 		if (data !== null && data !== undefined) {

@@ -14,7 +14,8 @@ define(['string'], function(S) {
 			"send": "modules.shoutbox.send",
 			"remove" : "modules.shoutbox.remove",
 			"get_users": "modules.shoutbox.get_users",
-			"receive": "event:shoutbox.receive"
+			"onreceive": "event:shoutbox.receive",
+			"ondelete": "event:shoutbox.delete"
 		},
 		"titleAlert": "[ %u ] - new shout!",
 		"anonMessage": "You must be logged in to view the shoutbox!"
@@ -183,7 +184,8 @@ define(['string'], function(S) {
 					node = e.currentTarget.parentNode;
 				socket.emit(box.vars.sockets.remove, {"sid": sid}, function (err, result) {
 					if (result === true) {
-						node.remove();
+						//node.remove();
+						app.alertSuccess("Successfully deleted shout!");
 					} else if (err) {
 						app.alertError("Error deleting shout: " + err, 3000);
 					}
@@ -315,10 +317,10 @@ define(['string'], function(S) {
 	};
 
 	box.sockets = {
-		"receive": {
+		"onreceive": {
 			"register": function() {
-				if (socket.listeners(box.vars.sockets.receive).length === 0) {
-					socket.on(box.vars.sockets.receive, this.handle);
+				if (socket.listeners(box.vars.sockets.onreceive).length === 0) {
+					socket.on(box.vars.sockets.onreceive, this.handle);
 				}
 			},
 			"handle": function(data) {
@@ -326,6 +328,26 @@ define(['string'], function(S) {
 					module.box.addShout(module.base.getShoutPanel(), data);
 					app.alternatingTitle(box.vars.titleAlert.replace(/%u/g, data.username));
 				}
+			}
+		},
+		"ondelete": {
+			"register": function() {
+				if (socket.listeners(box.vars.sockets.ondelete).length === 0) {
+					socket.on(box.vars.sockets.ondelete, this.handle);
+				}
+			},
+			"handle": function(data) {
+				$(data.id).remove();
+			}
+		},
+		"onedit": {
+			"register": function() {
+				if (socket.listeners(box.vars.sockets.onedit).length === 0) {
+					socket.on(box.vars.sockets.onedit, this.handle);
+				}
+			},
+			"handle": function(data) {
+				$(data.id).html(data.content);
 			}
 		}
 	}

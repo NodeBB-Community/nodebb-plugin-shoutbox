@@ -13,9 +13,11 @@ define(['string'], function(S) {
 			"get": "modules.shoutbox.get",
 			"send": "modules.shoutbox.send",
 			"remove" : "modules.shoutbox.remove",
+			"edit": "modules.shoutbox.edit",
 			"get_users": "modules.shoutbox.get_users",
 			"onreceive": "event:shoutbox.receive",
-			"ondelete": "event:shoutbox.delete"
+			"ondelete": "event:shoutbox.delete",
+			"onedit": "event:shoutbox.edit"
 		},
 		"titleAlert": "[ %u ] - new shout!",
 		"anonMessage": "You must be logged in to view the shoutbox!"
@@ -81,9 +83,11 @@ define(['string'], function(S) {
 			var prefix = '<span class="shoutbox-timestamp">' + date.toLocaleTimeString() + '</span> ';
 			var options = '';
 			if (shout.fromuid === app.uid || box.vars.config.isAdmin === true) {
-				options = '<button type="button" class="close pull-right" aria-hidden="true">&times;</button>';
+				options += '<button type="button" class="shoutbox-shout-option shoutbox-shout-option-close close pull-right" aria-hidden="true">&times;</button>';
+				options += '<button type="button" class="shoutbox-shout-option shoutbox-shout-option-edit close pull-right fa fa-pencil" aria-hidden="true"></button>';
 			}
-			return "<div id='shoutbox-shout-" + shout.sid + "'>" + options + S(prefix + shout.content).stripTags('p').s + "</div>";
+			var content = '<span class="shoutbox-shout-content">' + shout.content + '</span>';
+			return "<div id='shoutbox-shout-" + shout.sid + "'>" + options + S(prefix + content).stripTags('p').s + "</div>";
 		},
 		"scrollToBottom": function(shoutContent) {
 			if(shoutContent[0]) {
@@ -177,19 +181,40 @@ define(['string'], function(S) {
 		},
 		"delete": {
 			"register": function(shoutBox) {
-				shoutBox.off('click', 'button.close').on('click', 'button.close', this.handle);
+				shoutBox.off('click', '.shoutbox-shout-option-close').on('click', '.shoutbox-shout-option-close', this.handle);
 			},
 			"handle": function(e) {
-				var sid = e.currentTarget.parentNode.id.match(/\d+/),
-					node = e.currentTarget.parentNode;
+				var sid = e.currentTarget.parentNode.id.match(/\d+/)[0];
 				socket.emit(box.vars.sockets.remove, {"sid": sid}, function (err, result) {
 					if (result === true) {
-						//node.remove();
 						app.alertSuccess("Successfully deleted shout!");
 					} else if (err) {
 						app.alertError("Error deleting shout: " + err, 3000);
 					}
 				});
+			}
+		},
+		"edit": {
+			"register": function(shoutBox) {
+				shoutBox.off('click', '.shoutbox-shout-option-edit').on('click', '.shoutbox-shout-option-edit', this.handle);
+			},
+			"handle": function(e) {
+				var shout = e.currentTarget.parentNode,
+					sid = shout.id.match(/\d+/)[0],
+					user = $(shout).find('span[class^="shoutbox-user"]').text(),
+					cur = $(shout).find('.shoutbox-shout-content').html().split(': ')[1];
+				bootbox.prompt("Enter edited message", function(result) {
+					if (result === cur || result === null) {
+						return;
+					}
+					socket.emit(box.vars.sockets.edit, {"sid": sid, "user": user, "edited": result}, function (err, result) {
+						if (result === true) {
+							app.alertSuccess("Successfully edited shout!");
+						} else if (err) {
+							app.alertError("Error editing shout: " + err, 3000);
+						}
+					});
+				}).find('.bootbox-input').val(cur);
 			}
 		},
 		"gist": {
@@ -347,7 +372,7 @@ define(['string'], function(S) {
 				}
 			},
 			"handle": function(data) {
-				$(data.id).html(data.content);
+				$(data.id).find('.shoutbox-shout-content').html('*' + S(data.content).stripTags('p').s);
 			}
 		}
 	}

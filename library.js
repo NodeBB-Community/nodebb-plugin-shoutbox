@@ -184,14 +184,34 @@ Shoutbox.sockets = {
 		});
 	},
 	"remove": function(socket, data, callback) {
-		Shoutbox.backend.removeShout(data.sid, socket.uid, function(err, result) {
-			if (result === true) {
-				SocketIndex.server.sockets.in('global').emit('event:shoutbox.delete', {
-					'id': '#shoutbox-shout-' + data.sid
-				});
-			}
-			callback(err, result);
-		});
+		if (typeof(data.sid) === 'string') {
+			Shoutbox.backend.removeShout(data.sid, socket.uid, function(err, result) {
+				if (result === true) {
+					SocketIndex.server.sockets.in('global').emit('event:shoutbox.delete', {
+						'id': '#shoutbox-shout-' + data.sid
+					});
+				}
+				callback(err, result);
+			});
+		}
+	},
+	"edit": function(socket, data, callback) {
+		console.log(data);
+		console.log(typeof(data.sid));
+		if (typeof(data.sid) === 'string' && typeof(data.user) === 'string') {
+			var msg = S(data.edited).stripTags().s;
+			Shoutbox.backend.editShout(data.sid, msg, socket.uid, data.user, function(err, result) {
+				console.log(result);
+				if (result !== false) {
+					SocketIndex.server.sockets.in('global').emit('event:shoutbox.edit', {
+						'id': '#shoutbox-shout-' + data.sid,
+						'content': result
+					});
+					result = true;
+				}
+				callback(err, result);
+			});
+		}
 	},
 	"removeAll": function(socket, data, callback) {
 		if (data !== null && data !== undefined) {
@@ -312,6 +332,27 @@ Shoutbox.backend = {
 							return callback("Unknown error", false);
 						}
 						return callback(null, true);
+					});
+				} else {
+					return callback("Shout does not belong to you", false);
+				}
+			});
+		});
+	},
+	"editShout": function(sid, msg, uid, username, callback) {
+		User.isAdministrator(uid, function(err, isAdmin) {
+			db.getObjectField('shout:' + sid, 'fromuid', function(err, fromuid) {
+				if (err) {
+					return callback("Unknown error", false);
+				}
+				if (fromuid === uid || isAdmin) {
+					db.setObjectField('shout:' + sid, 'content', msg, function (err, result) {
+						if (err) {
+							return callback("Unknown error", false);
+						}
+						Shoutbox.backend.parse(uid, username, msg, function(err, result) {
+							return callback(null, result);
+						});
 					});
 				} else {
 					return callback("Shout does not belong to you", false);

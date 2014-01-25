@@ -28,6 +28,7 @@
     margin-top: 5px;
 }
 
-#shoutbox .close, #shoutbox-archive-content .close {
+.shoutbox-shout-option {
     font-size: inherit;
+    padding-left: 2px!important;
 }

@@ -20,7 +20,8 @@ define(['string'], function(S) {
 			"onedit": "event:shoutbox.edit"
 		},
 		"titleAlert": "[ %u ] - new shout!",
-		"anonMessage": "You must be logged in to view the shoutbox!"
+		"anonMessage": "You must be logged in to view the shoutbox!",
+		"emptyMessage": "The shoutbox is empty, start shouting!"
 	};
 
 	module.base = {
@@ -64,6 +65,9 @@ define(['string'], function(S) {
 	module.box = {
 		"addShout": function(shoutBox, shout) {
 			var shoutContent = shoutBox.find('#shoutbox-content');
+			if (shoutContent.find('div[id^="shoutbox-shout"]').length === 0) {
+				shoutContent.html('');
+			}
 			shoutContent.append(box.base.parseShout(shout));
 			box.base.scrollToBottom(shoutContent);
 			box.vars.lastSid = shout.sid;
@@ -73,8 +77,12 @@ define(['string'], function(S) {
 	box.base = {
 		"getShouts": function(shoutBox) {
 			socket.emit(box.vars.sockets.get, function(err, shouts) {
-				for(var i = 0; i<shouts.length; ++i) {
-					module.box.addShout(shoutBox, shouts[i]);
+				if (shouts.length === 0) {
+					box.utils.showEmptyMessage(shoutBox);
+				} else {
+					for(var i = 0; i<shouts.length; ++i) {
+						module.box.addShout(shoutBox, shouts[i]);
+					}
 				}
 			});
 		},
@@ -118,6 +126,9 @@ define(['string'], function(S) {
 		},
 		"showAnonMessage": function(shoutBox) {
 			shoutBox.find('#shoutbox-content').html(box.vars.anonMessage);
+		},
+		"showEmptyMessage": function(shoutBox) {
+			shoutBox.find('#shoutbox-content').html(box.vars.emptyMessage);
 		},
 		"getConfig": function() {
 			socket.emit('modules.shoutbox.getConfig', function(err, config) {

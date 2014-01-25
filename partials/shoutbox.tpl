@@ -13,10 +13,10 @@
                     </span>
                 </div>
                 <div class="btn-group">
-                    <button id="shoutbox-button-create-gist" type="button" class="btn btn-default btn-sm">
+                    <button id="shoutbox-button-create-gist" type="button" class="btn btn-primary btn-sm">
                         <span class="fa fa-github-alt"></span> Create Gist
                     </button>
-                    <button id="shoutbox-button-archive" type="button" class="btn btn-default btn-sm">
+                    <button id="shoutbox-button-archive" type="button" class="btn btn-primary btn-sm">
                         <span class="fa fa-archive"></span> View archive
                     </button>
                 </div>

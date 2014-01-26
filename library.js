@@ -196,12 +196,9 @@ Shoutbox.sockets = {
 		}
 	},
 	"edit": function(socket, data, callback) {
-		console.log(data);
-		console.log(typeof(data.sid));
 		if (typeof(data.sid) === 'string' && typeof(data.user) === 'string') {
 			var msg = S(data.edited).stripTags().s;
 			Shoutbox.backend.editShout(data.sid, msg, socket.uid, data.user, function(err, result) {
-				console.log(result);
 				if (result !== false) {
 					SocketIndex.server.sockets.in('global').emit('event:shoutbox.edit', {
 						'id': '#shoutbox-shout-' + data.sid,

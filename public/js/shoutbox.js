@@ -91,7 +91,7 @@ define(['string'], function(S) {
 			var prefix = '<span class="shoutbox-timestamp">' + date.toLocaleTimeString() + '</span> ';
 			var options = '';
 			if (shout.fromuid === app.uid || box.vars.config.isAdmin === true) {
-				options += '<button type="button" class="shoutbox-shout-option shoutbox-shout-option-close close pull-right" aria-hidden="true">&times;</button>';
+				options += '<button type="button" class="shoutbox-shout-option shoutbox-shout-option-close close pull-right fa fa-times" aria-hidden="true"></button>';
 				options += '<button type="button" class="shoutbox-shout-option shoutbox-shout-option-edit close pull-right fa fa-pencil" aria-hidden="true"></button>';
 			}
 			var content = '<span class="shoutbox-shout-content">' + shout.content + '</span>';

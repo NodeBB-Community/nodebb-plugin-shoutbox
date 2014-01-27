@@ -29,8 +29,7 @@ define(['string'], function(S) {
 			box.utils.checkAnon(function(isAnon) {
 				var shoutBox = module.base.getShoutPanel();
 				if (isAnon) {
-					box.utils.hideInputs();
-					box.utils.showAnonMessage(shoutBox);
+					box.utils.hideShoutbox(shoutBox);
 				} else {
 					box.utils.getConfig();
 					box.utils.registerHandlers(shoutBox);
@@ -91,8 +90,8 @@ define(['string'], function(S) {
 			var prefix = '<span class="shoutbox-timestamp">' + date.toLocaleTimeString() + '</span> ';
 			var options = '';
 			if (shout.fromuid === app.uid || box.vars.config.isAdmin === true) {
-				options += '<button type="button" class="shoutbox-shout-option shoutbox-shout-option-close close pull-right fa fa-times" aria-hidden="true"></button>';
-				options += '<button type="button" class="shoutbox-shout-option shoutbox-shout-option-edit close pull-right fa fa-pencil" aria-hidden="true"></button>';
+				options += '<a href="#" class="shoutbox-shout-option shoutbox-shout-option-close pull-right fa fa-times"></a>';
+				options += '<a href="#" class="shoutbox-shout-option shoutbox-shout-option-edit pull-right fa fa-pencil"></a>';
 			}
 			var content = '<span class="shoutbox-shout-content">' + shout.content + '</span>';
 			return "<div id='shoutbox-shout-" + shout.sid + "'>" + options + S(prefix + content).stripTags('p').s + "</div>";
@@ -144,6 +143,9 @@ define(['string'], function(S) {
 		},
 		"hideInputs": function() {
 			$('#shoutbox').find('.btn-group, .input-group').hide();
+		},
+		"hideShoutbox": function(shoutBox) {
+			shoutBox.addClass('hidden');
 		},
 		"registerHandlers": function(shoutBox) {
 			box.utils.addActionHandlers(shoutBox);

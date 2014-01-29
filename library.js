@@ -93,9 +93,25 @@ Shoutbox.init = {
 							callback({
 								req: req,
 								res: res,
-								content: tpl
+								content: '<script> \
+									ajaxify.initialLoad = true; \
+									templates.ready(function(){ajaxify.go("shoutbox", null, true);}); \
+								</script>'
 							});
 						}
+					});
+
+					custom_routes.api.push({
+						route: constants.global.route,
+						method: "get",
+						callback: function(req, res, callback) {
+							callback({});
+						}
+					});
+
+					custom_routes.templates.push({
+						"template": "shoutbox.tpl",
+						"content": tpl
 					});
 
 					callback(null, custom_routes);

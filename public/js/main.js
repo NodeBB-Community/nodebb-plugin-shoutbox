@@ -1,20 +1,13 @@
 $(document).ready(function() {
-	if (document.location.pathname === "/shoutbox") {
-		requirejs([
-			'plugins/nodebb-plugin-shoutbox/js/shoutbox.js'
-		], function(shoutBox) {
-			shoutBox.base.init();
-			shoutBox.base.showUserPanel();
-		});
-	}
-
-	$(document).bind('DOMNodeInserted', function(event) {
-		// todo improve this
-		if (event.target.className == 'row shoutbox-row') {
+	$('body').on('action:ajaxify.end', function(e, data) {
+		if (data.url === "" || data.url === "shoutbox") {
 			requirejs([
 				'plugins/nodebb-plugin-shoutbox/js/shoutbox.js'
 			], function(shoutBox) {
 				shoutBox.base.init();
+				if (data.url === "shoutbox") {
+					shoutBox.base.showUserPanel();
+				}
 			});
 		}
 	});

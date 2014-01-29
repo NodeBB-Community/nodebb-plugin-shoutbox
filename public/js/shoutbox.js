@@ -28,12 +28,14 @@ define(['string'], function(S) {
 		"init": function(callback) {
 			box.utils.checkAnon(function(isAnon) {
 				var shoutBox = module.base.getShoutPanel();
-				if (isAnon) {
-					box.utils.hideShoutbox(shoutBox);
-				} else {
-					box.utils.getConfig();
-					box.utils.registerHandlers(shoutBox);
-					box.base.getShouts(shoutBox);
+				if (shoutBox.length > 0) {
+					if (isAnon) {
+						box.utils.hideShoutbox(shoutBox);
+					} else {
+						box.utils.getConfig();
+						box.utils.registerHandlers(shoutBox);
+						box.base.getShouts(shoutBox);
+					}
 				}
 				box.vars.loaded = true;
 				if (callback) {

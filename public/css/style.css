@@ -20,6 +20,10 @@
     font-weight: bold;
 }
 
+.shoutbox-user-image {
+    display: none;
+}
+
 .shoutbox-timestamp {
     color: darkgrey;
 }

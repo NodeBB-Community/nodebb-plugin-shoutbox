@@ -165,16 +165,19 @@ Shoutbox.sockets = {
 		}
 
 		var msg = S(data.message).stripTags().s;
-		User.getUserField(socket.uid, 'username', function(err, username) {
+		User.getMultipleUserFields([socket.uid], ['username', 'picture'], function(err, userData) {
 			if(err) {
 				return;
 			}
 
-			Shoutbox.backend.parse(socket.uid, username, msg, function(err, parsed) {
+			userData = userData[0];
+			userData.uid = socket.uid;
+
+			Shoutbox.backend.parse(msg, userData, true, function(err, parsed) {
 				Shoutbox.backend.addShout(socket.uid, msg, function(err, message) {
 					SocketIndex.server.sockets.in('global').emit('event:shoutbox.receive', {
 						fromuid: message.fromuid,
-						username: username,
+						username: userData.username,
 						content: parsed,
 						sid: message.sid,
 						timestamp: message.timestamp
@@ -283,8 +286,10 @@ Shoutbox.backend = {
 					if (message.deleted === '1') {
 						return next(null);
 					}
-					User.getUserField(message.fromuid, 'username', function(err, username) {
-						Shoutbox.backend.parse(message.fromuid, username, message.content, function(err, parsed) {
+					User.getMultipleUserFields([message.fromuid], ['username', 'picture'], function(err, userData) {
+						userData = userData[0];
+						userData.uid = message.fromuid;
+						Shoutbox.backend.parse(message.content, userData, false, function(err, parsed) {
 							message.content = parsed;
 							message.sid = sid;
 							messages.push(message);
@@ -302,18 +307,34 @@ Shoutbox.backend = {
 			});
 		});
 	},
-	"parse": function (uid, username, message, callback) {
+	//"parse": function (uid, username, message, callback) {
+	"parse": function(message, userData, isNew, callback) {
 		Plugins.fireHook('filter:post.parse', message, function(err, parsed) {
-			User.isAdministrator(uid, function(err, isAdmin) {
+			User.isAdministrator(userData.uid, function(err, isAdmin) {
+				var username,
+					picture;
+
 				if (isAdmin) {
-					username = "<span class='shoutbox-user-admin'>" + username + "</span>: ";
-					//putTogether(username, message);
+					username = '<span class="shoutbox-user-admin">' + userData.username + '</span>: ';
 				} else {
-					username = "<span class='shoutbox-user'>" + username + "</span>: ";
+					username = '<span class="shoutbox-user">' + userData.username + '</span>: ';
 				}
-				//var result = parsed.replace("<p>", "<p>" + username + ": ");
-				var result = username + parsed;
-				callback(null, result);
+				picture = '<img class="shoutbox-user-image" src="' + userData.picture + '">';
+
+				var shoutData = {
+					message: message,
+					parsed: parsed,
+					fromuid: userData.uid,
+					myuid: userData.uid,
+					toUserData: userData,
+					myUserData: userData,
+					isNew: isNew,
+					parsedMessage: picture + username + parsed
+				};
+
+				Plugins.fireHook('filter:messaging.parse', shoutData, function(err, messageData) {
+					callback(null, messageData.parsedMessage);
+				});
 			});
 		});
 	},
@@ -347,8 +368,15 @@ Shoutbox.backend = {
 						if (err) {
 							return callback("Unknown error", false);
 						}
-						Shoutbox.backend.parse(uid, username, msg, function(err, result) {
-							return callback(null, result);
+//						Shoutbox.backend.parse(uid, username, msg, function(err, result) {
+//							return callback(null, result);
+//						});
+						User.getMultipleUserFields([fromuid], ['username', 'picture'], function(err, userData) {
+							userData = userData[0];
+							userData.uid = fromuid;
+							Shoutbox.backend.parse(msg, userData, false, function(err, result) {
+								return callback(null, result);
+							});
 						});
 					});
 				} else {

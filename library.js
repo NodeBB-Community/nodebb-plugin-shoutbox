@@ -30,7 +30,7 @@ var constants = Object.freeze({
 
 var Shoutbox = {};
 Shoutbox.config = {
-	'get': function(key) {
+	"get": function(key) {
 		if (constants.config_keys.indexOf(key) !== -1) {
 			return Meta.config['shoutbox:' + key] || constants.config_defaults[key];
 		}
@@ -42,7 +42,7 @@ Shoutbox.init = {
 		ModulesSockets.shoutbox = Shoutbox.sockets;
 	},
 	"global": {
-		addNavigation: function(custom_header, callback) {
+		"addNavigation": function(custom_header, callback) {
 			if (Shoutbox.config.get('headerlink') === '1') {
 				custom_header.navigation.push({
 					"class": "",
@@ -53,7 +53,7 @@ Shoutbox.init = {
 			}
 			return custom_header;
 		},
-		addRoute: function(custom_routes, callback) {
+		"addRoute": function(custom_routes, callback) {
 			function getBaseTemplate(next) {
 				fs.readFile(path.resolve(__dirname, '../../public/templates/home.tpl'), function (err, template) {
 					next(err, template);
@@ -104,14 +104,14 @@ Shoutbox.init = {
 
 
 		},
-		addScripts: function(scripts, callback) {
+		"addScripts": function(scripts, callback) {
 			return scripts.concat([
 				'plugins/nodebb-plugin-shoutbox/js/main.js'
 			]);
 		}
 	},
 	"admin": {
-		addNavigation: function(custom_header, callback) {
+		"addNavigation": function(custom_header, callback) {
 			custom_header.plugins.push({
 				"route": constants.admin.route,
 				"icon": constants.admin.icon,
@@ -120,7 +120,7 @@ Shoutbox.init = {
 
 			return custom_header;
 		},
-		addRoute: function(custom_routes, callback) {
+		"addRoute": function(custom_routes, callback) {
 			fs.readFile(path.join(__dirname, './partials/admin.tpl'), function(err, tpl) {
 				custom_routes.routes.push({
 					route: constants.admin.route,

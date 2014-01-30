@@ -9,7 +9,7 @@
             <option value="bottom">Bottom of the page</option>
             <option value="none">Disabled</option>
         </select>
-        <p class="help-block">Note: This settings requires a restart of NodeBB.</p>
+        <p class="help-block">Note: This setting requires a restart of NodeBB.</p>
     </div>
 
     <div class="form-group">

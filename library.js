@@ -79,43 +79,40 @@ Shoutbox.init = {
 					template = template;
 				}
 
-
 				custom_routes.templates.push({
 					"template": "home.tpl",
 					"content": template
 				});
 
-				fs.readFile(path.resolve(__dirname, './partials/shoutbox.tpl'), function (err, tpl) {
-					custom_routes.routes.push({
-						route: constants.global.route,
-						method: "get",
-						options: function(req, res, callback) {
-							callback({
-								req: req,
-								res: res,
-								content: '<script> \
-									ajaxify.initialLoad = true; \
-									templates.ready(function(){ajaxify.go("shoutbox", null, true);}); \
-								</script>'
-							});
-						}
-					});
-
-					custom_routes.api.push({
-						route: constants.global.route,
-						method: "get",
-						callback: function(req, res, callback) {
-							callback({});
-						}
-					});
-
-					custom_routes.templates.push({
-						"template": "shoutbox.tpl",
-						"content": tpl
-					});
-
-					callback(null, custom_routes);
+				custom_routes.routes.push({
+					route: constants.global.route,
+					method: "get",
+					options: function(req, res, callback) {
+						callback({
+							req: req,
+							res: res,
+							content: '<script> \
+								ajaxify.initialLoad = true; \
+								templates.ready(function(){ajaxify.go("shoutbox", null, true);}); \
+							</script>'
+						});
+					}
 				});
+
+				custom_routes.api.push({
+					route: constants.global.route,
+					method: "get",
+					callback: function(req, res, callback) {
+						callback({});
+					}
+				});
+
+				custom_routes.templates.push({
+					"template": "shoutbox.tpl",
+					"content": partial
+				});
+
+				callback(null, custom_routes);
 			});
 
 

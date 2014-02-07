@@ -4,7 +4,7 @@ $(document).ready(function() {
 			requirejs([
 				'plugins/nodebb-plugin-shoutbox/js/shoutbox.js'
 			], function(shoutBox) {
-				shoutBox.base.init();
+				shoutBox.base.init(data.url);
 				if (data.url === "shoutbox") {
 					shoutBox.base.showUserPanel();
 				}

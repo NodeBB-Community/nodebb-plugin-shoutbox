@@ -25,21 +25,31 @@ define(['string'], function(S) {
 	};
 
 	module.base = {
-		"init": function(callback) {
-			box.utils.checkAnon(function(isAnon) {
+		"init": function(url, callback) {
+			function load(callback) {
 				var shoutBox = module.base.getShoutPanel();
 				if (shoutBox.length > 0) {
-					if (isAnon) {
-						box.utils.hideShoutbox(shoutBox);
-					} else {
-						box.utils.getConfig();
-						box.utils.registerHandlers(shoutBox);
-						box.base.getShouts(shoutBox);
-					}
+					box.utils.registerHandlers(shoutBox);
+					box.base.getShouts(shoutBox);
 				}
 				box.vars.loaded = true;
+
 				if (callback) {
 					callback();
+				}
+			}
+
+			box.utils.checkAnon(function(isAnon) {
+				if(!isAnon) {
+					if (url === "") {
+						box.utils.createShoutbox(function(success) {
+							if (success) {
+								load(callback);
+							}
+						});
+					} else {
+						load(callback);
+					}
 				}
 			});
 		},
@@ -91,7 +101,7 @@ define(['string'], function(S) {
 			var date = new Date(parseInt(shout.timestamp, 10));
 			var prefix = '<span class="shoutbox-timestamp">' + date.toLocaleTimeString() + '</span> ';
 			var options = '';
-			if (shout.fromuid === app.uid || box.vars.config.isAdmin === true) {
+			if (shout.fromuid === app.uid || app.isAdmin === true) {
 				options += '<a href="#" class="shoutbox-shout-option shoutbox-shout-option-close pull-right fa fa-times"></a>';
 				options += '<a href="#" class="shoutbox-shout-option shoutbox-shout-option-edit pull-right fa fa-pencil"></a>';
 			}
@@ -119,6 +129,23 @@ define(['string'], function(S) {
 	};
 
 	box.utils = {
+		"createShoutbox": function(callback) {
+			box.utils.getConfig(function() {
+				socket.emit('modules.shoutbox.getPartial', function(err, partial) {
+					var loc = box.vars.config.pagePosition;
+					if (loc !== 'none' && !err) {
+						if (loc === 'top') {
+							$(partial).insertBefore('.home');
+						} else if (loc === 'bottom') {
+							$(partial).insertBefore('.footer-stats');
+						}
+						callback(true);
+					} else {
+						callback(false);
+					}
+				});
+			});
+		},
 		"checkAnon": function(callback) {
 			if (app.uid === null) {
 				return callback(true);
@@ -131,9 +158,12 @@ define(['string'], function(S) {
 		"showEmptyMessage": function(shoutBox) {
 			shoutBox.find('#shoutbox-content').html(box.vars.emptyMessage);
 		},
-		"getConfig": function() {
+		"getConfig": function(callback) {
 			socket.emit('modules.shoutbox.getConfig', function(err, config) {
 				box.vars.config = config;
+				if(callback) {
+					callback();
+				}
 			});
 		},
 		"startUserPoll": function() {

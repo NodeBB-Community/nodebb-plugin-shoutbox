@@ -54,36 +54,7 @@ Shoutbox.init = {
 			return custom_header;
 		},
 		"addRoute": function(custom_routes, callback) {
-			function getBaseTemplate(next) {
-				fs.readFile(path.resolve(__dirname, '../../public/templates/home.tpl'), function (err, template) {
-					next(err, template);
-				});
-			}
-
-			function getPartial(next) {
-				fs.readFile(path.resolve(__dirname, './partials/shoutbox.tpl'), function (err, template) {
-					next(err, template);
-				});
-			}
-
-			async.parallel([getBaseTemplate, getPartial], function(err, results) {
-				var template = results[0],
-					partial = results[1];
-
-				// todo: this line should become a templates.js method, ie. templates.replaceBLock(blockname, partial);
-				if (Shoutbox.config.get('pageposition') === "top") {
-					template = template.toString().replace(/<div class="row home"/g, partial + "$&");
-				} else if (Shoutbox.config.get('pageposition') === "bottom") {
-					template = template.toString().replace(/<div class="row footer-stats"/g, partial + "$&");
-				} else {
-					template = template;
-				}
-
-				custom_routes.templates.push({
-					"template": "home.tpl",
-					"content": template
-				});
-
+			fs.readFile(path.resolve(__dirname, './partials/shoutbox.tpl'), function (err, partial) {
 				custom_routes.routes.push({
 					route: constants.global.route,
 					method: "get",
@@ -92,9 +63,9 @@ Shoutbox.init = {
 							req: req,
 							res: res,
 							content: '<script> \
-								ajaxify.initialLoad = true; \
-								templates.ready(function(){ajaxify.go("shoutbox", null, true);}); \
-							</script>'
+							ajaxify.initialLoad = true; \
+							templates.ready(function(){ajaxify.go("shoutbox", null, true);}); \
+						</script>'
 						});
 					}
 				});
@@ -109,12 +80,11 @@ Shoutbox.init = {
 
 				custom_routes.templates.push({
 					"template": "shoutbox.tpl",
-					"content": tpl
+					"content": partial
 				});
 
 				callback(null, custom_routes);
 			});
-
 
 		},
 		"addScripts": function(scripts, callback) {
@@ -248,11 +218,14 @@ Shoutbox.sockets = {
 		});
 	},
 	"getConfig": function(socket, data, callback) {
-		User.isAdministrator(socket.uid, function(err, isAdmin) {
-			callback(null, {
-				'maxShouts': parseInt(Shoutbox.config.get('shoutlimit'), 10),
-				'isAdmin': isAdmin
-			});
+		callback(null, {
+			'maxShouts': parseInt(Shoutbox.config.get('shoutlimit'), 10),
+			'pagePosition': Shoutbox.config.get('pageposition')
+		});
+	},
+	"getPartial": function(socket, data, callback) {
+		fs.readFile(path.resolve(__dirname, './partials/shoutbox.tpl'), function (err, partial) {
+			callback(err, partial.toString());
 		});
 	}
 }

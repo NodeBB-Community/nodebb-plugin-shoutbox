@@ -143,8 +143,8 @@ define(['string'], function(S) {
 				}, 10000);
 			}
 		},
-		"hideInputs": function() {
-			$('#shoutbox').find('.btn-group, .input-group').hide();
+		"hideInputs": function(shoutBox) {
+			shoutBox.find('.btn-group, .input-group').hide();
 		},
 		"hideShoutbox": function(shoutBox) {
 			shoutBox.addClass('hidden');

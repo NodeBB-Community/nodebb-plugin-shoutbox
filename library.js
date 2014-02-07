@@ -109,7 +109,7 @@ Shoutbox.init = {
 
 				custom_routes.templates.push({
 					"template": "shoutbox.tpl",
-					"content": partial
+					"content": tpl
 				});
 
 				callback(null, custom_routes);

@@ -290,7 +290,7 @@ Shoutbox.backend = {
 					if (message.deleted === '1') {
 						return next(null);
 					}
-					User.getMultipleUserFields([message.fromuid], ['username', 'picture'], function(err, userData) {
+					User.getMultipleUserFields([message.fromuid], ['username', 'picture', 'userslug'], function(err, userData) {
 						userData = userData[0];
 						userData.uid = message.fromuid;
 						Shoutbox.backend.parse(message.content, userData, false, function(err, parsed) {
@@ -316,13 +316,15 @@ Shoutbox.backend = {
 		Plugins.fireHook('filter:post.parse', message, function(err, parsed) {
 			User.isAdministrator(userData.uid, function(err, isAdmin) {
 				var username,
-					picture;
+					picture,
+					userclass = "shoutbox-user";
 
 				if (isAdmin) {
-					username = '<span class="shoutbox-user-admin">' + userData.username + '</span>: ';
-				} else {
-					username = '<span class="shoutbox-user">' + userData.username + '</span>: ';
+					userclass += " shoutbox-user-admin";
 				}
+
+				username = '<a href="/user/' + userData.userslug + '" ' +
+					'class="' + userclass + '">' + userData.username + '</a>: ';
 				picture = '<img class="shoutbox-user-image" src="' + userData.picture + '">';
 
 				var shoutData = {

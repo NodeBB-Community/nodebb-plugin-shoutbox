@@ -12,12 +12,13 @@
     margin: 0;
 }
 
-.shoutbox-user-admin {
+.shoutbox-user.shoutbox-user-admin {
     color: red;
 }
 
-.shoutbox-user, .shoutbox-user-admin {
+.shoutbox-user {
     font-weight: bold;
+    color: inherit;
 }
 
 .shoutbox-user-image {

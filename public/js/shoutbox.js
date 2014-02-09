@@ -14,7 +14,10 @@ define(['string'], function(S) {
 			"send": "modules.shoutbox.send",
 			"remove" : "modules.shoutbox.remove",
 			"edit": "modules.shoutbox.edit",
-			"get_users": "modules.shoutbox.get_users",
+			"get_users": "modules.shoutbox.getUsers",
+			"get_orig_shout": "modules.shoutbox.getOriginalShout",
+			"get_partial": "modules.shoutbox.getPartial",
+			"get_config": "modules.shoutbox.getConfig",
 			"onreceive": "event:shoutbox.receive",
 			"ondelete": "event:shoutbox.delete",
 			"onedit": "event:shoutbox.edit"
@@ -131,7 +134,7 @@ define(['string'], function(S) {
 	box.utils = {
 		"createShoutbox": function(callback) {
 			box.utils.getConfig(function() {
-				socket.emit('modules.shoutbox.getPartial', function(err, partial) {
+				socket.emit(box.vars.sockets.get_partial, function(err, partial) {
 					var loc = box.vars.config.pagePosition;
 					if (loc !== 'none' && !err) {
 						if (loc === 'top') {
@@ -159,7 +162,7 @@ define(['string'], function(S) {
 			shoutBox.find('#shoutbox-content').html(box.vars.emptyMessage);
 		},
 		"getConfig": function(callback) {
-			socket.emit('modules.shoutbox.getConfig', function(err, config) {
+			socket.emit(box.vars.sockets.get_config, function(err, config) {
 				box.vars.config = config;
 				if(callback) {
 					callback();
@@ -248,18 +251,21 @@ define(['string'], function(S) {
 					sid = shout.id.match(/\d+/)[0],
 					user = $(shout).find('span[class^="shoutbox-user"]').text(),
 					cur = $(shout).find('.shoutbox-shout-content').html().split(': ')[1];
-				bootbox.prompt("Enter edited message", function(result) {
-					if (result === cur || result === null) {
-						return;
-					}
-					socket.emit(box.vars.sockets.edit, {"sid": sid, "user": user, "edited": result}, function (err, result) {
-						if (result === true) {
-							app.alertSuccess("Successfully edited shout!");
-						} else if (err) {
-							app.alertError("Error editing shout: " + err, 3000);
+				socket.emit(box.vars.sockets.get_orig_shout, {"sid": sid}, function(err, orig) {
+					bootbox.prompt("Enter edited message", function(result) {
+						if (result === cur || result === null) {
+							return;
 						}
-					});
-				}).find('.bootbox-input').val(cur);
+						socket.emit(box.vars.sockets.edit, {"sid": sid, "user": user, "edited": result}, function (err, result) {
+							if (result === true) {
+								app.alertSuccess("Successfully edited shout!");
+							} else if (err) {
+								app.alertError("Error editing shout: " + err, 3000);
+							}
+						});
+					}).find('.bootbox-input').val(orig);
+				});
+
 			}
 		},
 		"gist": {

@@ -208,7 +208,7 @@ Shoutbox.sockets = {
 		}
 		return callback(null, false);
 	},
-	"get_users": function(socket, data, callback){
+	"getUsers": function(socket, data, callback){
 		var users = Object.keys(SocketIndex.getConnectedClients());
 		User.getMultipleUserFields(users, ['username'], function(err, usersData) {
 			if(err) {
@@ -227,6 +227,16 @@ Shoutbox.sockets = {
 		fs.readFile(path.resolve(__dirname, './partials/shoutbox.tpl'), function (err, partial) {
 			callback(err, partial.toString());
 		});
+	},
+	"getOriginalShout": function(socket, data, callback) {
+		if (data.sid && data.sid.length > 0) {
+			Shoutbox.backend.getShout(data.sid, function(err, shout) {
+				if (err) {
+					return callback(err);
+				}
+				return callback(null, shout.content);
+			});
+		}
 	}
 }
 
@@ -250,6 +260,14 @@ Shoutbox.backend = {
 			Shoutbox.backend.updateShoutTime(fromuid);
 			shout.sid = sid;
 			callback(null, shout);
+		});
+	},
+	"getShout": function(sid, callback) {
+		db.getObject('shout:' + sid, function(err, shout) {
+			if (err) {
+				return callback(err);
+			}
+			return callback(null, shout);
 		});
 	},
 	"getShouts": function(start, end, callback) {

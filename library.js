@@ -13,18 +13,24 @@ var	async = require('async'),
 
 var constants = Object.freeze({
 	'name': "Shoutbox",
+	'icon': 'fa-bullhorn',
+	'setting_prefix': 'shoutbox:',
 	'global': {
 		'route': '/shoutbox'
 	},
 	'admin': {
-		'route': '/plugins/shoutbox',
-		'icon': 'fa-bullhorn'
+		'route': '/plugins/shoutbox'
 	},
 	'config_keys': ['headerlink','pageposition','shoutlimit'],
 	'config_defaults': {
 		'headerlink': '0',
 		'pageposition': 'top',
 		'shoutlimit': 25
+	},
+	'setting_keys': ['sound', 'notification'],
+	'setting_defaults': {
+		'sound': true,
+		'notification': true
 	}
 });
 
@@ -32,7 +38,7 @@ var Shoutbox = {};
 Shoutbox.config = {
 	"get": function(key) {
 		if (constants.config_keys.indexOf(key) !== -1) {
-			return Meta.config['shoutbox:' + key] || constants.config_defaults[key];
+			return Meta.config[constants.setting_prefix + key] || constants.config_defaults[key];
 		}
 	}
 };
@@ -46,7 +52,7 @@ Shoutbox.init = {
 			if (Shoutbox.config.get('headerlink') === '1') {
 				custom_header.navigation.push({
 					"class": "",
-					"iconClass": "fa fa-fw fa-bullhorn",
+					"iconClass": "fa fa-fw " + constants.icon,
 					"route": constants.global.route,
 					"text": constants.name
 				});
@@ -97,7 +103,7 @@ Shoutbox.init = {
 		"addNavigation": function(custom_header, callback) {
 			custom_header.plugins.push({
 				"route": constants.admin.route,
-				"icon": constants.admin.icon,
+				"icon": constants.icon,
 				"name": constants.name
 			});
 
@@ -148,7 +154,7 @@ Shoutbox.sockets = {
 		}
 
 		var msg = S(data.message).stripTags().s;
-		User.getMultipleUserFields([socket.uid], ['username', 'picture'], function(err, userData) {
+		User.getMultipleUserFields([socket.uid], ['username', 'picture', 'userslug'], function(err, userData) {
 			if(err) {
 				return;
 			}
@@ -196,6 +202,17 @@ Shoutbox.sockets = {
 			});
 		}
 	},
+	"saveSetting": function(socket, data, callback) {
+		if (!data.key || !socket.uid) {
+			return callback(null, false);
+		}
+		var key = constants.setting_prefix + data.key;
+		User.setUserField(socket.uid, key, data.value, function(err, result) {
+			console.log(key + ':' + data.value);
+			console.log(err);
+			console.log(result);
+		});
+	},
 	"removeAll": function(socket, data, callback) {
 		if (data !== null && data !== undefined) {
 			if (typeof(data.which) === "string") {
@@ -218,9 +235,14 @@ Shoutbox.sockets = {
 		});
 	},
 	"getConfig": function(socket, data, callback) {
-		callback(null, {
-			'maxShouts': parseInt(Shoutbox.config.get('shoutlimit'), 10),
-			'pagePosition': Shoutbox.config.get('pageposition')
+		User.getUserFields(socket.uid, constants.setting_keys.map(function(e) {
+			return constants.setting_prefix + e;
+		}), function(err, result) {
+			callback(null, {
+				'maxShouts': parseInt(Shoutbox.config.get('shoutlimit'), 10),
+				'pagePosition': Shoutbox.config.get('pageposition'),
+				'settings': result
+			});
 		});
 	},
 	"getPartial": function(socket, data, callback) {
@@ -311,7 +333,6 @@ Shoutbox.backend = {
 			});
 		});
 	},
-	//"parse": function (uid, username, message, callback) {
 	"parse": function(message, userData, isNew, callback) {
 		Plugins.fireHook('filter:post.parse', message, function(err, parsed) {
 			User.isAdministrator(userData.uid, function(err, isAdmin) {
@@ -374,10 +395,7 @@ Shoutbox.backend = {
 						if (err) {
 							return callback("Unknown error", false);
 						}
-//						Shoutbox.backend.parse(uid, username, msg, function(err, result) {
-//							return callback(null, result);
-//						});
-						User.getMultipleUserFields([fromuid], ['username', 'picture'], function(err, userData) {
+						User.getMultipleUserFields([fromuid], ['username', 'picture', 'userslug'], function(err, userData) {
 							userData = userData[0];
 							userData.uid = fromuid;
 							Shoutbox.backend.parse(msg, userData, false, function(err, result) {

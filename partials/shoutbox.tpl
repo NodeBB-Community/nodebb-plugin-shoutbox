@@ -1,4 +1,5 @@
 <div class="row shoutbox-row">
+    <audio id="shoutbox-sounds-notification" src="/plugins/nodebb-plugin-shoutbox/notif.mp3" preload="auto"></audio>
     <div class="col-md-12">
         <div class="panel panel-default" id="shoutbox">
             <div class="panel-heading">
@@ -19,6 +20,23 @@
                     <button id="shoutbox-button-archive" type="button" class="btn btn-primary btn-sm">
                         <span class="fa fa-archive"></span> View archive
                     </button>
+                </div>
+                <div class="btn-group pull-right">
+                    <button id="shoutbox-button-settings" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-wrench"></span>
+                    </button>
+                    <ul id="shoutbox-settings-menu" class="dropdown-menu" role="menu">
+                        <li>
+                            <a id="shoutbox-settings-sound" href="#">
+                                <span class="fa fa-check"></span> Sound
+                            </a>
+                        </li>
+                        <li>
+                            <a id="shoutbox-settings-notification" href="#">
+                                <span class="fa fa-times"></span> Notification
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

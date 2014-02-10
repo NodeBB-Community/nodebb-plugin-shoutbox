@@ -14,6 +14,7 @@ define(['string'], function(S) {
 			"send": "modules.shoutbox.send",
 			"remove" : "modules.shoutbox.remove",
 			"edit": "modules.shoutbox.edit",
+			"save_settings": "modules.shoutbox.saveSetting",
 			"get_users": "modules.shoutbox.getUsers",
 			"get_orig_shout": "modules.shoutbox.getOriginalShout",
 			"get_partial": "modules.shoutbox.getPartial",
@@ -24,7 +25,8 @@ define(['string'], function(S) {
 		},
 		"titleAlert": "[ %u ] - new shout!",
 		"anonMessage": "You must be logged in to view the shoutbox!",
-		"emptyMessage": "The shoutbox is empty, start shouting!"
+		"emptyMessage": "The shoutbox is empty, start shouting!",
+		"settings-prefix": "shoutbox-settings-"
 	};
 
 	module.base = {
@@ -32,6 +34,7 @@ define(['string'], function(S) {
 			function load(callback) {
 				var shoutBox = module.base.getShoutPanel();
 				if (shoutBox.length > 0) {
+					box.utils.parseSettings(shoutBox);
 					box.utils.registerHandlers(shoutBox);
 					box.base.getShouts(shoutBox);
 				}
@@ -56,21 +59,17 @@ define(['string'], function(S) {
 				}
 			});
 		},
-
 		"showUserPanel": function() {
 			module.base.getUsersPanel().parent().removeClass('hidden');
 			box.utils.startUserPoll();
 			box.base.updateUsers();
 		},
-
 		"hasLoaded": function() {
 			return box.vars.loaded;
 		},
-
 		"getShoutPanel": function() {
 			return $('#shoutbox');
 		},
-
 		"getUsersPanel": function() {
 			return $('#shoutbox-users');
 		}
@@ -169,6 +168,30 @@ define(['string'], function(S) {
 				}
 			});
 		},
+		"parseSettings": function(shoutBox) {
+			var settings = box.vars.config.settings;
+			var s = {};
+			if (!settings) {
+				return;
+			}
+			for(var key in settings) {
+				if (settings.hasOwnProperty(key)) {
+					var value = settings[key];
+					var k = key.split(':')[1];
+					s[k] = value;
+					var el = shoutBox.find('#shoutbox-settings-' + k + ' span');
+					if (value) {
+						el.removeClass('fa-times').addClass('fa-check');
+					} else {
+						el.removeClass('fa-check').addClass('fa-times');
+					}
+				}
+			}
+			box.vars.config.settings = s;
+		},
+		"getSetting": function(key) {
+			return box.vars.config.settings[key];
+		},
 		"startUserPoll": function() {
 			if(box.vars.userCheckIntervalId === 0) {
 				box.vars.userCheckIntervalId = setInterval(function() {
@@ -240,6 +263,7 @@ define(['string'], function(S) {
 						app.alertError("Error deleting shout: " + err, 3000);
 					}
 				});
+				return false;
 			}
 		},
 		"edit": {
@@ -265,7 +289,7 @@ define(['string'], function(S) {
 						});
 					}).find('.bootbox-input').val(orig);
 				});
-
+				return false;
 			}
 		},
 		"gist": {
@@ -389,6 +413,29 @@ define(['string'], function(S) {
 					box.base.scrollToBottom(archiveContent);
 				}
 			}
+		},
+		"settings": {
+			"register": function(shoutBox) {
+				shoutBox.off('click', '#shoutbox-settings-menu a').on('click', '#shoutbox-settings-menu a', this.handle);
+			},
+			"handle": function(e) {
+				var el = $(e.currentTarget),
+					statusEl = el.find('span'),
+					key = el.attr('id').split(box.vars['settings-prefix'])[1],
+					status = statusEl.hasClass('fa-check');
+				if (status) {
+					statusEl.removeClass('fa-check').addClass('fa-times');
+				} else {
+					statusEl.removeClass('fa-times').addClass('fa-check');
+				}
+				box.vars.config.settings[key] = !status;
+				socket.emit(box.vars.sockets.save_settings, {"key": key, "value": !status}, function(err, result) {
+					if (err || result === false) {
+						app.alertError("Error saving settings!!");
+					}
+				});
+				return false;
+			}
 		}
 	};
 
@@ -402,7 +449,12 @@ define(['string'], function(S) {
 			"handle": function(data) {
 				if (module.base.hasLoaded) {
 					module.box.addShout(module.base.getShoutPanel(), data);
-					app.alternatingTitle(box.vars.titleAlert.replace(/%u/g, data.username));
+					if (box.utils.getSetting('notification')) {
+						app.alternatingTitle(box.vars.titleAlert.replace(/%u/g, data.username));
+					}
+					if (box.utils.getSetting('sound')) {
+						$('#shoutbox-sounds-notification')[0].play();
+					}
 				}
 			}
 		},

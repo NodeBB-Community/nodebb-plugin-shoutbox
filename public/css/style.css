@@ -35,5 +35,11 @@
 
 .shoutbox-shout-option {
     font-size: inherit;
+    color: inherit;
+    opacity: 0.4;
     padding-left: 2px!important;
+}
+
+#shoutbox-settings-menu span {
+    width: 15px;
 }

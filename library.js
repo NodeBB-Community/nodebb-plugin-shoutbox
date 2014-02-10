@@ -207,11 +207,7 @@ Shoutbox.sockets = {
 			return callback(null, false);
 		}
 		var key = constants.setting_prefix + data.key;
-		User.setUserField(socket.uid, key, data.value, function(err, result) {
-			console.log(key + ':' + data.value);
-			console.log(err);
-			console.log(result);
-		});
+		User.setUserField(socket.uid, key, data.value, callback);
 	},
 	"removeAll": function(socket, data, callback) {
 		if (data !== null && data !== undefined) {

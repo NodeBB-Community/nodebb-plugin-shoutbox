@@ -298,8 +298,6 @@ Shoutbox.backend = {
 				return callback(null, []);
 			}
 
-			var messages = [];
-
 			function getShout(sid, next) {
 				db.getObject('shout:' + sid, function(err, message) {
 					if (err) {
@@ -314,19 +312,13 @@ Shoutbox.backend = {
 						Shoutbox.backend.parse(message.content, userData, false, function(err, parsed) {
 							message.content = parsed;
 							message.sid = sid;
-							messages.push(message);
-							next(null);
+							next(null, message);
 						});
 					});
 				});
 			}
 
-			async.eachSeries(sids, getShout, function(err) {
-				if (err) {
-					return callback(err, null);
-				}
-				callback(null, messages);
-			});
+			async.map(sids, getShout, callback);
 		});
 	},
 	"parse": function(message, userData, isNew, callback) {
@@ -412,7 +404,6 @@ Shoutbox.backend = {
 					if (err || !sids || !sids.length) {
 						return callback(err, false);
 					}
-					var removedSids = [];
 
 					function deleteShout(sid, next) {
 						db.getObjectField('shout:' + sid, 'deleted', function(err, isDeleted) {
@@ -425,7 +416,7 @@ Shoutbox.backend = {
 						});
 					}
 
-					async.eachSeries(sids, deleteShout, function(err) {
+					async.map(sids, deleteShout, function(err) {
 						if (err) {
 							return callback(err, false);
 						}

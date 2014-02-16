@@ -141,12 +141,16 @@ Shoutbox.sockets = {
 			start = -(parseInt(Shoutbox.config.get('shoutlimit'), 10) - 1);
 			end = -1;
 		}
-		Shoutbox.backend.getShouts(start, end, function(err, messages) {
-			if (err)
-				return callback(null, []);
+		if (socket.uid) {
+			Shoutbox.backend.getShouts(start, end, function(err, messages) {
+				if (err)
+					return callback(null, []);
 
-			callback(null, messages);
-		});
+				callback(null, messages);
+			});
+		} else {
+			callback(null, []);
+		}
 	},
 	"send": function(socket, data, callback) {
 		if (socket.uid === 0) {
@@ -239,11 +243,6 @@ Shoutbox.sockets = {
 				'pagePosition': Shoutbox.config.get('pageposition'),
 				'settings': result
 			});
-		});
-	},
-	"getPartial": function(socket, data, callback) {
-		fs.readFile(path.resolve(__dirname, './partials/shoutbox.tpl'), function (err, partial) {
-			callback(err, partial.toString());
 		});
 	},
 	"getOriginalShout": function(socket, data, callback) {

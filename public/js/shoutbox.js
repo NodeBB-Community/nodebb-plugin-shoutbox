@@ -133,9 +133,10 @@ define(['string'], function(S) {
 	box.utils = {
 		"createShoutbox": function(callback) {
 			box.utils.getConfig(function() {
-				socket.emit(box.vars.sockets.get_partial, function(err, partial) {
+				templates.preload_template('shoutbox', function() {
+					var partial = templates['shoutbox'].parse({});
 					var loc = box.vars.config.pagePosition;
-					if (loc !== 'none' && !err) {
+					if (loc !== 'none') {
 						if (loc === 'top') {
 							$(partial).insertBefore('.home');
 						} else if (loc === 'bottom') {

@@ -450,11 +450,13 @@ define(['string'], function(S) {
 			"handle": function(data) {
 				if (module.base.hasLoaded) {
 					module.box.addShout(module.base.getShoutPanel(), data);
-					if (box.utils.getSetting('notification')) {
-						app.alternatingTitle(box.vars.titleAlert.replace(/%u/g, data.username));
-					}
-					if (box.utils.getSetting('sound')) {
-						$('#shoutbox-sounds-notification')[0].play();
+					if (data.fromuid !== app.uid) {
+						if (box.utils.getSetting('notification')) {
+							app.alternatingTitle(box.vars.titleAlert.replace(/%u/g, data.username));
+						}
+						if (box.utils.getSetting('sound')) {
+							$('#shoutbox-sounds-notification')[0].play();
+						}
 					}
 				}
 			}

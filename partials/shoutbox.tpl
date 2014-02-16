@@ -33,7 +33,7 @@
                         </li>
                         <li>
                             <a id="shoutbox-settings-notification" href="#">
-                                <span class="fa fa-times"></span> Notification
+                                <span class="fa fa-check"></span> Notification
                             </a>
                         </li>
                     </ul>

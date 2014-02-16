@@ -69,9 +69,9 @@ Shoutbox.init = {
 							req: req,
 							res: res,
 							content: '<script> \
-							ajaxify.initialLoad = true; \
-							templates.ready(function(){ajaxify.go("shoutbox", null, true);}); \
-						</script>'
+								ajaxify.initialLoad = true; \
+								templates.ready(function(){ajaxify.go("shoutbox", null, true);}); \
+							</script>'
 						});
 					}
 				});
@@ -95,7 +95,7 @@ Shoutbox.init = {
 		},
 		"addScripts": function(scripts, callback) {
 			return scripts.concat([
-				'plugins/nodebb-plugin-shoutbox/js/main.js'
+				'plugins/shoutbox/js/main.js'
 			]);
 		}
 	},

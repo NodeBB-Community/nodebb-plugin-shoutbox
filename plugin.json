@@ -12,8 +12,10 @@
 		{ "hook": "filter:scripts.get", "method": "init.global.addScripts", "callbacked": false },
 		{ "hook": "action:app.load", "method": "init.load", "callbacked": false }
 	],
-	"staticDir": "./public",
+	"staticDirs": {
+		"shoutbox": "./public"
+	},
 	"css": [
-		"css/style.css"
+		"shoutbox/css/style.css"
 	]
 }

@@ -149,7 +149,7 @@ define(['string'], function(S) {
 			});
 		},
 		"checkAnon": function(callback) {
-			if (app.uid === null) {
+			if (app.uid === 0) {
 				return callback(true);
 			}
 			return callback(false);

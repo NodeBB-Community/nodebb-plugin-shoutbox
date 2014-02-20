@@ -77,13 +77,15 @@ define(['string'], function(S) {
 
 	module.box = {
 		"addShout": function(shoutBox, shout) {
-			var shoutContent = shoutBox.find('#shoutbox-content');
-			if (shoutContent.find('div[id^="shoutbox-shout"]').length === 0) {
-				shoutContent.html('');
+			if (shout && shout.sid) {
+				var shoutContent = shoutBox.find('#shoutbox-content');
+				if (shoutContent.find('div[id^="shoutbox-shout"]').length === 0) {
+					shoutContent.html('');
+				}
+				shoutContent.append(box.base.parseShout(shout));
+				box.base.scrollToBottom(shoutContent);
+				box.vars.lastSid = shout.sid;
 			}
-			shoutContent.append(box.base.parseShout(shout));
-			box.base.scrollToBottom(shoutContent);
-			box.vars.lastSid = shout.sid;
 		}
 	};
 

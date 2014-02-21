@@ -6,8 +6,7 @@ var	async = require('async'),
 	Meta = module.parent.require('./meta'),
 	Plugins = module.parent.parent.require('./plugins'),
 	db = module.parent.require('./database'),
-	winston = module.parent.require('winston'),
-	webserver = module.parent.require('./webserver'),
+	templates = module.parent.require('../public/src/templates'),
 	SocketIndex = module.parent.require('./socket.io/index'),
 	ModulesSockets = module.parent.require('./socket.io/modules');
 
@@ -89,6 +88,8 @@ Shoutbox.init = {
 					"content": partial
 				});
 
+				Shoutbox.widget.template = partial.toString();
+
 				callback(null, custom_routes);
 			});
 
@@ -127,16 +128,24 @@ Shoutbox.init = {
 
 				callback(null, custom_routes);
 			});
-		},
-		"addWidget": function(widgets, callback) {
-			widgets.push({
-				widget: "shoutbox",
-				name: "Shoutbox",
-				description: "Shoutbox widget.",
-				content: "<label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Shoutbox\" />"
-			});
-			callback(null, widgets);
 		}
+	}
+}
+
+Shoutbox.widget = {
+	"template": '',
+	"define": function(widgets, callback) {
+		widgets.push({
+			widget: "shoutbox",
+			name: "Shoutbox",
+			description: "Shoutbox widget.",
+			content: "<label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Shoutbox\" />"
+		});
+		callback(null, widgets);
+	},
+	"render": function(widget, callback) {
+		var html = templates.prepare(Shoutbox.widget.template).parse({});
+		callback(null, html);
 	}
 }
 
@@ -470,9 +479,6 @@ Shoutbox.backend = {
 				callback(err);
 			}
 		});
-	},
-	"renderWidget": function(widget, callback) {
-
 	}
 }
 

@@ -11,6 +11,8 @@
 		{ "hook": "filter:header.build", "method": "init.global.addNavigation", "callbacked": false },
 		{ "hook": "filter:server.create_routes", "method": "init.global.addRoute", "callbacked": true },
 		{ "hook": "filter:scripts.get", "method": "init.global.addScripts", "callbacked": false },
+		{ "hook": "filter:widgets.getWidgets", "method": "init.admin.addWidget", "callbacked": true },
+		{ "hook": "filter:widgets.render:shoutbox", "method": "backend.renderWidget", "callbacked": true },
 		{ "hook": "action:app.load", "method": "init.load", "callbacked": false }
 	],
 	"staticDirs": {

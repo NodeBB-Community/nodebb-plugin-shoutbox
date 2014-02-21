@@ -127,6 +127,15 @@ Shoutbox.init = {
 
 				callback(null, custom_routes);
 			});
+		},
+		"addWidget": function(widgets, callback) {
+			widgets.push({
+				widget: "shoutbox",
+				name: "Shoutbox",
+				description: "Shoutbox widget.",
+				content: "<label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Shoutbox\" />"
+			});
+			callback(null, widgets);
 		}
 	}
 }
@@ -461,6 +470,9 @@ Shoutbox.backend = {
 				callback(err);
 			}
 		});
+	},
+	"renderWidget": function(widget, callback) {
+
 	}
 }
 

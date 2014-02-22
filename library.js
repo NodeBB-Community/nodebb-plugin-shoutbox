@@ -139,12 +139,19 @@ Shoutbox.widget = {
 			widget: "shoutbox",
 			name: "Shoutbox",
 			description: "Shoutbox widget.",
-			content: "<label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Shoutbox\" />"
+			content: ""
 		});
 		callback(null, widgets);
 	},
 	"render": function(widget, callback) {
-		var html = templates.prepare(Shoutbox.widget.template).parse({});
+		//We don't do anything fancy for now
+		//This is because we have to maintain compatible with /shoutbox
+		var html = '';
+		if (widget.uid !== 0) {
+			html = templates.prepare(Shoutbox.widget.template).parse({});
+		}
+		//Remove any container
+		widget.data.container = '';
 		callback(null, html);
 	}
 }

@@ -40,6 +40,10 @@ Shoutbox.config = {
 		if (constants.config_keys.indexOf(key) !== -1) {
 			return Meta.config[constants.setting_prefix + key] || constants.config_defaults[key];
 		}
+	},
+	"api": function(callback) {
+		//Seriously can't think of a better name atm
+		callback({});
 	}
 };
 
@@ -80,7 +84,7 @@ Shoutbox.init = {
 					route: constants.global.route,
 					method: "get",
 					callback: function(req, res, callback) {
-						callback({});
+						Shoutbox.config.api(callback);
 					}
 				});
 

@@ -280,7 +280,7 @@ define(['string'], function(S) {
 					cur = $(shout).find('.shoutbox-shout-content').html().split(': ')[1];
 				socket.emit(box.vars.sockets.get_orig_shout, {"sid": sid}, function(err, orig) {
 					bootbox.prompt("Enter edited message", function(result) {
-						if (result === cur || result === null) {
+						if (result === orig || result === null) {
 							return;
 						}
 						socket.emit(box.vars.sockets.edit, {"sid": sid, "user": user, "edited": result}, function (err, result) {

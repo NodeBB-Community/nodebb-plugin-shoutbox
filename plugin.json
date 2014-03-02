@@ -18,5 +18,6 @@
 	},
 	"less": [
 		"public/less/style.less"
-	]
+	],
+	"minver": "0.4.0"
 }

@@ -14,9 +14,9 @@
 		{ "hook": "action:app.load", "method": "init.load", "callbacked": false }
 	],
 	"staticDirs": {
-		"shoutbox": "./public"
+		"public": "./public"
 	},
-	"css": [
-		"shoutbox/css/style.css"
+	"less": [
+		"public/less/style.less"
 	]
 }

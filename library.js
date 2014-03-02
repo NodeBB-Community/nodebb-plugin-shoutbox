@@ -99,7 +99,7 @@ Shoutbox.init = {
 		},
 		"addScripts": function(scripts, callback) {
 			return scripts.concat([
-				'plugins/shoutbox/js/main.js'
+				'plugins/nodebb-plugin-shoutbox/public/js/main.js'
 			]);
 		}
 	},

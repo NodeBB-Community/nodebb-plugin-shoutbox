@@ -48,7 +48,7 @@ define(['string'], function(S) {
 			box.utils.checkAnon(function(isAnon) {
 				if(!isAnon) {
 					if (url === "") {
-						box.utils.createShoutbox(function(success) {
+						box.utils.prepareShoutbox(function(success) {
 							if (success) {
 								load(callback);
 							}
@@ -133,22 +133,9 @@ define(['string'], function(S) {
 	};
 
 	box.utils = {
-		"createShoutbox": function(callback) {
+		"prepareShoutbox": function(callback) {
 			box.utils.getConfig(function() {
-				templates.preload_template('shoutbox', function() {
-					var partial = templates['shoutbox'].parse({});
-					var loc = box.vars.config.pagePosition;
-					if (loc !== 'none') {
-						if (loc === 'top') {
-							$(partial).insertBefore('.home');
-						} else if (loc === 'bottom') {
-							$(partial).insertBefore('.footer-stats');
-						}
-						callback(true);
-					} else {
-						callback(false);
-					}
-				});
+				callback(true);
 			});
 		},
 		"checkAnon": function(callback) {

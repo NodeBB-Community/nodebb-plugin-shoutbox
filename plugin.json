@@ -2,8 +2,7 @@
 	"id": "nodebb-plugin-shoutbox",
 	"name": "Shoutbox",
 	"description": "NodeBB Plugin Shoutbox",
-	"minver": "0.3",
-	"url": "https://github.com/BitBangersCode/nodebb-plugin-shoutbox",
+	"url": "https://github.com/MrWaffle/nodebb-plugin-shoutbox",
 	"library": "./library.js",
 	"hooks": [
 		{ "hook": "filter:admin.header.build", "method": "init.admin.addNavigation", "callbacked": false },

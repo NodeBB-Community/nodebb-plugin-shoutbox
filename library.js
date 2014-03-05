@@ -97,11 +97,6 @@ Shoutbox.init = {
 				callback(null, custom_routes);
 			});
 
-		},
-		"addScripts": function(scripts, callback) {
-			return scripts.concat([
-				'plugins/nodebb-plugin-shoutbox/public/js/main.js'
-			]);
 		}
 	},
 	"admin": {

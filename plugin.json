@@ -9,7 +9,6 @@
 		{ "hook": "filter:admin.create_routes", "method": "init.admin.addRoute", "callbacked": true },
 		{ "hook": "filter:header.build", "method": "init.global.addNavigation", "callbacked": false },
 		{ "hook": "filter:server.create_routes", "method": "init.global.addRoute", "callbacked": true },
-		{ "hook": "filter:scripts.get", "method": "init.global.addScripts", "callbacked": false },
 		{ "hook": "filter:widgets.getWidgets", "method": "widget.define", "callbacked": true },
 		{ "hook": "filter:widget.render:shoutbox", "method": "widget.render", "callbacked": true },
 		{ "hook": "action:app.load", "method": "init.load", "callbacked": false }
@@ -19,6 +18,9 @@
 	},
 	"less": [
 		"public/less/style.less"
+	],
+	"scripts": [
+		"public/js/main.js"
 	],
 	"minver": "0.4.0"
 }

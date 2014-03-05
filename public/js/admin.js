@@ -4,7 +4,6 @@
 			bootbox.confirm('Are you sure you wish to remove all shouts marked as deleted from the database?', function(confirm) {
 				if (confirm) {
 					socket.emit('modules.shoutbox.removeAll', {'which':'deleted'}, function(err, result) {
-						console.log(err, result);
 						if(err) {
 							return app.alertError(err.message);
 						} else {
@@ -19,7 +18,6 @@
 			bootbox.confirm('Are you sure you wish to remove all shouts from the database?', function(confirm) {
 				if (confirm) {
 					socket.emit('modules.shoutbox.removeAll', {'which':'all'}, function(err, result) {
-						console.log(err, result);
 						if(err) {
 							return app.alertError(err.message);
 						} else {

@@ -43,3 +43,17 @@
 #shoutbox-settings-menu span {
     width: 15px;
 }
+
+.shoutbox-admin {
+  &-feature {
+    opacity: 1;
+    transition: opacity 0.3s;
+    &.disabled {
+      opacity: 0.5;
+    }
+
+    & .feature-icon {
+      opacity: 0.8;
+    }
+  }
+}

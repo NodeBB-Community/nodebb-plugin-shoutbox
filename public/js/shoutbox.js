@@ -287,7 +287,7 @@ define(['string'], function(S) {
 				var show = this.handle.show,
 					create = this.handle.create,
 					gistModal = $('#shoutbox-modal-gist');
-				shoutBox.find('#shoutbox-button-create-gist').off('click').on('click', function(e) {
+				shoutBox.find('#shoutbox-button-gist').off('click').on('click', function(e) {
 					show(gistModal);
 				});
 				gistModal.find('#shoutbox-button-create-gist-submit').off('click').on('click', function(e) {

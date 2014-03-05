@@ -14,12 +14,13 @@
                     </span>
                 </div>
                 <div class="btn-group">
-                    <button id="shoutbox-button-create-gist" type="button" class="btn btn-primary btn-sm">
-                        <span class="fa fa-github-alt"></span> Create Gist
+                    <!-- BEGIN features -->
+                    <!-- IF features.enabled -->
+                    <button id="shoutbox-button-{features.id}" type="button" class="btn btn-primary btn-sm">
+                        <span class="fa {features.icon}"></span> {features.button}
                     </button>
-                    <button id="shoutbox-button-archive" type="button" class="btn btn-primary btn-sm">
-                        <span class="fa fa-archive"></span> View archive
-                    </button>
+                    <!-- ENDIF features.enabled -->
+                    <!-- END features -->
                 </div>
                 <div class="btn-group pull-right">
                     <button id="shoutbox-button-settings" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">

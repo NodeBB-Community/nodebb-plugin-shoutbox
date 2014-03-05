@@ -1,19 +1,20 @@
 <div class="row">
-    <h1>Shoutbox</h1>
+    <div class="col-md-12"><h1>Shoutbox</h1></div>
 </div>
 
-<form class="form">
-    <div class="row">
+
+<div class="row">
+    <form class="form">
         <div class="col-xs-6 pull-left">
             <h3>Settings <small>change settings</small> <button id="save" class="btn btn-success btn-xs pull-right">Save</button></h3>
             <div class="form-group">
-                <label for="shoutlimit"><h4>Maximum number of shouts that can be returned</h4></label>
+                <label for="shoutlimit">Maximum number of shouts that can be returned</label>
                 <select class="form-control" id="shoutlimit" data-field="shoutbox:shoutlimit">
                     <option value="10">10</option>
                     <option value="25" selected>25</option>
                     <option value="50">50</option>
                 </select>
-                <p class="help-block">Shouts marked as deleted will be included in this number</p>
+                <p class="help-block"><small>Shouts marked as deleted will be included in this number</small></p>
             </div>
 
             <div class="form-group">
@@ -37,9 +38,9 @@
                             </span>&nbsp;
                         </div>
                         <div class="pull-right">
-                            <span class="feature-icon">
-                                <i class="fa {features.icon}"></i>
-                            </span>
+                            <span>
+                                <i class="fa fa-times-circle"></i>
+                            </span>&nbsp;
                         </div>
                     </div>
                 </div>
@@ -62,6 +63,7 @@
                 <img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1">
             </form>
         </div>
-    </div>
-</form>
+    </form>
+</div>
+
 <script src="/plugins/nodebb-plugin-shoutbox/public/js/admin.js"></script>

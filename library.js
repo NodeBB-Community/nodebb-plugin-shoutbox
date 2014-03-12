@@ -1,15 +1,34 @@
 var	fs = require('fs'),
 	path = require('path'),
-	Templates = module.parent.require('../public/src/templates'),
-	ModulesSockets = module.parent.require('./socket.io/modules'),
 
+	NodeBB = require('./lib/nodebb'),
 	Config = require('./lib/config'),
-	Sockets = require('./lib/sockets');
+	Sockets = require('./lib/sockets'),
+
+	ModulesSockets = NodeBB.ModulesSockets,
+
+	app;
 
 var Shoutbox = {};
 
 Shoutbox.init = {
-	"load": function() {
+	"load": function(expressApp, middleware, controllers) {
+		app = expressApp;
+		function renderGlobal(req, res, next) {
+			Config.api(function(data) {
+				res.render('shoutbox', data);
+			});
+		}
+		function renderAdmin(req, res, next) {
+			Config.api(function(data) {
+				res.render('admin/shoutbox', data);
+			});
+		}
+		app.get('/shoutbox', middleware.buildHeader, renderGlobal);
+		app.get('/api/shoutbox', renderGlobal);
+
+		app.get('/admin/shoutbox', middleware.admin.buildHeader, renderAdmin);
+		app.get('/api/admin/shoutbox', renderAdmin);
 		ModulesSockets.shoutbox = Sockets;
 	},
 	"global": {
@@ -22,43 +41,7 @@ Shoutbox.init = {
 					"text": Config.constants.name
 				});
 			}
-			return custom_header;
-		},
-		"addRoute": function(custom_routes, callback) {
-			fs.readFile(path.resolve(__dirname, './partials/shoutbox.tpl'), function (err, partial) {
-				custom_routes.routes.push({
-					route: Config.constants.global.route,
-					method: "get",
-					options: function(req, res, callback) {
-						callback({
-							req: req,
-							res: res,
-							content: '<script> \
-								ajaxify.initialLoad = true; \
-								templates.ready(function(){ajaxify.go("shoutbox", null, true);}); \
-							</script>'
-						});
-					}
-				});
-
-				custom_routes.api.push({
-					route: Config.constants.global.route,
-					method: "get",
-					callback: function(req, res, callback) {
-						Config.api(callback);
-					}
-				});
-
-				custom_routes.templates.push({
-					"template": "shoutbox.tpl",
-					"content": partial
-				});
-
-				Shoutbox.widget.template = partial.toString();
-
-				callback(null, custom_routes);
-			});
-
+			callback(null, custom_header);
 		}
 	},
 	"admin": {
@@ -69,46 +52,12 @@ Shoutbox.init = {
 				"name": Config.constants.name
 			});
 
-			return custom_header;
-		},
-		"addRoute": function(custom_routes, callback) {
-			fs.readFile(path.join(__dirname, './partials/admin.tpl'), function(err, tpl) {
-				Config.api(function(data) {
-					tpl = Templates.prepare(tpl.toString()).parse(data);
-				});
-				custom_routes.routes.push({
-					route: Config.constants.admin.route,
-					method: "get",
-					options: function(req, res, callback) {
-						callback({
-							req: req,
-							res: res,
-							content: tpl
-						});
-					}
-				});
-
-				custom_routes.api.push({
-					route: Config.constants.admin.route,
-					method: "get",
-					callback: function(req, res, callback) {
-						Config.api(callback);
-					}
-				});
-
-//				custom_routes.templates.push({
-//					"template": "admin/plugins/shoutbox.tpl",
-//					"content": tpl
-//				});
-
-				callback(null, custom_routes);
-			});
+			callback(null, custom_header);
 		}
 	}
 }
 
 Shoutbox.widget = {
-	"template": '',
 	"define": function(widgets, callback) {
 		widgets.push({
 			widget: "shoutbox",
@@ -120,15 +69,13 @@ Shoutbox.widget = {
 	},
 	"render": function(widget, callback) {
 		//We don't do anything fancy for now
-		var html = '';
-		if (widget.uid !== 0) {
-			Config.api(function(data) {
-				html = Templates.prepare(Shoutbox.widget.template).parse(data);
-			});
-		}
 		//Remove any container
 		widget.data.container = '';
-		callback(null, html);
+		if (widget.uid !== 0) {
+			Config.api(function(data) {
+				app.render('shoutbox', data, callback);
+			});
+		}
 	}
 }
 

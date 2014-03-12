@@ -24,8 +24,7 @@
                     </label>
                 </div>
             </div>
-        <!--</div>
-        <div class="col-xs-6 pull-left">-->
+
             <h3>Features <small>enable or disable features</small> <button class="features-save btn btn-success btn-xs pull-right">Save</button></h3>
             <div class="features">
                 <!-- BEGIN features -->
@@ -39,7 +38,7 @@
                         </div>
                         <div class="pull-right">
                             <span>
-                                <i class="fa fa-times-circle"></i>
+                                <i class="fa {features.icon} feature-icon"></i>
                             </span>&nbsp;
                         </div>
                     </div>
@@ -48,6 +47,7 @@
             </div>
             <input id="features-settings" class="hidden" type="text" data-field="shoutbox:features">
         </div>
+
         <div class="col-xs-6 pull-right">
             <h3>Actions</h3>
             <div class="alert alert-danger">Warning: These actions are permanent and <strong>cannot</strong> be undone!</div>

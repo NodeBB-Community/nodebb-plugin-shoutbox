@@ -5,13 +5,11 @@
 	"url": "https://github.com/MrWaffle/nodebb-plugin-shoutbox",
 	"library": "./library.js",
 	"hooks": [
-		{ "hook": "filter:admin.header.build", "method": "init.admin.addNavigation", "callbacked": false },
-		{ "hook": "filter:admin.create_routes", "method": "init.admin.addRoute", "callbacked": true },
-		{ "hook": "filter:header.build", "method": "init.global.addNavigation", "callbacked": false },
-		{ "hook": "filter:server.create_routes", "method": "init.global.addRoute", "callbacked": true },
-		{ "hook": "filter:widgets.getWidgets", "method": "widget.define", "callbacked": true },
-		{ "hook": "filter:widget.render:shoutbox", "method": "widget.render", "callbacked": true },
-		{ "hook": "action:app.load", "method": "init.load", "callbacked": false }
+		{ "hook": "action:app.load", "method": "init.load" },
+		{ "hook": "filter:admin.header.build", "method": "init.admin.addNavigation" },
+		{ "hook": "filter:header.build", "method": "init.global.addNavigation" },
+		{ "hook": "filter:widgets.getWidgets", "method": "widget.define" },
+		{ "hook": "filter:widget.render:shoutbox", "method": "widget.render" }
 	],
 	"staticDirs": {
 		"public": "./public"
@@ -22,5 +20,6 @@
 	"scripts": [
 		"public/js/main.js"
 	],
+	"templates": "./partials",
 	"minver": "0.4.0"
 }

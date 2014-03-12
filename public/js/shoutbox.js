@@ -95,7 +95,7 @@ define(['string'], function(S) {
 				if (shouts.length === 0) {
 					box.utils.showEmptyMessage(shoutBox);
 				} else {
-					for(var i = 0; i<shouts.length; ++i) {
+					for(var i = 0; i < shouts.length; i++) {
 						module.box.addShout(shoutBox, shouts[i]);
 					}
 				}
@@ -392,15 +392,17 @@ define(['string'], function(S) {
 					var curEnd = archiveModal.data('end');
 					var addShout = handle.addShout;
 					socket.emit(box.vars.sockets.get, {'start': curStart, 'end': curEnd}, function(err, shouts) {
-						for(var i = 0; i<shouts.length; ++i) {
+						for(var i = 0; i < shouts.length; i++) {
 							addShout(archiveModal, shouts[i]);
 						}
 					});
 				},
 				"addShout": function(archiveModal, shout) {
-					var archiveContent = archiveModal.find('#shoutbox-archive-content');
-					archiveContent.append(box.base.parseShout(shout));
-					box.base.scrollToBottom(archiveContent);
+					if (shout && shout.sid) {
+						var archiveContent = archiveModal.find('#shoutbox-archive-content');
+						archiveContent.append(box.base.parseShout(shout));
+						box.base.scrollToBottom(archiveContent);
+					}
 				}
 			}
 		},

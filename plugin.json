@@ -18,7 +18,7 @@
 		"public/less/style.less"
 	],
 	"scripts": [
-		"public/js/main.js"
+		"public/js/loader.js"
 	],
 	"templates": "./partials",
 	"minver": "0.4.0"

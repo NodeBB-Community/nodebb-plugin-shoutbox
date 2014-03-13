@@ -15,14 +15,13 @@ define(['string'], function(S) {
 			send: 'modules.shoutbox.send',
 			remove : 'modules.shoutbox.remove',
 			edit: 'modules.shoutbox.edit',
-			save_settings: 'modules.shoutbox.saveSetting',
-			get_users: 'modules.shoutbox.getUsers',
-			get_orig_shout: 'modules.shoutbox.getOriginalShout',
-			get_partial: 'modules.shoutbox.getPartial',
-			get_config: 'modules.shoutbox.getConfig',
-			onreceive: 'event:shoutbox.receive',
-			ondelete: 'event:shoutbox.delete',
-			onedit: 'event:shoutbox.edit'
+			saveSettings: 'modules.shoutbox.saveSetting',
+			getUsers: 'modules.shoutbox.getUsers',
+			getOriginalShout: 'modules.shoutbox.getOriginalShout',
+			getSettings: 'modules.shoutbox.getSettings',
+			onReceive: 'event:shoutbox.receive',
+			onDelete: 'event:shoutbox.delete',
+			onEdit: 'event:shoutbox.edit'
 		},
 		titleAlert: '[ %u ] - new shout!',
 		anonMessage: 'You must be logged in to view the shoutbox!',
@@ -122,7 +121,7 @@ define(['string'], function(S) {
 			}
 		},
 		updateUsers: function() {
-			socket.emit(box.vars.sockets.get_users, {}, function(err, data) {
+			socket.emit(box.vars.sockets.getUsers, {}, function(err, data) {
 				var userCount = data.length;
 				var usernames = data.map(function(i) {
 					return (i.username === null ? 'Anonymous' : i.username);
@@ -153,7 +152,7 @@ define(['string'], function(S) {
 			shoutBox.find('#shoutbox-content').html(box.vars.emptyMessage);
 		},
 		getConfig: function(callback) {
-			socket.emit(box.vars.sockets.get_config, function(err, config) {
+			socket.emit(box.vars.sockets.getSettings, function(err, config) {
 				box.vars.config = config;
 				if(callback) {
 					callback();
@@ -283,7 +282,7 @@ define(['string'], function(S) {
 
 				user = $(shout).find('span[class^="shoutbox-user"]').text();
 
-				socket.emit(box.vars.sockets.get_orig_shout, { sid: sid }, function(err, orig) {
+				socket.emit(box.vars.sockets.getOriginalShout, { sid: sid }, function(err, orig) {
 					parent.addClass('has-warning');
 					parent.find('#shoutbox-message-send-btn').text('Edit').off('click').on('click', function(e){
 						edit(orig);
@@ -337,7 +336,7 @@ define(['string'], function(S) {
 				show: function(gistModal) {
 					gistModal.modal('show');
 				},
-				create: function(code, gistModal) {
+				'create': function(code, gistModal) {
 					if (app.uid === null) {
 						gistModal.modal('hide');
 						app.alertError('Only registered users can create Gists!', 3000);
@@ -460,7 +459,7 @@ define(['string'], function(S) {
 					statusEl.removeClass('fa-times').addClass('fa-check');
 				}
 				box.vars.config.settings[key] = !status;
-				socket.emit(box.vars.sockets.save_settings, { key: key, value: !status }, function(err, result) {
+				socket.emit(box.vars.sockets.saveSettings, { key: key, value: !status }, function(err, result) {
 					if (err || result === false) {
 						app.alertError('Error saving settings!!');
 					}
@@ -473,8 +472,8 @@ define(['string'], function(S) {
 	box.sockets = {
 		onreceive: {
 			register: function() {
-				if (socket.listeners(box.vars.sockets.onreceive).length === 0) {
-					socket.on(box.vars.sockets.onreceive, this.handle);
+				if (socket.listeners(box.vars.sockets.onReceive).length === 0) {
+					socket.on(box.vars.sockets.onReceive, this.handle);
 				}
 			},
 			handle: function(data) {
@@ -493,8 +492,8 @@ define(['string'], function(S) {
 		},
 		ondelete: {
 			register: function() {
-				if (socket.listeners(box.vars.sockets.ondelete).length === 0) {
-					socket.on(box.vars.sockets.ondelete, this.handle);
+				if (socket.listeners(box.vars.sockets.onDelete).length === 0) {
+					socket.on(box.vars.sockets.onDelete, this.handle);
 				}
 			},
 			handle: function(data) {
@@ -503,8 +502,8 @@ define(['string'], function(S) {
 		},
 		onedit: {
 			register: function() {
-				if (socket.listeners(box.vars.sockets.onedit).length === 0) {
-					socket.on(box.vars.sockets.onedit, this.handle);
+				if (socket.listeners(box.vars.sockets.onEdit).length === 0) {
+					socket.on(box.vars.sockets.onEdit, this.handle);
 				}
 			},
 			handle: function(data) {

@@ -1,47 +1,54 @@
-#shoutbox-content, #shoutbox-archive-content {
+#shoutbox {
+  &-content, &-archive-content {
     font-size: 14px;
     height: 200px;
     overflow-y: scroll;
+
+    & p {
+      margin: 0;
+    }
+  }
+
+  &-settings-menu span {
+    width: 15px;
+  }
+
+  & .btn-group {
+    margin-top: 5px;
+  }
 }
 
-#shoutbox-archive-content {
-    height: 300px;
-}
-
-#shoutbox-content p, #shoutbox-archive-content p {
-    margin: 0;
-}
-
-.shoutbox-user.shoutbox-user-admin {
-    color: red;
-}
-
-.shoutbox-user {
+.shoutbox {
+  &-user {
     font-weight: bold;
     color: inherit;
-}
 
-.shoutbox-user-image {
-    display: none;
-}
+    &.shoutbox-user-admin {
+      color: red;
+    }
 
-.shoutbox-timestamp {
-    color: darkgrey;
-}
+    &-image {
+      .img-circle();
+      width: 15px;
+      margin-right: 3px;
+      //display: none;
+    }
+  }
 
-#shoutbox .btn-group {
-    margin-top: 5px;
-}
-
-.shoutbox-shout-option {
+  &-shout-option {
     font-size: inherit;
     color: inherit;
     opacity: 0.4;
     padding-left: 2px!important;
-}
+  }
 
-#shoutbox-settings-menu span {
-    width: 15px;
+  &-timestamp {
+    color: darkgrey;
+  }
+
+  &-archive-content {
+    height: 300px;
+  }
 }
 
 .shoutbox-admin {

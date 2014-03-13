@@ -5,7 +5,7 @@ $(document).ready(function() {
 				'plugins/nodebb-plugin-shoutbox/public/js/lib/shoutbox.js'
 			], function(shoutBox) {
 				shoutBox.base.init(data.url);
-				if (data.url === "shoutbox") {
+				if (data.url === 'shoutbox') {
 					shoutBox.base.showUserPanel();
 				}
 			});

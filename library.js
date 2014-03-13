@@ -12,7 +12,7 @@ var	fs = require('fs'),
 var Shoutbox = {};
 
 Shoutbox.init = {
-	"load": function(expressApp, middleware, controllers) {
+	load: function(expressApp, middleware, controllers) {
 		app = expressApp;
 		function renderGlobal(req, res, next) {
 			Config.api(function(data) {
@@ -31,25 +31,25 @@ Shoutbox.init = {
 		app.get('/api/admin/shoutbox', renderAdmin);
 		ModulesSockets.shoutbox = Sockets;
 	},
-	"global": {
-		"addNavigation": function(custom_header, callback) {
+	global: {
+		addNavigation: function(custom_header, callback) {
 			if (Config.get('headerlink') === '1') {
 				custom_header.navigation.push({
-					"class": "",
-					"iconClass": "fa fa-fw " + Config.constants.icon,
-					"route": Config.constants.global.route,
-					"text": Config.constants.name
+					class: '',
+					iconClass: 'fa fa-fw ' + Config.constants.icon,
+					route: Config.constants.route,
+					text: Config.constants.name
 				});
 			}
 			callback(null, custom_header);
 		}
 	},
-	"admin": {
-		"addNavigation": function(custom_header, callback) {
+	admin: {
+		addNavigation: function(custom_header, callback) {
 			custom_header.plugins.push({
-				"route": Config.constants.admin.route,
-				"icon": Config.constants.icon,
-				"name": Config.constants.name
+				route: Config.constants.route,
+				icon: Config.constants.icon,
+				name: Config.constants.name
 			});
 
 			callback(null, custom_header);
@@ -58,16 +58,16 @@ Shoutbox.init = {
 }
 
 Shoutbox.widget = {
-	"define": function(widgets, callback) {
+	define: function(widgets, callback) {
 		widgets.push({
-			widget: "shoutbox",
-			name: "Shoutbox",
-			description: "Shoutbox widget.",
-			content: ""
+			widget: 'shoutbox',
+			name: 'Shoutbox',
+			description: 'Shoutbox widget.',
+			content: ''
 		});
 		callback(null, widgets);
 	},
-	"render": function(widget, callback) {
+	render: function(widget, callback) {
 		//We don't do anything fancy for now
 		//Remove any container
 		widget.data.container = '';

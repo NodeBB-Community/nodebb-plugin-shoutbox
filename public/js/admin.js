@@ -72,7 +72,7 @@
 						if(err) {
 							return app.alertError(err.message);
 						} else {
-							return app.alertSuccess("Successfully removed all shouts marked as deleted from the database");
+							return app.alertSuccess('Successfully removed all shouts marked as deleted from the database');
 						}
 					});
 				}
@@ -86,7 +86,7 @@
 						if(err) {
 							return app.alertError(err.message);
 						} else {
-							return app.alertSuccess("Successfully removed all shouts from the database");
+							return app.alertSuccess('Successfully removed all shouts from the database');
 						}
 					});
 				}

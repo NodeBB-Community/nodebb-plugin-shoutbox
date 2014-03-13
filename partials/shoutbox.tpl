@@ -6,7 +6,11 @@
                 <h3 class="panel-title"><a href="/shoutbox" title="Shoutbox">Shoutbox</a></h3>
             </div>
             <div class="panel-body">
+                <!-- IF avatars -->
+                <div id="shoutbox-content" class="well well-sm shoutbox-avatars-enabled"></div>
+                <!-- ELSE -->
                 <div id="shoutbox-content" class="well well-sm"></div>
+                <!-- ENDIF avatars -->
                 <div class="input-group">
                     <input id="shoutbox-message-input" type="text" placeholder="enter message" name="shoutbox-message" class="form-control">
                     <span class="input-group-btn">

@@ -9,6 +9,7 @@ define(['string'], function(S) {
 		"loaded": false,
 		"userCheckIntervalId": 0,
 		"lastSid": 0,
+		"lastSidByUser": 0,
 		"sockets": {
 			"get": "modules.shoutbox.get",
 			"send": "modules.shoutbox.send",
@@ -108,6 +109,7 @@ define(['string'], function(S) {
 			if (shout.fromuid === app.uid || app.isAdmin === true) {
 				options += '<a href="#" class="shoutbox-shout-option shoutbox-shout-option-close pull-right fa fa-times"></a>';
 				options += '<a href="#" class="shoutbox-shout-option shoutbox-shout-option-edit pull-right fa fa-pencil"></a>';
+				box.vars.lastSidByUser = shout.sid;
 			}
 			var content = '<span class="shoutbox-shout-content">' + shout.content + '</span>';
 			return "<div id='shoutbox-shout-" + shout.sid + "'>" + options + S(prefix + content).stripTags('p').s + "</div>";
@@ -258,27 +260,64 @@ define(['string'], function(S) {
 		},
 		"edit": {
 			"register": function(shoutBox) {
-				shoutBox.off('click', '.shoutbox-shout-option-edit').on('click', '.shoutbox-shout-option-edit', this.handle);
-			},
-			"handle": function(e) {
-				var shout = e.currentTarget.parentNode,
-					sid = shout.id.match(/\d+/)[0],
-					user = $(shout).find('span[class^="shoutbox-user"]').text(),
-					cur = $(shout).find('.shoutbox-shout-content').html().split(': ')[1];
-				socket.emit(box.vars.sockets.get_orig_shout, {"sid": sid}, function(err, orig) {
-					bootbox.prompt("Enter edited message", function(result) {
-						if (result === orig || result === null) {
-							return;
-						}
-						socket.emit(box.vars.sockets.edit, {"sid": sid, "user": user, "edited": result}, function (err, result) {
-							if (result === true) {
-								app.alertSuccess("Successfully edited shout!");
-							} else if (err) {
-								app.alertError("Error editing shout: " + err, 3000);
-							}
-						});
-					}).find('.bootbox-input').val(orig);
+				var handle = this.handle;
+				shoutBox.off('click', '.shoutbox-shout-option-edit').on('click', '.shoutbox-shout-option-edit', function(e) {
+					handle(shoutBox, e);
 				});
+				shoutBox.find('#shoutbox-message-input').on('keypress', function(e) {
+					if(e.keyCode === 38) {
+						handle(shoutBox, null, box.vars.lastSidByUser);
+					}
+				});
+			},
+			"handle": function(shoutBox, e, sid) {
+				var shout, user,
+					parent = shoutBox.find('#shoutbox-message-input').parent();
+				if (sid) {
+					shout = shoutBox.find('#shoutbox-shout-' + sid);
+					sid = sid + '';
+				} else {
+					shout = e.currentTarget.parentNode;
+					sid = shout.id.match(/\d+/)[0];
+				}
+
+				user = $(shout).find('span[class^="shoutbox-user"]').text();
+
+				socket.emit(box.vars.sockets.get_orig_shout, {"sid": sid}, function(err, orig) {
+					parent.addClass('has-warning');
+					parent.find('#shoutbox-message-send-btn').text('Edit').off('click').on('click', function(e){
+						edit(orig);
+					});
+					parent.find('#shoutbox-message-input').off('keypress').on('keypress', function(e) {
+						if(e.which === 13 && !e.shiftKey) {
+							edit(orig);
+						}
+					}).val(orig).focus().putCursorAtEnd();
+				});
+
+				function edit(orig) {
+					var msg = S(parent.find('#shoutbox-message-input').val()).stripTags().s;
+					if (msg === orig || msg === null) {
+						return finish();
+					}
+					socket.emit(box.vars.sockets.edit, {"sid": sid, "user": user, "edited": msg}, function (err, result) {
+						if (result === true) {
+							app.alertSuccess("Successfully edited shout!");
+						} else if (err) {
+							app.alertError("Error editing shout: " + err, 3000);
+						}
+						finish();
+					});
+				}
+
+				function finish() {
+					parent.removeClass('has-warning').find('#shoutbox-message-send-btn').removeClass('hide');
+					parent.find('#shoutbox-message-send-btn').text('Send');
+					parent.find('#shoutbox-message-input').val('');
+					box.actions.send.register(shoutBox);
+					box.actions.edit.register(shoutBox);
+				}
+
 				return false;
 			}
 		},

@@ -36,9 +36,9 @@ Shoutbox.init = {
 			if (Config.get('headerlink') === '1') {
 				custom_header.navigation.push({
 					class: '',
-					iconClass: 'fa fa-fw ' + Config.constants.icon,
-					route: Config.constants.route,
-					text: Config.constants.name
+					iconClass: 'fa fa-fw ' + Config.plugin.icon,
+					route: Config.plugin.route,
+					text: Config.plugin.name
 				});
 			}
 			callback(null, custom_header);
@@ -47,9 +47,9 @@ Shoutbox.init = {
 	admin: {
 		addNavigation: function(custom_header, callback) {
 			custom_header.plugins.push({
-				route: Config.constants.route,
-				icon: Config.constants.icon,
-				name: Config.constants.name
+				route: Config.plugin.route,
+				icon: Config.plugin.icon,
+				name: Config.plugin.name
 			});
 
 			callback(null, custom_header);
@@ -60,15 +60,14 @@ Shoutbox.init = {
 Shoutbox.widget = {
 	define: function(widgets, callback) {
 		widgets.push({
-			widget: 'shoutbox',
-			name: 'Shoutbox',
-			description: 'Shoutbox widget.',
+			name: Config.plugin.name,
+			widget: Config.plugin.id,
+			description: Config.plugin.description,
 			content: ''
 		});
 		callback(null, widgets);
 	},
 	render: function(widget, callback) {
-		//We don't do anything fancy for now
 		//Remove any container
 		widget.data.container = '';
 		if (widget.uid !== 0) {

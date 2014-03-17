@@ -34,7 +34,7 @@ define(['string'], function(S) {
 				shoutBox.off('click', '.shoutbox-shout-option-close').on('click', '.shoutbox-shout-option-close', this.handle);
 			},
 			handle: function(e) {
-				var sid = e.currentTarget.parentNode.id.match(/\d+/)[0];
+				var sid = $(e.currentTarget).parents('[data-sid]').data('sid');
 				socket.emit(Config.sockets.remove, { sid: sid }, function (err, result) {
 					if (result === true) {
 						app.alertSuccess('Successfully deleted shout!');
@@ -45,6 +45,7 @@ define(['string'], function(S) {
 				return false;
 			}
 		},
+		//todo broken?
 		edit: {
 			register: function(shoutBox) {
 				var handle = this.handle;
@@ -62,7 +63,7 @@ define(['string'], function(S) {
 					parent = shoutBox.find('#shoutbox-message-input').parent();
 				if (sid) {
 					shout = shoutBox.find('#shoutbox-shout-' + sid);
-					sid = sid + '';
+					sid = sid;
 				} else {
 					shout = e.currentTarget.parentNode;
 					sid = shout.id.match(/\d+/)[0];

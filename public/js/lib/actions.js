@@ -1,9 +1,11 @@
-define([
-	'string',
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js',
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/utils.js',
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/config.js'], function(S, Base, Utils, Config) {
+define(['string'], function(S) {
+	var Base, Utils, Config;
+
 	var Actions = {
+		init: function(base, utils, config, callback) {
+			Base = base; Utils = utils; Config = config;
+			callback();
+		},
 		send: {
 			register: function(shoutBox) {
 				var sendMessage = this.handle;

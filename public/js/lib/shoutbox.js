@@ -1,14 +1,19 @@
-define([
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js'], function(Base) {
-	console.log(Base);
+define(function() {
+	var Base, Utils;
 
 	var module = {
 		init: function(url, callback) {
-			Base.load(callback);
+			require([
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js'], function(b, u){
+				b.init(function() {
+					Base = b;
+					Base.load(callback);
+				});
+			});
 		},
 		showUserPanel: function() {
 			Base.getUsersPanel().parent().removeClass('hidden');
-			//Utils.startUserPoll();
+			Utils.startUserPoll();
 			Base.updateUsers();
 		},
 		load: function(name, req, onload, config) {

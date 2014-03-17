@@ -8,17 +8,17 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/MrWaffle/nodebb-plugin-shoutbox"
+        "url": "https://github.com/Schamper/nodebb-plugin-shoutbox"
     },
     "keywords": [
         "nodebb",
         "plugin",
         "shoutbox"
     ],
-    "author": "Mr_Waffle <mrwafflewaffle@aim.com>",
+    "author": "Schamper <mrwafflewaffle@aim.com>",
     "license": "BSD-2-Clause",
     "bugs": {
-        "url": "https://github.com/MrWaffle/nodebb-plugin-shoutbox/issues"
+        "url": "https://github.com/Schamper/nodebb-plugin-shoutbox/issues"
     },
     "dependencies": {
         "async": "~0.2.9",

@@ -1,7 +1,10 @@
-define([
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js',
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/config.js'], function(Base, Config) {
+define(function() {
+	var Base, Config;
 	var Sockets = {
+		init: function(base, config, callback) {
+			Base = base; Config = config;
+			callback();
+		},
 		onreceive: {
 			register: function() {
 				if (socket.listeners(Config.sockets.onReceive).length === 0) {

@@ -1,8 +1,17 @@
-define([
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/utils.js',
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/config.js'], function(Utils, Config) {
-
+define(function() {
+	var Utils, Config;
 	var Base = {
+		init: function(callback) {
+			require([
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/utils.js',
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/config.js'], function(u, c) {
+				Config = c;
+				u.init(Base, c, function() {
+					Utils = u;
+					callback();
+				});
+			});
+		},
 		load: function(callback) {
 			Utils.checkAnon(function(isAnon) {
 				if(!isAnon) {

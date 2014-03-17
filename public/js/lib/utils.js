@@ -1,12 +1,22 @@
-define([
-	'string',
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/config.js',
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/actions.js',
-	'plugins/nodebb-plugin-shoutbox/public/js/lib/sockets.js'], function(S, Config, Actions, Sockets) {
+define(['string'], function(S) {
 	var userCheck,
-		Base;
+		Base, Config,
+		Actions, Sockets;
 
 	var Utils = {
+		init: function(base, config, callback) {
+			Base = base; Config = config;
+			require([
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/actions.js',
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/sockets.js'], function(a, s) {
+				a.init(Base, Utils, Config, function() {
+					s.init(Base, config, function() {
+						Actions = a; Sockets = s;
+						callback();
+					});
+				});
+			});
+		},
 		parseShout: function(shout) {
 			//todo
 			var date = new Date(parseInt(shout.timestamp, 10));
@@ -20,8 +30,8 @@ define([
 			var content = '<span class="shoutbox-shout-content">' + shout.content + '</span>';
 			return '<div id="shoutbox-shout-' + shout.sid + '">' + options + S(prefix + content).stripTags('p').s + '</div>';
 		},
-		prepareShoutbox: function(Base, callback) {
-			this.Base = Base;
+		prepareShoutbox: function(base, callback) {
+			Base = base;
 			Utils.getSettings(function() {
 				console.log(Base);
 				var shoutBox = Base.getShoutPanel();
@@ -79,7 +89,7 @@ define([
 		addActionHandlers: function(shoutBox) {
 			var actions = Actions;
 			for (var a in actions) {
-				if (actions.hasOwnProperty(a)) {
+				if (actions.hasOwnProperty(a) && a != 'init') {
 					actions[a].register(shoutBox);
 				}
 			}
@@ -87,7 +97,7 @@ define([
 		addSocketHandlers: function() {
 			var sockets = Sockets;
 			for (var s in sockets) {
-				if (sockets.hasOwnProperty(s)) {
+				if (sockets.hasOwnProperty(s) && s != 'init') {
 					sockets[s].register();
 				}
 			}

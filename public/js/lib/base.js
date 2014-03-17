@@ -3,6 +3,7 @@ define(function() {
 
 	var Base = {
 		init: function(callback) {
+			//todo I hate this
 			require([
 				'plugins/nodebb-plugin-shoutbox/public/js/lib/utils.js',
 				'plugins/nodebb-plugin-shoutbox/public/js/lib/config.js'], function(u, c) {
@@ -47,6 +48,7 @@ define(function() {
 					for(var i = 0; i < shouts.length; i++) {
 						Base.addShout(shoutBox, shouts[i]);
 					}
+					Base.updateUserStatus(shoutBox);
 				}
 			});
 		},
@@ -55,6 +57,43 @@ define(function() {
 				shoutContent.scrollTop(
 					shoutContent[0].scrollHeight - shoutContent.height()
 				);
+			}
+		},
+		updateUserStatus: function(shoutBox, uid, status) {
+			var getStatus = function(uid) {
+				socket.emit(Config.sockets.getUserStatus, uid, function(err, data) {
+					setStatus(uid, data.status);
+				});
+			}
+			var setStatus = function(uid, status) {
+				shoutBox.find('[data-uid="' + uid + '"] > img').removeClass().addClass('shoutbox-shout-avatar ' + status);
+			}
+
+			if (!uid) {
+				uid = shoutBox.find('[data-uid]').data('uid');
+				if (Array.isArray(uid)) {
+					uid.filter(function(el, index) {
+						return uid.indexOf(el) === index;
+					});
+				}
+			}
+
+			if (!status) {
+				if (typeof(uid) === 'number') {
+					getStatus(uid);
+				} else if (Array.isArray(uid)) {
+					for(var i = 0, l = uid.length; i < l; i++) {
+						getStatus(uid[i]);
+					}
+				}
+			} else {
+				if (typeof(uid) === 'number') {
+					setStatus(uid, status);
+				} else if (Array.isArray(uid)) {
+					for(var i = 0, l = uid.length; i < l; i++) {
+						setStatus(uid[i], status);
+					}
+				}
 			}
 		},
 		updateUsers: function() {

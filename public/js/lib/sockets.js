@@ -2,6 +2,7 @@ define(function() {
 	var Base, Config;
 	var Sockets = {
 		init: function(base, config, callback) {
+			//todo I hate this
 			Base = base; Config = config;
 			callback();
 		},
@@ -33,7 +34,7 @@ define(function() {
 				}
 			},
 			handle: function(data) {
-				$('data-sid=' + data.id).remove();
+				$('[data-sid="' + data.id + '"]').remove();
 			}
 		},
 		onedit: {
@@ -43,7 +44,17 @@ define(function() {
 				}
 			},
 			handle: function(data) {
-				$(data.id).find('.shoutbox-shout-content').html('*' + S(data.content).stripTags('p').s);
+				$('[data-sid="' + data.id + '"]').html('<abbr title="edited">' + data.content + '</abbr>');
+			}
+		},
+		onstatuschange: {
+			register: function() {
+				if (socket.listeners(Config.sockets.getUserStatus).length === 0) {
+					socket.on(Config.sockets.getUserStatus, this.handle);
+				}
+			},
+			handle: function(err, data) {
+				Base.updateUserStatus(Base.getShoutPanel(), data.uid, data.status);
 			}
 		}
 	};

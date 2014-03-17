@@ -3,10 +3,9 @@ define(function() {
 
 	var module = {
 		init: function(url, callback) {
-			console.log("Init");
+			//todo I hate this
 			require([
 				'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js'], function(b){
-				console.log(b);
 				b.init(function() {
 					Base = b;
 					Base.load(callback);

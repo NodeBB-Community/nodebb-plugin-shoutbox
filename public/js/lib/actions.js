@@ -3,6 +3,7 @@ define(['string'], function(S) {
 
 	var Actions = {
 		init: function(base, utils, config, callback) {
+			//todo I hate this
 			Base = base; Utils = utils; Config = config;
 			callback();
 		},

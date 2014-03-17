@@ -7,6 +7,7 @@ define(function() {
 			edit: 'modules.shoutbox.edit',
 			saveSettings: 'modules.shoutbox.saveSetting',
 			getUsers: 'modules.shoutbox.getUsers',
+			getUserStatus: 'user.isOnline',
 			getOriginalShout: 'modules.shoutbox.getOriginalShout',
 			getSettings: 'modules.shoutbox.getSettings',
 			onReceive: 'event:shoutbox.receive',

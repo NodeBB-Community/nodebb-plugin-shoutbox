@@ -6,6 +6,7 @@ define(['string'], function(S, templates) {
 
 	var Utils = {
 		init: function(base, config, callback) {
+			//todo I hate this
 			Base = base; Config = config;
 			templates = window.templates;
 			require([
@@ -26,7 +27,7 @@ define(['string'], function(S, templates) {
 			});
 		},
 		parseShout: function(shout, onlyText) {
-			shout.status = 'dnd';
+			shout.status = 'offline';
 			shout.hasRights = shout.fromuid === app.uid || app.isAdmin === true;
 			if (onlyText) {
 				return textTpl.parse(shout);

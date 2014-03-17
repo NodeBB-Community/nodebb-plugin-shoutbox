@@ -1,11 +1,13 @@
-define(['string'], function(S) {
-	var userCheck,
+define(['string'], function(S, templates) {
+	var shoutTpl, textTpl,
 		Base, Config,
-		Actions, Sockets;
+		Actions, Sockets,
+		templates;
 
 	var Utils = {
 		init: function(base, config, callback) {
 			Base = base; Config = config;
+			templates = window.templates;
 			require([
 				'plugins/nodebb-plugin-shoutbox/public/js/lib/actions.js',
 				'plugins/nodebb-plugin-shoutbox/public/js/lib/sockets.js'], function(a, s) {
@@ -16,24 +18,25 @@ define(['string'], function(S) {
 					});
 				});
 			});
+			templates.preload_template('shout/shout', function() {
+				shoutTpl = templates['shout/shout'];
+			});
+			templates.preload_template('shout/text', function() {
+				textTpl = templates['shout/text'];
+			});
 		},
-		parseShout: function(shout) {
-			//todo
-			var date = new Date(parseInt(shout.timestamp, 10));
-			var prefix = '<span class="shoutbox-timestamp">' + date.toLocaleTimeString() + '</span> ';
-			var options = '';
-			if (shout.fromuid === app.uid || app.isAdmin === true) {
-				options += '<a href="#" class="shoutbox-shout-option shoutbox-shout-option-close pull-right fa fa-times"></a>';
-				options += '<a href="#" class="shoutbox-shout-option shoutbox-shout-option-edit pull-right fa fa-pencil"></a>';
-				Config.vars.lastSidByUser = shout.sid;
+		parseShout: function(shout, onlyText) {
+			shout.status = 'dnd';
+			shout.hasRights = shout.fromuid === app.uid || app.isAdmin === true;
+			if (onlyText) {
+				return textTpl.parse(shout);
+			} else {
+				return shoutTpl.parse(shout);
 			}
-			var content = '<span class="shoutbox-shout-content">' + shout.content + '</span>';
-			return '<div id="shoutbox-shout-' + shout.sid + '">' + options + S(prefix + content).stripTags('p').s + '</div>';
 		},
 		prepareShoutbox: function(base, callback) {
 			Base = base;
 			Utils.getSettings(function() {
-				console.log(Base);
 				var shoutBox = Base.getShoutPanel();
 				if (shoutBox.length > 0) {
 					Utils.parseSettings(shoutBox);
@@ -74,13 +77,6 @@ define(['string'], function(S) {
 				}
 			}
 			Config.settings = s;
-		},
-		startUserPoll: function() {
-			if(userCheck === 0) {
-				userCheck = setInterval(function() {
-					Base.updateUsers();
-				}, 10000);
-			}
 		},
 		registerHandlers: function(shoutBox) {
 			Utils.addActionHandlers(shoutBox);

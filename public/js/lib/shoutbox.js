@@ -1,10 +1,12 @@
 define(function() {
-	var Base, Utils;
+	var Base;
 
 	var module = {
 		init: function(url, callback) {
+			console.log("Init");
 			require([
-				'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js'], function(b, u){
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js'], function(b){
+				console.log(b);
 				b.init(function() {
 					Base = b;
 					Base.load(callback);
@@ -13,7 +15,6 @@ define(function() {
 		},
 		showUserPanel: function() {
 			Base.getUsersPanel().parent().removeClass('hidden');
-			Utils.startUserPoll();
 			Base.updateUsers();
 		},
 		load: function(name, req, onload, config) {

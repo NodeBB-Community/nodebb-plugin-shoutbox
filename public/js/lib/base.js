@@ -1,5 +1,6 @@
 define(function() {
-	var Utils, Config;
+	var Utils, Config, userCheck;
+
 	var Base = {
 		init: function(callback) {
 			require([
@@ -25,9 +26,17 @@ define(function() {
 				if (shoutContent.find('div[class="shoutbox-shout-container"]').length === 0) {
 					shoutContent.html('');
 				}
-				shoutContent.append(Utils.parseShout(shout));
+				if (shout.fromuid === Config.vars.lastUid) {
+					$('[data-sid]:last').after(Utils.parseShout(shout, true));
+				} else {
+					shoutContent.append(Utils.parseShout(shout));
+				}
 				Base.scrollToBottom(shoutContent);
 				Config.vars.lastSid = shout.sid;
+				Config.vars.lastUid = shout.fromuid;
+				if (shout.fromuid === app.uid) {
+					Config.vars.lastSidByUser = shout.sid;
+				}
 			}
 		},
 		getShouts: function(shoutBox) {
@@ -58,6 +67,11 @@ define(function() {
 				Base.getUsersPanel().find('.panel-body').text(userString);
 				Base.getUsersPanel().find('.panel-title').text('Users (' + userCount + ')');
 			});
+			if(userCheck === 0) {
+				userCheck = setInterval(function() {
+					Base.updateUsers();
+				}, 10000);
+			}
 		},
 		getShoutPanel: function() {
 			return $('#shoutbox');

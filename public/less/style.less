@@ -1,6 +1,68 @@
+@avatar-size: 35px;
+@status-online: #060;
+@status-away: #cc0;
+@status-dnd: #900;
+@status-offline: gray;
+
+.shoutbox-shout {
+  &-container {
+    margin: 2px 0;
+    position: relative;
+  }
+  &-avatar {
+    .img-circle();
+    border: 2px solid @status-offline;
+    display: inline-block;
+    vertical-align: top;
+    max-width: @avatar-size;
+    box-shadow: 0 1px 1px #555555;
+    &.online {
+      border: 2px solid @status-online;
+    }
+    &.away {
+      border: 2px solid @status-away;
+    }
+    &.dnd {
+      border: 2px solid @status-dnd;
+    }
+    &.offline {
+      border: 2px solid @status-offline;
+    }
+  }
+  &-info {
+    display: inline-block;
+  }
+  &-content {
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    padding-left: @avatar-size + 5px;
+    font-size: @font-size-base;
+    line-height: @font-size-base;
+    & > a {
+      font-size: @font-size-base + 2px;
+      line-height: @font-size-base + 2px;
+    }
+    & > div {
+      margin-bottom: 5px;
+      &:hover .shoutbox-shout-options {
+        opacity: 1;
+      }
+    }
+    & p {
+      margin: 0;
+    }
+  }
+  &-options {
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+}
+
 #shoutbox {
   &-content, &-archive-content {
-    font-size: 14px;
+//    font-size: 14px;
     height: 200px;
     overflow-y: scroll;
 

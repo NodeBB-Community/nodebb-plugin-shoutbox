@@ -140,7 +140,7 @@ define(['string'], function(S) {
 					}
 					$.post('https://api.github.com/gists', JSON.stringify(json), function(data) {
 						gistModal.modal('hide');
-						var input = module.base.getShoutPanel().find('#shoutbox-message-input');
+						var input = Base.getShoutPanel().find('#shoutbox-message-input');
 						var link = data.html_url;
 						if (input.val().length > 0) {
 							link = ' ' + link;
@@ -175,6 +175,7 @@ define(['string'], function(S) {
 			},
 			handle: {
 				show: function(archiveModal, handle) {
+					return app.alertError('Currently disabled');
 					archiveModal.modal('show');
 					if (!archiveModal.data('start')) {
 						archiveModal.data('start', (-(Config.vars.shoutLimit - 1)).toString());

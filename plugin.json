@@ -20,6 +20,6 @@
 	"scripts": [
 		"public/js/loader.js"
 	],
-	"templates": "./partials",
+	"templates": "./templates",
 	"minver": "0.4.0"
 }

@@ -79,7 +79,6 @@ define(function() {
 					return uid.indexOf(el) === index;
 				});
 			}
-			console.log(uid);
 
 			if (!status) {
 				if (typeof(uid) === 'number') {

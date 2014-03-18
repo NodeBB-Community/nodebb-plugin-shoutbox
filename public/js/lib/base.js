@@ -62,6 +62,7 @@ define(function() {
 		updateUserStatus: function(shoutBox, uid, status) {
 			var getStatus = function(uid) {
 				socket.emit(Config.sockets.getUserStatus, uid, function(err, data) {
+					console.log(data);
 					setStatus(uid, data.status);
 				});
 			}
@@ -70,13 +71,15 @@ define(function() {
 			}
 
 			if (!uid) {
-				uid = shoutBox.find('[data-uid]').data('uid');
-				if (Array.isArray(uid)) {
-					uid.filter(function(el, index) {
-						return uid.indexOf(el) === index;
-					});
-				}
+				uid = [];
+				shoutBox.find('[data-uid]').each(function(index, el){
+					uid.push($(el).data('uid'))
+				});
+				uid = uid.filter(function(el, index) {
+					return uid.indexOf(el) === index;
+				});
 			}
+			console.log(uid);
 
 			if (!status) {
 				if (typeof(uid) === 'number') {

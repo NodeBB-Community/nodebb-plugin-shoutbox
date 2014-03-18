@@ -6,13 +6,15 @@
 
 .shoutbox-shout {
   &-container {
-    margin: 2px 0;
+    margin: 5px 0;
     position: relative;
   }
   &-avatar {
     .img-circle();
     border: 2px solid @status-offline;
     display: inline-block;
+    position: absolute;
+    left: 0;
     vertical-align: top;
     max-width: @avatar-size;
     box-shadow: 0 1px 1px #555555;
@@ -34,9 +36,7 @@
   }
   &-content {
     display: inline-block;
-    position: absolute;
     width: 100%;
-    left: 0px;
     padding-left: @avatar-size + 5px;
     font-size: @font-size-base;
     line-height: @font-size-base;
@@ -45,9 +45,12 @@
       line-height: @font-size-base + 2px;
     }
     & > div {
-      margin-bottom: 5px;
+      margin: 1px 0 3px;
       &:hover .shoutbox-shout-options {
         opacity: 1;
+      }
+      &:last-child {
+        margin: 1px 0 0;
       }
     }
     & p {

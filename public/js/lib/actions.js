@@ -45,31 +45,22 @@ define(['string'], function(S) {
 				return false;
 			}
 		},
-		//todo broken?
 		edit: {
 			register: function(shoutBox) {
 				var handle = this.handle;
-				shoutBox.off('click', '.shoutbox-shout-option-edit').on('click', '.shoutbox-shout-option-edit', function(e) {
-					handle(shoutBox, e);
+				shoutBox.off('dblclick', '[data-sid]').on('dblclick', '[data-sid]', function(e) {
+					handle(shoutBox, $(e.currentTarget).data('sid'));
 				});
 				shoutBox.find('#shoutbox-message-input').on('keypress', function(e) {
 					if(e.keyCode === 38) {
-						handle(shoutBox, null, Config.vars.lastSidByUser);
+						handle(shoutBox, shoutBox.find('[data-uid="' + app.uid + '"] [data-sid]:last').data('sid'));
 					}
 				});
 			},
-			handle: function(shoutBox, e, sid) {
-				var shout, user,
-					parent = shoutBox.find('#shoutbox-message-input').parent();
-				if (sid) {
-					shout = shoutBox.find('#shoutbox-shout-' + sid);
-					sid = sid;
-				} else {
-					shout = e.currentTarget.parentNode;
-					sid = shout.id.match(/\d+/)[0];
-				}
-
-				user = $(shout).find('span[class^="shoutbox-user"]').text();
+			handle: function(shoutBox, sid) {
+				var shout,
+					parent = shoutBox.find('#shoutbox-message-input').parent(),
+					shout = shoutBox.find('[data-sid="' + sid + '"]');
 
 				socket.emit(Config.sockets.getOriginalShout, { sid: sid }, function(err, orig) {
 					parent.addClass('has-warning');
@@ -88,7 +79,7 @@ define(['string'], function(S) {
 					if (msg === orig || msg === null) {
 						return finish();
 					}
-					socket.emit(Config.sockets.edit, { sid: sid, user: user, edited: msg }, function (err, result) {
+					socket.emit(Config.sockets.edit, { sid: sid, edited: msg }, function (err, result) {
 						if (result === true) {
 							app.alertSuccess('Successfully edited shout!');
 						} else if (err) {

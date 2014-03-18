@@ -27,17 +27,17 @@ define(function() {
 				if (shoutContent.find('div[class="shoutbox-shout-container"]').length === 0) {
 					shoutContent.html('');
 				}
-				if (shout.fromuid === Config.vars.lastUid) {
+				if (shout.fromuid === shoutContent.find('[data-uid]:last').data('uid')) {
 					$('[data-sid]:last').after(Utils.parseShout(shout, true));
 				} else {
 					shoutContent.append(Utils.parseShout(shout));
 				}
 				Base.scrollToBottom(shoutContent);
-				Config.vars.lastSid = shout.sid;
-				Config.vars.lastUid = shout.fromuid;
-				if (shout.fromuid === app.uid) {
-					Config.vars.lastSidByUser = shout.sid;
-				}
+//				Config.vars.lastSid = shout.sid;
+//				Config.vars.lastUid = shout.fromuid;
+//				if (shout.fromuid === app.uid) {
+//					Config.vars.lastSidByUser = shout.sid;
+//				}
 			}
 		},
 		getShouts: function(shoutBox) {

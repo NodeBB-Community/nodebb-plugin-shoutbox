@@ -93,9 +93,9 @@ define(function() {
 			}
 		},
 		updateUsers: function() {
-			socket.emit(Config.sockets.getUsers, {}, function(err, data) {
-				var userCount = data.length;
-				var usernames = data.map(function(i) {
+			socket.emit(Config.sockets.getUsers, { set: 'users:online', after: 0 }, function(err, data) {
+				var userCount = data.users.length;
+				var usernames = data.users.map(function(i) {
 					return (i.username === null ? 'Anonymous' : i.username);
 				});
 				var userString = usernames.join('; ');

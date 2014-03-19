@@ -9,6 +9,9 @@ define(function() {
 				b.init(function() {
 					Base = b;
 					Base.load();
+					if (url === 'shoutbox') {
+						module.showUserPanel();
+					}
 				});
 			});
 		},

@@ -25,14 +25,6 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" data-field="shoutbox:avatars" id="avatars"> Show user avatars
-                    </label>
-                </div>
-            </div>
-
             <h3>Features <small>enable or disable features</small> <button class="features-save btn btn-success btn-xs pull-right">Save</button></h3>
             <div class="features">
                 <!-- BEGIN features -->

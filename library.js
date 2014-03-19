@@ -24,7 +24,7 @@ Shoutbox.init = {
 		}
 		function renderAdmin(req, res, next) {
 			Config.api(function(data) {
-				res.render('admin/shoutbox', data);
+				res.render('shoutbox/admin', data);
 			});
 		}
 		app.get('/shoutbox', middleware.buildHeader, renderGlobal);
@@ -94,11 +94,14 @@ Shoutbox.widget = {
 
 Shoutbox.settings = {
 	addUserSettings: function(settings, callback) {
-		settings.push({
-			title: 'Shoutbox',
-			content: '<div class="checkbox"><label><input type="checkbox" data-property="shoutbox:hide"> Hide shoutbox</label></div>'
+		app.render('shoutbox/user/settings', function(err, html) {
+			settings.push({
+				title: Config.plugin.name,
+				content: html
+			});
+			callback(null, settings);
 		});
-		callback(null, settings);
+
 	},
 	getUserSettings: function(data, callback) {
 		Config.settings.get(data, callback);

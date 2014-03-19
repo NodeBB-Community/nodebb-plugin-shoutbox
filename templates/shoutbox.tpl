@@ -53,8 +53,8 @@
         </div>
     </div>
 
-    <!-- IMPORT features/gist.tpl -->
+    <!-- IMPORT shoutbox/features/gist.tpl -->
 
-    <!-- IMPORT features/archive.tpl -->
+    <!-- IMPORT shoutbox/features/archive.tpl -->
 
 </div>

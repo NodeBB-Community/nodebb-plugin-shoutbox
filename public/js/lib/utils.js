@@ -19,11 +19,11 @@ define(['string'], function(S, templates) {
 					});
 				});
 			});
-			templates.preload_template('shout/shout', function() {
-				shoutTpl = templates['shout/shout'];
+			templates.preload_template('shoutbox/shout', function() {
+				shoutTpl = templates['shoutbox/shout'];
 			});
-			templates.preload_template('shout/text', function() {
-				textTpl = templates['shout/text'];
+			templates.preload_template('shoutbox/shout/text', function() {
+				textTpl = templates['shoutbox/shout/text'];
 			});
 		},
 		parseShout: function(shout, onlyText) {

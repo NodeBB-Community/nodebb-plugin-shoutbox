@@ -8,7 +8,9 @@
 		{ "hook": "action:app.load", "method": "init.load" },
 		{ "hook": "filter:admin.header.build", "method": "init.admin.addNavigation" },
 		{ "hook": "filter:header.build", "method": "init.global.addNavigation" },
-		{ "hook": "filter:user.settings", "method": "init.global.addUserSettings" },
+		{ "hook": "filter:user.settings", "method": "settings.addUserSettings" },
+		{ "hook": "filter:user.getSettings", "method": "settings.getUserSettings" },
+		{ "hook": "action:user.saveSettings", "method": "settings.saveUserSettings" },
 		{ "hook": "filter:widgets.getWidgets", "method": "widget.define" },
 		{ "hook": "filter:widget.render:shoutbox", "method": "widget.render" }
 	],

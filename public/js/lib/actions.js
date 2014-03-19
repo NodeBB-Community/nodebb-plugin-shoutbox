@@ -236,13 +236,15 @@ define(['string'], function(S) {
 					status = statusEl.hasClass('fa-check');
 				if (status) {
 					statusEl.removeClass('fa-check').addClass('fa-times');
+					status = 0;
 				} else {
 					statusEl.removeClass('fa-times').addClass('fa-check');
+					status = 1;
 				}
 				Config.settings[key] = !status;
-				socket.emit(Config.sockets.saveSettings, { key: key, value: !status }, function(err, result) {
+				socket.emit(Config.sockets.saveSettings, { key: key, value: status }, function(err, result) {
 					if (err || result === false) {
-						app.alertError('Error saving settings!!');
+						app.alertError('Error saving settings!');
 					}
 				});
 				return false;

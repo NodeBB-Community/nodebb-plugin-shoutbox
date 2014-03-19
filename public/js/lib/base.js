@@ -14,10 +14,10 @@ define(function() {
 				});
 			});
 		},
-		load: function(callback) {
+		load: function() {
 			Utils.checkAnon(function(isAnon) {
 				if(!isAnon) {
-					Utils.prepareShoutbox(Base, callback);
+					Utils.prepareShoutbox(Base);
 				}
 			});
 		},

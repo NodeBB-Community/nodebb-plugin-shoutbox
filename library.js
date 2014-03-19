@@ -7,6 +7,9 @@ var	fs = require('fs'),
 
 	ModulesSockets = NodeBB.ModulesSockets,
 
+	User = NodeBB.User,
+	db = NodeBB.db,
+
 	app;
 
 var Shoutbox = {};
@@ -42,14 +45,6 @@ Shoutbox.init = {
 				});
 			}
 			callback(null, custom_header);
-		},
-		"addUserSettings": function(settings, callback) {
-			settings.push({
-				title: "Shoutbox",
-				content: '<div class="checkbox"><label><input type="checkbox" data-property="shoutbox:hide"> Hide shoutbox</label></div>'
-			});
-
-			callback(null, settings);
 		}
 	},
 	admin: {
@@ -79,10 +74,37 @@ Shoutbox.widget = {
 		//Remove any container
 		widget.data.container = '';
 		if (widget.uid !== 0) {
-			Config.api(function(data) {
-				app.render('shoutbox', data, callback);
+			//Currently doing this on the server -- still debating what's better
+			Config.settings.get({ uid: widget.uid, settings: {} }, function(err, result) {
+				if (result.settings[Config.prefix + 'hide'] !== 1) {
+					Config.api(function(data) {
+						app.render('shoutbox', data, callback);
+					});
+				} else {
+					callback(null, null);
+				}
 			});
+			// Client or server?
+//			Config.api(function(data) {
+//				app.render('shoutbox', data, callback);
+//			});
 		}
+	}
+}
+
+Shoutbox.settings = {
+	addUserSettings: function(settings, callback) {
+		settings.push({
+			title: 'Shoutbox',
+			content: '<div class="checkbox"><label><input type="checkbox" data-property="shoutbox:hide"> Hide shoutbox</label></div>'
+		});
+		callback(null, settings);
+	},
+	getUserSettings: function(data, callback) {
+		Config.settings.get(data, callback);
+	},
+	saveUserSettings: function(data) {
+		Config.settings.save(data);
 	}
 }
 

@@ -35,17 +35,16 @@ define(['string'], function(S, templates) {
 				return shoutTpl.parse(shout);
 			}
 		},
-		prepareShoutbox: function(base, callback) {
+		prepareShoutbox: function(base) {
 			Base = base;
 			Utils.getSettings(function() {
 				var shoutBox = Base.getShoutPanel();
+				//if (shoutBox.length > 0 && Config.settings.hide !== 1) {
+				//	shoutBox.parents('.shoutbox-row').removeClass('hide');
 				if (shoutBox.length > 0) {
 					Utils.parseSettings(shoutBox);
 					Utils.registerHandlers(shoutBox);
 					Base.getShouts(shoutBox);
-					//callback(true);
-				} else {
-					callback(false);
 				}
 			});
 		},
@@ -60,24 +59,20 @@ define(['string'], function(S, templates) {
 		},
 		parseSettings: function(shoutBox) {
 			var settings = Config.settings;
-			var s = {};
 			if (!settings) {
 				return;
 			}
 			for(var key in settings) {
 				if (settings.hasOwnProperty(key)) {
 					var value = settings[key];
-					var k = key.split(':')[1];
-					s[k] = value;
-					var el = shoutBox.find('#shoutbox-settings-' + k + ' span');
-					if (value) {
+					var el = shoutBox.find('#shoutbox-settings-' + key + ' span');
+					if (value === 1) {
 						el.removeClass('fa-times').addClass('fa-check');
 					} else {
 						el.removeClass('fa-check').addClass('fa-times');
 					}
 				}
 			}
-			Config.settings = s;
 		},
 		registerHandlers: function(shoutBox) {
 			Utils.addActionHandlers(shoutBox);

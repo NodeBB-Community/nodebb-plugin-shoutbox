@@ -33,11 +33,6 @@ define(function() {
 					shoutContent.append(Utils.parseShout(shout));
 				}
 				Base.scrollToBottom(shoutContent);
-//				Config.vars.lastSid = shout.sid;
-//				Config.vars.lastUid = shout.fromuid;
-//				if (shout.fromuid === app.uid) {
-//					Config.vars.lastSidByUser = shout.sid;
-//				}
 			}
 		},
 		getShouts: function(shoutBox) {
@@ -62,7 +57,6 @@ define(function() {
 		updateUserStatus: function(shoutBox, uid, status) {
 			var getStatus = function(uid) {
 				socket.emit(Config.sockets.getUserStatus, uid, function(err, data) {
-					console.log(data);
 					setStatus(uid, data.status);
 				});
 			}

@@ -42,6 +42,14 @@ Shoutbox.init = {
 				});
 			}
 			callback(null, custom_header);
+		},
+		"addUserSettings": function(settings, callback) {
+			settings.push({
+				title: "Shoutbox",
+				content: '<div class="checkbox"><label><input type="checkbox" data-property="shoutbox:hide"> Hide shoutbox</label></div>'
+			});
+
+			callback(null, settings);
 		}
 	},
 	admin: {

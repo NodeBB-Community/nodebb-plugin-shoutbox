@@ -17,10 +17,10 @@ define(function() {
 				if (shoutBox.length > 0) {
 					Base.addShout(shoutBox, data);
 					if (data.fromuid !== app.uid) {
-						if (Config.getSetting('notification')) {
+						if (Config.getSetting('notification') === 1) {
 							app.alternatingTitle(Config.messages.alert.replace(/%u/g, data.data.userData.username));
 						}
-						if (Config.getSetting('sound')) {
+						if (Config.getSetting('sound') === 1) {
 							$('#shoutbox-sounds-notification')[0].play();
 						}
 					}

@@ -62,17 +62,19 @@ define(['string'], function(S) {
 					parent = shoutBox.find('#shoutbox-message-input').parent(),
 					shout = shoutBox.find('[data-sid="' + sid + '"]');
 
-				socket.emit(Config.sockets.getOriginalShout, { sid: sid }, function(err, orig) {
-					parent.addClass('has-warning');
-					parent.find('#shoutbox-message-send-btn').text('Edit').off('click').on('click', function(e){
-						edit(orig);
-					});
-					parent.find('#shoutbox-message-input').off('keypress').on('keypress', function(e) {
-						if(e.which === 13 && !e.shiftKey) {
+				if (shout.parents('[data-uid]').data('uid') === app.uid || app.isAdmin) {
+					socket.emit(Config.sockets.getOriginalShout, { sid: sid }, function(err, orig) {
+						parent.addClass('has-warning');
+						parent.find('#shoutbox-message-send-btn').text('Edit').off('click').on('click', function(e){
 							edit(orig);
-						}
-					}).val(orig).focus().putCursorAtEnd();
-				});
+						});
+						parent.find('#shoutbox-message-input').off('keypress').on('keypress', function(e) {
+							if(e.which === 13 && !e.shiftKey) {
+								edit(orig);
+							}
+						}).val(orig).focus().putCursorAtEnd();
+					});
+				}
 
 				function edit(orig) {
 					var msg = S(parent.find('#shoutbox-message-input').val()).stripTags().s;
@@ -83,7 +85,7 @@ define(['string'], function(S) {
 						if (result === true) {
 							app.alertSuccess('Successfully edited shout!');
 						} else if (err) {
-							app.alertError('Error editing shout: ' + err, 3000);
+							app.alertError('Error editing shout: ' + err.message, 3000);
 						}
 						finish();
 					});

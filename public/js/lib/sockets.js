@@ -49,7 +49,7 @@ define(function() {
 				}
 			},
 			handle: function(data) {
-				$('[data-sid="' + data.id + '"]').html('<abbr title="edited">' + data.content + '</abbr>');
+				$('[data-sid="' + data.id + '"]').html($(data.content).wrapInner('<abbr title="edited"></abbr>'));
 			}
 		},
 		onstatuschange: {

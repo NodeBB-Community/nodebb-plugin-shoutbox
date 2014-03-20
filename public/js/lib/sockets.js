@@ -18,7 +18,7 @@ define(function() {
 					Base.addShout(shoutBox, data);
 					if (data.fromuid !== app.uid) {
 						if (Config.getSetting('notification')) {
-							app.alternatingTitle(Config.messages.alert.replace(/%u/g, data.username));
+							app.alternatingTitle(Config.messages.alert.replace(/%u/g, data.data.userData.username));
 						}
 						if (Config.getSetting('sound')) {
 							$('#shoutbox-sounds-notification')[0].play();

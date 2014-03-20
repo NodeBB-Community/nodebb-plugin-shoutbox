@@ -22,11 +22,11 @@ define(['string'], function(S) {
 				});
 			},
 			handle: function(shoutBox) {
-				var msg = S(shoutBox.find('#shoutbox-message-input').val()).stripTags().s;
+				var msg = S(shoutBox.find('#shoutbox-message-input').val()).stripTags().trim().s;
 				if(msg.length) {
 					socket.emit(Config.sockets.send, { message:msg });
-					shoutBox.find('#shoutbox-message-input').val('');
 				}
+				shoutBox.find('#shoutbox-message-input').val('');
 			}
 		},
 		delete: {

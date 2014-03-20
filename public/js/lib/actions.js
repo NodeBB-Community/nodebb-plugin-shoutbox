@@ -39,7 +39,7 @@ define(['string'], function(S) {
 					if (result === true) {
 						app.alertSuccess('Successfully deleted shout!');
 					} else if (err) {
-						app.alertError('Error deleting shout: ' + err, 3000);
+						app.alertError('Error deleting shout: ' + err.message, 3000);
 					}
 				});
 				return false;

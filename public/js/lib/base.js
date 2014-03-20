@@ -43,7 +43,7 @@ define(function() {
 					for(var i = 0; i < shouts.length; i++) {
 						Base.addShout(shoutBox, shouts[i]);
 					}
-					Base.updateUserStatus(shoutBox);
+					//Base.updateUserStatus(shoutBox);
 				}
 			});
 		},

@@ -27,7 +27,6 @@ define(['string'], function(S, templates) {
 			});
 		},
 		parseShout: function(shout, onlyText) {
-			shout.status = 'offline';
 			shout.hasRights = shout.fromuid === app.uid || app.isAdmin === true;
 			if (onlyText) {
 				return textTpl.parse(shout);

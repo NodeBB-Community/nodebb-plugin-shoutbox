@@ -34,7 +34,12 @@ define(function() {
 				}
 			},
 			handle: function(data) {
-				$('[data-sid="' + data.id + '"]').remove();
+				var par = $('[data-sid="' + data.id + '"]').parents('[data-uid]');
+				if (par.find('[data-sid]').length === 1) {
+					par.remove();
+				} else {
+					$('[data-sid="' + data.id + '"]').remove();
+				}
 			}
 		},
 		onedit: {

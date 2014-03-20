@@ -76,7 +76,7 @@ define(['string'], function(S) {
 
 				function edit(orig) {
 					var msg = S(parent.find('#shoutbox-message-input').val()).stripTags().s;
-					if (msg === orig || msg === null) {
+					if (msg === orig || msg === '' || msg === null) {
 						return finish();
 					}
 					socket.emit(Config.sockets.edit, { sid: sid, edited: msg }, function (err, result) {

@@ -27,5 +27,7 @@ define(function() {
 		}
 	};
 
-	return Config;
+	return function(Shoutbox) {
+		Shoutbox.config = Config;
+	};
 });

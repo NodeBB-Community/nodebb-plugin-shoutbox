@@ -1,23 +1,11 @@
 define(function() {
-	var Utils, Config, userCheck;
+	var sb;
 
 	var Base = {
-		init: function(callback) {
-			//todo I hate this
-			require([
-				'plugins/nodebb-plugin-shoutbox/public/js/lib/utils.js',
-				'plugins/nodebb-plugin-shoutbox/public/js/lib/config.js'], function(u, c) {
-				Config = c;
-				u.init(Base, c, function() {
-					Utils = u;
-					callback();
-				});
-			});
-		},
 		load: function() {
-			Utils.checkAnon(function(isAnon) {
+			sb.utils.checkAnon(function(isAnon) {
 				if(!isAnon) {
-					Utils.prepareShoutbox(Base);
+					sb.utils.prepareShoutbox(Base);
 				}
 			});
 		},
@@ -28,17 +16,17 @@ define(function() {
 					shoutContent.html('');
 				}
 				if (shout.fromuid === shoutContent.find('[data-uid]:last').data('uid')) {
-					$('[data-sid]:last').after(Utils.parseShout(shout, true));
+					$('[data-sid]:last').after(sb.utils.parseShout(shout, true));
 				} else {
-					shoutContent.append(Utils.parseShout(shout));
+					shoutContent.append(sb.utils.parseShout(shout));
 				}
 				Base.scrollToBottom(shoutContent);
 			}
 		},
 		getShouts: function(shoutBox) {
-			socket.emit(Config.sockets.get, function(err, shouts) {
+			socket.emit(sb.config.sockets.get, function(err, shouts) {
 				if (shouts.length === 0) {
-					Utils.showEmptyMessage(shoutBox);
+					sb.utils.showEmptyMessage(shoutBox);
 				} else {
 					for(var i = 0; i < shouts.length; i++) {
 						Base.addShout(shoutBox, shouts[i]);
@@ -56,7 +44,7 @@ define(function() {
 		},
 		updateUserStatus: function(shoutBox, uid, status) {
 			var getStatus = function(uid) {
-				socket.emit(Config.sockets.getUserStatus, uid, function(err, data) {
+				socket.emit(sb.config.sockets.getUserStatus, uid, function(err, data) {
 					setStatus(uid, data.status);
 				});
 			}
@@ -93,7 +81,7 @@ define(function() {
 			}
 		},
 		updateUsers: function() {
-			socket.emit(Config.sockets.getUsers, { set: 'users:online', after: 0 }, function(err, data) {
+			socket.emit(sb.config.sockets.getUsers, { set: 'users:online', after: 0 }, function(err, data) {
 				var userCount = data.users.length;
 				var usernames = data.users.map(function(i) {
 					return (i.username === null ? 'Anonymous' : i.username);
@@ -102,8 +90,8 @@ define(function() {
 				Base.getUsersPanel().find('.panel-body').text(userString);
 				Base.getUsersPanel().find('.panel-title').text('Users (' + userCount + ')');
 			});
-			if(userCheck === 0) {
-				userCheck = setInterval(function() {
+			if(Base.userCheck === 0) {
+				Base.userCheck = setInterval(function() {
 					Base.updateUsers();
 				}, 10000);
 			}
@@ -113,8 +101,14 @@ define(function() {
 		},
 		getUsersPanel: function() {
 			return $('#shoutbox-users');
+		},
+		vars: {
+			userCheck: 0
 		}
 	};
 
-	return Base;
+	return function(Shoutbox) {
+		Shoutbox.base = Base;
+		sb = Shoutbox;
+	};
 });

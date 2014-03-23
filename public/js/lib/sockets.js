@@ -1,26 +1,21 @@
 define(function() {
-	var Base, Utils, Config;
+	var sb;
 	var Sockets = {
-		init: function(base, utils, config, callback) {
-			//todo I hate this
-			Base = base; Utils = utils; Config = config;
-			callback();
-		},
 		onreceive: {
 			register: function() {
-				if (socket.listeners(Config.sockets.onReceive).length === 0) {
-					socket.on(Config.sockets.onReceive, this.handle);
+				if (socket.listeners(sb.config.sockets.onReceive).length === 0) {
+					socket.on(sb.config.sockets.onReceive, this.handle);
 				}
 			},
 			handle: function(data) {
-				var shoutBox = Base.getShoutPanel();
+				var shoutBox = sb.base.getShoutPanel();
 				if (shoutBox.length > 0) {
-					Base.addShout(shoutBox, data);
+					sb.base.addShout(shoutBox, data);
 					if (data.fromuid !== app.uid) {
-						if (Config.getSetting('notification') === 1) {
-							app.alternatingTitle(Config.messages.alert.replace(/%u/g, data.data.userData.username));
+						if (sb.config.getSetting('notification') === 1) {
+							app.alternatingTitle(sb.config.messages.alert.replace(/%u/g, data.data.userData.username));
 						}
-						if (Config.getSetting('sound') === 1) {
+						if (sb.config.getSetting('sound') === 1) {
 							$('#shoutbox-sounds-notification')[0].play();
 						}
 					}
@@ -29,8 +24,8 @@ define(function() {
 		},
 		ondelete: {
 			register: function() {
-				if (socket.listeners(Config.sockets.onDelete).length === 0) {
-					socket.on(Config.sockets.onDelete, this.handle);
+				if (socket.listeners(sb.config.sockets.onDelete).length === 0) {
+					socket.on(sb.config.sockets.onDelete, this.handle);
 				}
 			},
 			handle: function(data) {
@@ -44,26 +39,29 @@ define(function() {
 		},
 		onedit: {
 			register: function() {
-				if (socket.listeners(Config.sockets.onEdit).length === 0) {
-					socket.on(Config.sockets.onEdit, this.handle);
+				if (socket.listeners(sb.config.sockets.onEdit).length === 0) {
+					socket.on(sb.config.sockets.onEdit, this.handle);
 				}
 			},
 			handle: function(data) {
 				data.data.content = $(data.data.content).wrapInner('<abbr title="edited"></abbr>').html();
-				$('[data-sid="' + data.sid + '"]').html(Utils.parseShout(data, true));
+				$('[data-sid="' + data.sid + '"]').html(sb.utils.parseShout(data, true));
 			}
 		},
 		onstatuschange: {
 			register: function() {
-				if (socket.listeners(Config.sockets.getUserStatus).length === 0) {
-					socket.on(Config.sockets.getUserStatus, this.handle);
+				if (socket.listeners(sb.config.sockets.getUserStatus).length === 0) {
+					socket.on(sb.config.sockets.getUserStatus, this.handle);
 				}
 			},
 			handle: function(err, data) {
-				Base.updateUserStatus(Base.getShoutPanel(), data.uid, data.status);
+				sb.base.updateUserStatus(sb.base.getShoutPanel(), data.uid, data.status);
 			}
 		}
 	};
 
-	return Sockets;
+	return function(Shoutbox) {
+		Shoutbox.sockets = Sockets;
+		sb = Shoutbox;
+	};
 });

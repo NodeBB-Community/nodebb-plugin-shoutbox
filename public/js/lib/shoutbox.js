@@ -1,29 +1,32 @@
 define(function() {
-	var Base;
+	var Shoutbox = {},
+		Base;
 
 	var module = {
-		init: function(url) {
-			//todo I hate this
+		init: function(url, callback) {
 			require([
-				'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js'], function(b){
-				b.init(function() {
-					Base = b;
-					Base.load();
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/base.js',
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/utils.js',
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/actions.js',
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/sockets.js',
+				'plugins/nodebb-plugin-shoutbox/public/js/lib/config.js'
+			], function(b, u, a, s, c){
+				b(Shoutbox); u(Shoutbox); a(Shoutbox);
+				s(Shoutbox); c(Shoutbox);
+				Shoutbox.utils.init(function() {
+					Shoutbox.base.load();
 					if (url === 'shoutbox') {
 						module.showUserPanel();
+					}
+					if (typeof(callback) === 'function') {
+						callback();
 					}
 				});
 			});
 		},
 		showUserPanel: function() {
-			Base.getUsersPanel().parent().removeClass('hidden');
-			Base.updateUsers();
-		},
-		load: function(name, req, onload, config) {
-			console.log(name);
-			req(['plugins/nodebb-plugin-shoutbox/public/js/lib/' + name + '.js'], function(val) {
-				onload(val);
-			});
+			Shoutbox.base.getUsersPanel().parent().removeClass('hidden');
+			Shoutbox.base.updateUsers();
 		}
 	};
 

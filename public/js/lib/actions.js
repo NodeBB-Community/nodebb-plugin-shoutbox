@@ -1,12 +1,7 @@
 define(['string'], function(S) {
-	var Base, Utils, Config;
+	var sb;
 
 	var Actions = {
-		init: function(base, utils, config, callback) {
-			//todo I hate this
-			Base = base; Utils = utils; Config = config;
-			callback();
-		},
 		send: {
 			register: function(shoutBox) {
 				var sendMessage = this.handle;
@@ -24,7 +19,7 @@ define(['string'], function(S) {
 			handle: function(shoutBox) {
 				var msg = S(shoutBox.find('#shoutbox-message-input').val()).stripTags().trim().s;
 				if(msg.length) {
-					socket.emit(Config.sockets.send, { message:msg });
+					socket.emit(sb.config.sockets.send, { message:msg });
 				}
 				shoutBox.find('#shoutbox-message-input').val('');
 			}
@@ -35,7 +30,7 @@ define(['string'], function(S) {
 			},
 			handle: function(e) {
 				var sid = $(e.currentTarget).parents('[data-sid]').data('sid');
-				socket.emit(Config.sockets.remove, { sid: sid }, function (err, result) {
+				socket.emit(sb.config.sockets.remove, { sid: sid }, function (err, result) {
 					if (result === true) {
 						app.alertSuccess('Successfully deleted shout!');
 					} else if (err) {
@@ -63,7 +58,7 @@ define(['string'], function(S) {
 					shout = shoutBox.find('[data-sid="' + sid + '"]');
 
 				if (shout.parents('[data-uid]').data('uid') === app.uid || app.isAdmin) {
-					socket.emit(Config.sockets.getOriginalShout, { sid: sid }, function(err, orig) {
+					socket.emit(sb.config.sockets.getOriginalShout, { sid: sid }, function(err, orig) {
 						parent.addClass('has-warning');
 						parent.find('#shoutbox-message-send-btn').text('Edit').off('click').on('click', function(e){
 							edit(orig);
@@ -81,7 +76,7 @@ define(['string'], function(S) {
 					if (msg === orig || msg === '' || msg === null) {
 						return finish();
 					}
-					socket.emit(Config.sockets.edit, { sid: sid, edited: msg }, function (err, result) {
+					socket.emit(sb.config.sockets.edit, { sid: sid, edited: msg }, function (err, result) {
 						if (result === true) {
 							app.alertSuccess('Successfully edited shout!');
 						} else if (err) {
@@ -135,7 +130,7 @@ define(['string'], function(S) {
 					}
 					$.post('https://api.github.com/gists', JSON.stringify(json), function(data) {
 						gistModal.modal('hide');
-						var input = Base.getShoutPanel().find('#shoutbox-message-input');
+						var input = sb.base.getShoutPanel().find('#shoutbox-message-input');
 						var link = data.html_url;
 						if (input.val().length > 0) {
 							link = ' ' + link;
@@ -173,7 +168,7 @@ define(['string'], function(S) {
 					return app.alertError('Currently disabled');
 					archiveModal.modal('show');
 					if (!archiveModal.data('start')) {
-						archiveModal.data('start', (-(Config.vars.shoutLimit - 1)).toString());
+						archiveModal.data('start', (-(sb.config.vars.shoutLimit - 1)).toString());
 						archiveModal.data('end', '-1');
 					}
 					handle.get(archiveModal, handle);
@@ -182,10 +177,10 @@ define(['string'], function(S) {
 					var curStart = parseInt(archiveModal.data('start'), 10);
 					var curEnd = parseInt(archiveModal.data('end'));
 
-					var newStart = curStart - Config.vars.shoutLimit;
-					var newEnd = curEnd - Config.vars.shoutLimit;
+					var newStart = curStart - sb.config.vars.shoutLimit;
+					var newEnd = curEnd - sb.config.vars.shoutLimit;
 
-					if (Math.abs(newStart) < (parseInt(Config.vars.lastSid, 10) + Config.vars.shoutLimit)) {
+					if (Math.abs(newStart) < (parseInt(sb.config.vars.lastSid, 10) + sb.config.vars.shoutLimit)) {
 						archiveModal.data('start', newStart);
 						archiveModal.data('end', newEnd);
 
@@ -196,9 +191,9 @@ define(['string'], function(S) {
 					var curStart = parseInt(archiveModal.data('start'), 10);
 					var curEnd = parseInt(archiveModal.data('end'));
 
-					var newStart = curStart + Config.vars.shoutLimit;
-					var newEnd = curEnd + Config.vars.shoutLimit;
-					var startLimit = -(Config.vars.shoutLimit - 1);
+					var newStart = curStart + sb.config.vars.shoutLimit;
+					var newEnd = curEnd + sb.config.vars.shoutLimit;
+					var startLimit = -(sb.config.vars.shoutLimit - 1);
 
 					if (newStart <= startLimit && newEnd < 0) {
 						archiveModal.data('start', newStart);
@@ -212,7 +207,7 @@ define(['string'], function(S) {
 					var curStart = archiveModal.data('start');
 					var curEnd = archiveModal.data('end');
 					var addShout = handle.addShout;
-					socket.emit(Config.sockets.get, { start: curStart, end: curEnd }, function(err, shouts) {
+					socket.emit(sb.config.sockets.get, { start: curStart, end: curEnd }, function(err, shouts) {
 						for(var i = 0; i < shouts.length; i++) {
 							addShout(archiveModal, shouts[i]);
 						}
@@ -221,8 +216,8 @@ define(['string'], function(S) {
 				addShout: function(archiveModal, shout) {
 					if (shout && shout.sid) {
 						var archiveContent = archiveModal.find('#shoutbox-archive-content');
-						archiveContent.append(Utils.parseShout(shout));
-						Base.scrollToBottom(archiveContent);
+						archiveContent.append(sb.utils.parseShout(shout));
+						sb.base.scrollToBottom(archiveContent);
 					}
 				}
 			}
@@ -243,8 +238,8 @@ define(['string'], function(S) {
 					statusEl.removeClass('fa-times').addClass('fa-check');
 					status = 1;
 				}
-				Config.settings[key] = !status;
-				socket.emit(Config.sockets.saveSettings, { key: key, value: status }, function(err, result) {
+				sb.config.settings[key] = !status;
+				socket.emit(sb.config.sockets.saveSettings, { key: key, value: status }, function(err, result) {
 					if (err || result === false) {
 						app.alertError('Error saving settings!');
 					}
@@ -254,5 +249,8 @@ define(['string'], function(S) {
 		}
 	};
 
-	return Actions;
+	return function(Shoutbox) {
+		Shoutbox.actions = Actions;
+		sb = Shoutbox;
+	};
 });

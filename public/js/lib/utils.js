@@ -13,7 +13,7 @@ define(['string'], function(S, templates) {
 				'plugins/nodebb-plugin-shoutbox/public/js/lib/actions.js',
 				'plugins/nodebb-plugin-shoutbox/public/js/lib/sockets.js'], function(a, s) {
 				a.init(Base, Utils, Config, function() {
-					s.init(Base, config, function() {
+					s.init(Base, Utils, config, function() {
 						Actions = a; Sockets = s;
 						callback();
 					});

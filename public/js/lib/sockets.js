@@ -1,9 +1,9 @@
 define(function() {
-	var Base, Config;
+	var Base, Utils, Config;
 	var Sockets = {
-		init: function(base, config, callback) {
+		init: function(base, utils, config, callback) {
 			//todo I hate this
-			Base = base; Config = config;
+			Base = base; Utils = utils; Config = config;
 			callback();
 		},
 		onreceive: {
@@ -49,7 +49,8 @@ define(function() {
 				}
 			},
 			handle: function(data) {
-				$('[data-sid="' + data.id + '"]').html($(data.content).wrapInner('<abbr title="edited"></abbr>'));
+				data.data.content = $(data.data.content).wrapInner('<abbr title="edited"></abbr>').html();
+				$('[data-sid="' + data.sid + '"]').html(Utils.parseShout(data, true));
 			}
 		},
 		onstatuschange: {

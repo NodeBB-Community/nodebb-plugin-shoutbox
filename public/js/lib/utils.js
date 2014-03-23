@@ -12,7 +12,7 @@ define(function() {
 			});
 		},
 		parseShout: function(shout, onlyText) {
-			shout.hasRights = shout.fromuid === app.uid || app.isAdmin === true;
+			shout.user.hasRights = shout.fromuid === app.uid || app.isAdmin === true;
 			if (onlyText) {
 				return textTpl.parse(shout);
 			} else {
@@ -64,7 +64,7 @@ define(function() {
 		addActionHandlers: function(shoutBox) {
 			var actions = sb.actions;
 			for (var a in actions) {
-				if (actions.hasOwnProperty(a) && a != 'init') {
+				if (actions.hasOwnProperty(a)) {
 					actions[a].register(shoutBox);
 				}
 			}
@@ -72,7 +72,7 @@ define(function() {
 		addSocketHandlers: function() {
 			var sockets = sb.sockets;
 			for (var s in sockets) {
-				if (sockets.hasOwnProperty(s) && s != 'init') {
+				if (sockets.hasOwnProperty(s)) {
 					sockets[s].register();
 				}
 			}

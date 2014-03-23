@@ -1,7 +1,9 @@
 <div data-uid="{fromuid}" class="shoutbox-shout-container">
-    <img class="shoutbox-shout-avatar {data.userData.status}" title="{data.userData.username}" src="{data.userData.picture}"/>
+    <a href="/user/{user.userslug}">
+        <img class="shoutbox-shout-avatar {user.status}" title="{user.username}" src="{user.picture}"/>
+    </a>
     <div class="shoutbox-shout-content">
-        <a href="/user/{data.userData.userslug}">{data.userData.username}</a>
+        <a href="/user/{user.userslug}">{user.username}</a>
         <!-- IMPORT shoutbox/shout/text.tpl -->
     </div>
 </div>

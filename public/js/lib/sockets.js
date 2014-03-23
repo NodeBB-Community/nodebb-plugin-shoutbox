@@ -13,7 +13,7 @@ define(function() {
 					sb.base.addShout(shoutBox, data);
 					if (data.fromuid !== app.uid) {
 						if (sb.config.getSetting('notification') === 1) {
-							app.alternatingTitle(sb.config.messages.alert.replace(/%u/g, data.data.userData.username));
+							app.alternatingTitle(sb.config.messages.alert.replace(/%u/g, data.user.username));
 						}
 						if (sb.config.getSetting('sound') === 1) {
 							$('#shoutbox-sounds-notification')[0].play();
@@ -29,11 +29,11 @@ define(function() {
 				}
 			},
 			handle: function(data) {
-				var par = $('[data-sid="' + data.id + '"]').parents('[data-uid]');
+				var par = $('[data-sid="' + data.sid + '"]').parents('[data-uid]');
 				if (par.find('[data-sid]').length === 1) {
 					par.remove();
 				} else {
-					$('[data-sid="' + data.id + '"]').remove();
+					$('[data-sid="' + data.sid + '"]').remove();
 				}
 			}
 		},
@@ -44,7 +44,7 @@ define(function() {
 				}
 			},
 			handle: function(data) {
-				data.data.content = $(data.data.content).wrapInner('<abbr title="edited"></abbr>').html();
+				data.content = $(data.content).wrapInner('<abbr title="edited"></abbr>').html();
 				$('[data-sid="' + data.sid + '"]').html(sb.utils.parseShout(data, true));
 			}
 		},

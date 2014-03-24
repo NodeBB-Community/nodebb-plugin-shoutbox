@@ -151,24 +151,20 @@ define(['string'], function(S) {
 		archive: {
 			register: function(shoutBox) {
 				var handle = this.handle,
-					show = this.handle.show,
-					prev = this.handle.prev,
-					next = this.handle.next,
 					archiveModal = $('#shoutbox-archive-modal');
-				shoutBox.find('#shoutbox-button-archive').off('click').on('click', function(e) {
-					show(archiveModal, handle);
-				});
 
+				shoutBox.find('#shoutbox-button-archive').off('click').on('click', function(e) {
+					handle.show(archiveModal, handle);
+				});
 				archiveModal.find('#shoutbox-button-archive-prev').off('click').on('click', function(e) {
-					prev(archiveModal, handle);
+					handle.prev(archiveModal, handle);
 				});
 				archiveModal.find('#shoutbox-button-archive-next').off('click').on('click', function(e) {
-					next(archiveModal, handle);
+					handle.next(archiveModal, handle);
 				});
 			},
 			handle: {
 				show: function(archiveModal, handle) {
-					//return app.alertError('Currently disabled');
 					archiveModal.modal('show');
 					if (!archiveModal.data('start')) {
 						archiveModal.data('start', (-(sb.config.vars.shoutLimit - 1)).toString());
@@ -201,10 +197,11 @@ define(['string'], function(S) {
 				},
 				get: function(archiveModal, handle) {
 					archiveModal.find('#shoutbox-archive-content').html('');
-					var curStart = archiveModal.data('start');
-					var curEnd = archiveModal.data('end');
-					var addShout = handle.addShout;
-					socket.emit(sb.config.sockets.get, { start: curStart, end: curEnd }, function(err, shouts) {
+					var start = archiveModal.data('start'),
+						end = archiveModal.data('end'),
+						addShout = handle.addShout;
+
+					socket.emit(sb.config.sockets.get, { start: start, end: end }, function(err, shouts) {
 						for(var i = 0; i < shouts.length; i++) {
 							addShout(archiveModal, shouts[i]);
 						}

@@ -21,6 +21,7 @@ define(function() {
 					shoutContent.append(sb.utils.parseShout(shout));
 				}
 				Base.scrollToBottom(shoutContent);
+				sb.config.vars.lastSid = shout.sid;
 			}
 		},
 		getShouts: function(shoutBox) {

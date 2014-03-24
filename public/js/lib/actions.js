@@ -168,7 +168,7 @@ define(['string'], function(S) {
 			},
 			handle: {
 				show: function(archiveModal, handle) {
-					return app.alertError('Currently disabled');
+					//return app.alertError('Currently disabled');
 					archiveModal.modal('show');
 					if (!archiveModal.data('start')) {
 						archiveModal.data('start', (-(sb.config.vars.shoutLimit - 1)).toString());
@@ -177,30 +177,24 @@ define(['string'], function(S) {
 					handle.get(archiveModal, handle);
 				},
 				prev: function(archiveModal, handle) {
-					var curStart = parseInt(archiveModal.data('start'), 10);
-					var curEnd = parseInt(archiveModal.data('end'));
+					var start = parseInt(archiveModal.data('start'), 10) - sb.config.vars.shoutLimit,
+						end = parseInt(archiveModal.data('end'), 10) - sb.config.vars.shoutLimit;
 
-					var newStart = curStart - sb.config.vars.shoutLimit;
-					var newEnd = curEnd - sb.config.vars.shoutLimit;
-
-					if (Math.abs(newStart) < (parseInt(sb.config.vars.lastSid, 10) + sb.config.vars.shoutLimit)) {
-						archiveModal.data('start', newStart);
-						archiveModal.data('end', newEnd);
+					if (Math.abs(start) < (parseInt(sb.config.vars.lastSid, 10) + sb.config.vars.shoutLimit)) {
+						archiveModal.data('start', start);
+						archiveModal.data('end', end);
 
 						handle.get(archiveModal, handle);
 					}
 				},
 				next: function(archiveModal, handle) {
-					var curStart = parseInt(archiveModal.data('start'), 10);
-					var curEnd = parseInt(archiveModal.data('end'));
+					var start = parseInt(archiveModal.data('start'), 10) + sb.config.vars.shoutLimit,
+						end = parseInt(archiveModal.data('end'), 10) + sb.config.vars.shoutLimit,
+						startLimit = -(sb.config.vars.shoutLimit - 1);
 
-					var newStart = curStart + sb.config.vars.shoutLimit;
-					var newEnd = curEnd + sb.config.vars.shoutLimit;
-					var startLimit = -(sb.config.vars.shoutLimit - 1);
-
-					if (newStart <= startLimit && newEnd < 0) {
-						archiveModal.data('start', newStart);
-						archiveModal.data('end', newEnd);
+					if (start <= startLimit && end < 0) {
+						archiveModal.data('start', start);
+						archiveModal.data('end', end);
 
 						handle.get(archiveModal, handle);
 					}
@@ -214,12 +208,17 @@ define(['string'], function(S) {
 						for(var i = 0; i < shouts.length; i++) {
 							addShout(archiveModal, shouts[i]);
 						}
+						archiveModal.find('.shoutbox-shout-options').remove();
 					});
 				},
 				addShout: function(archiveModal, shout) {
 					if (shout && shout.sid) {
 						var archiveContent = archiveModal.find('#shoutbox-archive-content');
-						archiveContent.append(sb.utils.parseShout(shout));
+						if (shout.fromuid === archiveContent.find('[data-uid]:last').data('uid')) {
+							$('[data-sid]:last').after(sb.utils.parseShout(shout, true));
+						} else {
+							archiveContent.append(sb.utils.parseShout(shout));
+						}
 						sb.base.scrollToBottom(archiveContent);
 					}
 				}

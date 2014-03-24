@@ -49,7 +49,7 @@ define(function() {
 				});
 			}
 			var setStatus = function(uid, status) {
-				shoutBox.find('[data-uid="' + uid + '"] > img').removeClass().addClass('shoutbox-shout-avatar ' + status);
+				shoutBox.find('[data-uid="' + uid + '"] .shoutbox-shout-avatar').removeClass().addClass('shoutbox-shout-avatar ' + status);
 			}
 
 			if (!uid) {

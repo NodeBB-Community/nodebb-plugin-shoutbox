@@ -43,6 +43,9 @@ define(['string'], function(S) {
 		edit: {
 			register: function(shoutBox) {
 				var handle = this.handle;
+				shoutBox.off('click', '.shoutbox-shout-option-edit').on('click', '.shoutbox-shout-option-edit', function(e) {
+					handle(shoutBox, $(e.currentTarget).parents('[data-sid]').data('sid'));
+				});
 				shoutBox.off('dblclick', '[data-sid]').on('dblclick', '[data-sid]', function(e) {
 					handle(shoutBox, $(e.currentTarget).data('sid'));
 				});

@@ -198,12 +198,11 @@ define(['string'], function(S) {
 				get: function(archiveModal, handle) {
 					archiveModal.find('#shoutbox-archive-content').html('');
 					var start = archiveModal.data('start'),
-						end = archiveModal.data('end'),
-						addShout = handle.addShout;
+						end = archiveModal.data('end');
 
 					socket.emit(sb.config.sockets.get, { start: start, end: end }, function(err, shouts) {
 						for(var i = 0; i < shouts.length; i++) {
-							addShout(archiveModal, shouts[i]);
+							handle.addShout(archiveModal, shouts[i]);
 						}
 						archiveModal.find('.shoutbox-shout-options').remove();
 					});

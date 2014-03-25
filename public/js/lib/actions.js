@@ -49,8 +49,8 @@ define(['string'], function(S) {
 				shoutBox.off('dblclick', '[data-sid]').on('dblclick', '[data-sid]', function(e) {
 					handle(shoutBox, $(e.currentTarget).data('sid'));
 				});
-				shoutBox.find('#shoutbox-message-input').on('keypress', function(e) {
-					if(e.keyCode === 38) {
+				shoutBox.find('#shoutbox-message-input').on('keyup', function(e) {
+					if(e.which === 38) {
 						handle(shoutBox, shoutBox.find('[data-uid="' + app.uid + '"] [data-sid]:last').data('sid'));
 					}
 				});

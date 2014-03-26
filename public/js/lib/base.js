@@ -16,7 +16,7 @@ define(function() {
 					shoutContent.html('');
 				}
 				if (shout.fromuid === shoutContent.find('[data-uid]:last').data('uid')) {
-					$('[data-sid]:last').after(sb.utils.parseShout(shout, true));
+					shoutContent.find('[data-sid]:last').after(sb.utils.parseShout(shout, true));
 				} else {
 					shoutContent.append(sb.utils.parseShout(shout));
 				}

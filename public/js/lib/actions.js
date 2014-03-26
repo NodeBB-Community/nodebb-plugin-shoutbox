@@ -94,7 +94,6 @@ define(['string'], function(S) {
 				return false;
 			},
 			finish: function(shoutBox) {
-				console.log('Finish editing');
 				var parent = shoutBox.find('#shoutbox-message-input').parent();
 				parent.removeClass('has-warning').find('#shoutbox-message-send-btn').removeClass('hide');
 				parent.find('#shoutbox-message-send-btn').text('Send');
@@ -216,7 +215,7 @@ define(['string'], function(S) {
 					if (shout && shout.sid) {
 						var archiveContent = archiveModal.find('#shoutbox-archive-content');
 						if (shout.fromuid === archiveContent.find('[data-uid]:last').data('uid')) {
-							$('[data-sid]:last').after(sb.utils.parseShout(shout, true));
+							archiveContent.find('[data-sid]:last').after(sb.utils.parseShout(shout, true));
 						} else {
 							archiveContent.append(sb.utils.parseShout(shout));
 						}

@@ -35,6 +35,9 @@ define(function() {
 				} else {
 					$('[data-sid="' + data.sid + '"]').remove();
 				}
+				if (data.sid === sb.actions.edit.editing) {
+					sb.actions.edit.finish(sb.base.getShoutPanel());
+				}
 			}
 		},
 		onedit: {

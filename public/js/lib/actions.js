@@ -49,35 +49,37 @@ define(['string'], function(S) {
 				shoutBox.off('dblclick', '[data-sid]').on('dblclick', '[data-sid]', function(e) {
 					handle(shoutBox, $(e.currentTarget).data('sid'));
 				});
-				shoutBox.find('#shoutbox-message-input').on('keyup', function(e) {
+				shoutBox.find('#shoutbox-message-input').off('keyup').on('keyup', function(e) {
 					if(e.which === 38) {
 						handle(shoutBox, shoutBox.find('[data-uid="' + app.uid + '"] [data-sid]:last').data('sid'));
 					}
 				});
 			},
 			handle: function(shoutBox, sid) {
-				var shout,
-					parent = shoutBox.find('#shoutbox-message-input').parent(),
-					shout = shoutBox.find('[data-sid="' + sid + '"]');
+				var shout = shoutBox.find('[data-sid="' + sid + '"]');
 
 				if (shout.parents('[data-uid]').data('uid') === app.uid || app.isAdmin) {
+					Actions.edit.editing = sid;
 					socket.emit(sb.config.sockets.getOriginalShout, { sid: sid }, function(err, orig) {
-						parent.addClass('has-warning');
-						parent.find('#shoutbox-message-send-btn').text('Edit').off('click').on('click', function(e){
+						shoutBox.find('#shoutbox-message-send-btn').off('click').on('click', function(e){
 							edit(orig);
-						});
-						parent.find('#shoutbox-message-input').off('keypress').on('keypress', function(e) {
-							if(e.which === 13 && !e.shiftKey) {
+						}).text('Edit');
+						shoutBox.find('#shoutbox-message-input').off('keyup').off('keypress').on('keypress', function(e) {
+							if (e.which === 13 && !e.shiftKey) {
 								edit(orig);
 							}
-						}).val(orig).focus().putCursorAtEnd();
+						}).on('keyup', function(e) {
+							if (e.currentTarget.value.length === 0) {
+								Actions.edit.finish(shoutBox);
+							}
+						}).val(orig).focus().putCursorAtEnd().parent().addClass('has-warning');
 					});
 				}
 
 				function edit(orig) {
-					var msg = S(parent.find('#shoutbox-message-input').val()).stripTags().s;
+					var msg = S(shoutBox.find('#shoutbox-message-input').val()).stripTags().s;
 					if (msg === orig || msg === '' || msg === null) {
-						return finish();
+						return Actions.edit.finish(shoutBox);
 					}
 					socket.emit(sb.config.sockets.edit, { sid: sid, edited: msg }, function (err, result) {
 						if (result === true) {
@@ -85,20 +87,23 @@ define(['string'], function(S) {
 						} else if (err) {
 							app.alertError('Error editing shout: ' + err.message, 3000);
 						}
-						finish();
+						Actions.edit.finish(shoutBox);
 					});
 				}
 
-				function finish() {
-					parent.removeClass('has-warning').find('#shoutbox-message-send-btn').removeClass('hide');
-					parent.find('#shoutbox-message-send-btn').text('Send');
-					parent.find('#shoutbox-message-input').val('');
-					Actions.send.register(shoutBox);
-					Actions.edit.register(shoutBox);
-				}
-
 				return false;
-			}
+			},
+			finish: function(shoutBox) {
+				console.log('Finish editing');
+				var parent = shoutBox.find('#shoutbox-message-input').parent();
+				parent.removeClass('has-warning').find('#shoutbox-message-send-btn').removeClass('hide');
+				parent.find('#shoutbox-message-send-btn').text('Send');
+				parent.find('#shoutbox-message-input').val('');
+				Actions.send.register(shoutBox);
+				Actions.edit.register(shoutBox);
+				Actions.edit.editing = 0;
+			},
+			editing: 0
 		},
 		gist: {
 			register: function(shoutBox) {

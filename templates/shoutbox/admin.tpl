@@ -28,12 +28,12 @@
             <h3>Features <small>enable or disable features</small> <button class="features-save btn btn-success btn-xs pull-right">Save</button></h3>
             <div class="features">
                 <!-- BEGIN features -->
-                <div data-feature="{features.id}" class="panel panel-default pointer shoutbox-admin-feature disabled">
+                <div data-feature="{features.id}" class="panel panel-default pointer shoutbox-admin-feature">
                     <div class="panel-heading">
                         <strong>{features.name}</strong> <small>{features.description}</small>
                         <div class="pull-left pointer">
                             <span class="toggle-feature">
-                                <i class="fa fa-times-circle"></i>
+                                <i class="fa fa-check-circle"></i>
                             </span>&nbsp;
                         </div>
                         <div class="pull-right">

@@ -57,11 +57,12 @@
 		var saved = JSON.parse($('#features-settings').val());
 		for (var feature in saved) {
 			if (saved.hasOwnProperty(feature)) {
-				if (saved[feature].enabled) {
-					on(feature);
+				if (!saved[feature].enabled) {
+					off(feature);
 				}
 			}
 		}
+		updateSettings();
 	}
 
 	function prepareButtons() {

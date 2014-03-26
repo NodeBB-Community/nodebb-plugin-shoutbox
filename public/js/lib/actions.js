@@ -224,6 +224,14 @@ define(['string'], function(S) {
 				}
 			}
 		},
+		bug: {
+			register: function(shoutBox) {
+				shoutBox.find('#shoutbox-button-bug').off('click').on('click', this.handle);
+			},
+			handle: function(e) {
+				window.open('https://github.com/Schamper/nodebb-plugin-shoutbox/issues/new', '_blank').focus();
+			}
+		},
 		settings: {
 			register: function(shoutBox) {
 				shoutBox.off('click', '#shoutbox-settings-menu a').on('click', '#shoutbox-settings-menu a', this.handle);

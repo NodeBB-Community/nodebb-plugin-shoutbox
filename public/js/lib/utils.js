@@ -3,21 +3,18 @@ define(function() {
 
 	var Utils = {
 		init: function(callback) {
-			window.templates.preload_template('shoutbox/shout', function() {
-				window.templates.preload_template('shoutbox/shout/text', function() {
-					shoutTpl = window.templates['shoutbox/shout'];
-					textTpl = window.templates['shoutbox/shout/text'];
+			window.ajaxify.loadTemplate('shoutbox/shout', function(shout) {
+				window.ajaxify.loadTemplate('shoutbox/shout/text', function(text) {
+					shoutTpl = shout;
+					textTpl = text;
 					callback();
 				});
 			});
 		},
 		parseShout: function(shout, onlyText) {
+			var tpl = onlyText ? textTpl : shoutTpl;
 			shout.user.hasRights = shout.fromuid === app.uid || app.isAdmin === true;
-			if (onlyText) {
-				return textTpl.parse(shout);
-			} else {
-				return shoutTpl.parse(shout);
-			}
+			return window.templates.parse(tpl, shout);
 		},
 		prepareShoutbox: function() {
 			Utils.getSettings(function() {

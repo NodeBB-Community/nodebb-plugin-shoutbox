@@ -214,7 +214,7 @@ define(['string'], function(S) {
 				addShout: function(archiveModal, shout) {
 					if (shout && shout.sid) {
 						var archiveContent = archiveModal.find('#shoutbox-archive-content');
-						if (shout.fromuid === archiveContent.find('[data-uid]:last').data('uid')) {
+						if (parseInt(shout.fromuid, 10) === archiveContent.find('[data-uid]:last').data('uid')) {
 							archiveContent.find('[data-sid]:last').after(sb.utils.parseShout(shout, true));
 						} else {
 							archiveContent.append(sb.utils.parseShout(shout));

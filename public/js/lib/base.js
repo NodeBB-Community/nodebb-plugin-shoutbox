@@ -15,7 +15,7 @@ define(function() {
 				if (shoutContent.find('div[class="shoutbox-shout-container"]').length === 0) {
 					shoutContent.html('');
 				}
-				if (shout.fromuid === shoutContent.find('[data-uid]:last').data('uid')) {
+				if (parseInt(shout.fromuid, 10) === shoutContent.find('[data-uid]:last').data('uid')) {
 					shoutContent.find('[data-sid]:last').after(sb.utils.parseShout(shout, true));
 				} else {
 					shoutContent.append(sb.utils.parseShout(shout));

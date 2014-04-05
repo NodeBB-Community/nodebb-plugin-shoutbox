@@ -81,7 +81,7 @@ Shoutbox.widget = {
 						app.render('shoutbox', data, callback);
 					});
 				} else {
-					callback(null, null);
+					callback(null, '');
 				}
 			});
 			// Client or server?

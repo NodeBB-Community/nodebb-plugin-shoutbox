@@ -3,9 +3,13 @@
     <div class="col-md-12">
         <div class="panel panel-default" id="shoutbox">
             <div class="panel-heading">
-                <h3 class="panel-title"><a href="/shoutbox" title="Shoutbox">Shoutbox</a></h3>
+                <h3 class="panel-title">
+                    <a href="/shoutbox" title="Shoutbox">Shoutbox</a>
+                    <a href="#" id="shoutbox-settings-hide"><span class="fa fa-arrow-up pull-right"></span></a>
+                </h3>
             </div>
-            <div class="panel-body">
+
+            <div class="panel-body" style="{hiddenStyle}">
                 <div id="shoutbox-content" class="well well-sm"></div>
                 <div class="input-group">
                     <input id="shoutbox-message-input" type="text" placeholder="enter message" name="shoutbox-message" class="form-control">

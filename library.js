@@ -76,13 +76,13 @@ Shoutbox.widget = {
 		if (widget.uid !== 0) {
 			//Currently doing this on the server -- still debating what's better
 			Config.settings.get({ uid: widget.uid, settings: {} }, function(err, result) {
-				if (result.settings[Config.prefix + 'hide'] !== 1) {
-					Config.api(function(data) {
-						app.render('shoutbox', data, callback);
-					});
-				} else {
-					callback(null, '');
-				}
+				Config.api(function(data) {
+					data.hiddenStyle = '';
+					if (result.settings[Config.prefix + 'hide'] == 1) {
+						data.hiddenStyle = 'display: none;';
+					}
+					app.render('shoutbox', data, callback);
+				});
 			});
 			// Client or server?
 //			Config.api(function(data) {

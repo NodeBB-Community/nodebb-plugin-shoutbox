@@ -256,6 +256,25 @@ define(['string'], function(S) {
 				});
 				return false;
 			}
+		},
+		hide: {
+			register: function(shoutBox) {
+				shoutBox.off('click', '#shoutbox-settings-hide').on('click', '#shoutbox-settings-hide', this.handle);
+			},
+			handle: function(e) {
+				var el = $(e.currentTarget).find('span'),
+					body = sb.base.getShoutPanel().find('.panel-body');
+				if (el.hasClass('fa-arrow-up')) {
+					body.slideUp();
+					el.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+					sb.config.settings['hide'] = true;
+				} else {
+					body.slideDown();
+					el.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+					sb.config.settings['hide'] = false;
+				}
+				socket.emit(sb.config.sockets.saveSettings, { key: 'hide', value: sb.config.settings['hide'] });
+			}
 		}
 	};
 

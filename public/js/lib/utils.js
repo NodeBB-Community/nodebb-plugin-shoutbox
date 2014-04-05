@@ -3,13 +3,17 @@ define(function() {
 
 	var Utils = {
 		init: function(callback) {
-			window.ajaxify.loadTemplate('shoutbox/shout', function(shout) {
-				window.ajaxify.loadTemplate('shoutbox/shout/text', function(text) {
-					shoutTpl = shout;
-					textTpl = text;
-					callback();
+			if (!shoutTpl || !textTpl) {
+				window.ajaxify.loadTemplate('shoutbox/shout', function(shout) {
+					window.ajaxify.loadTemplate('shoutbox/shout/text', function(text) {
+						shoutTpl = shout;
+						textTpl = text;
+						callback();
+					});
 				});
-			});
+			} else {
+				callback();
+			}
 		},
 		parseShout: function(shout, onlyText) {
 			var tpl = onlyText ? textTpl : shoutTpl;
@@ -46,10 +50,19 @@ define(function() {
 				if (settings.hasOwnProperty(key)) {
 					var value = settings[key];
 					var el = shoutBox.find('#shoutbox-settings-' + key + ' span');
-					if (value === 1) {
-						el.removeClass('fa-times').addClass('fa-check');
+					// Not the best way but it'll have to do for now
+					if (key !== 'hide') {
+						if (value === 1) {
+							el.removeClass('fa-times').addClass('fa-check');
+						} else {
+							el.removeClass('fa-check').addClass('fa-times');
+						}
 					} else {
-						el.removeClass('fa-check').addClass('fa-times');
+						if (value == 1) {
+							el.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+						} else {
+							el.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+						}
 					}
 				}
 			}

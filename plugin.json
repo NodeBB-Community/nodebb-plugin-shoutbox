@@ -21,7 +21,13 @@
 		"public/less/style.less"
 	],
 	"scripts": [
-		"public/js/loader.js"
+		"public/js/loader.js",
+		"public/js/lib/base.js",
+		"public/js/lib/utils.js",
+		"public/js/lib/sockets.js",
+		"public/js/lib/actions.js",
+		"public/js/lib/settings.js",
+		"public/js/lib/vars.js"
 	],
 	"templates": "./templates",
 	"minver": "0.4.0"

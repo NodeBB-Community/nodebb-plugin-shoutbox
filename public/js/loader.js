@@ -1,11 +1,18 @@
-$(document).ready(function() {
-	$(window).on('action:ajaxify.end', function(e, data) {
-		if (data.url === "" || data.url === "shoutbox") {
-			require([
-				'plugins/nodebb-plugin-shoutbox/public/js/lib/shoutbox.js'
-			], function(shoutBox) {
-				shoutBox.init(data.url);
-			});
+(function() {
+	$(window).on('action:widgets.loaded', function(e, data) {
+		if ($('#shoutbox').length > 0) {
+			Shoutbox.init(data.url);
 		}
 	});
-});
+
+	window.Shoutbox = {
+		init: function(url) {
+			Shoutbox.utils.init(function() {
+				Shoutbox.base.load($('#shoutbox'));
+				if (url === 'shoutbox') {
+					Shoutbox.base.showUserPanel();
+				}
+			});
+		}
+	};
+})();

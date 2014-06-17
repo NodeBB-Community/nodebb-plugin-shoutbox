@@ -21,7 +21,7 @@
 			return window.templates.parse(tpl, shout);
 		},
 		scrollToBottom: function(shoutContent) {
-			if(shoutContent[0]) {
+			if(shoutContent[0] && (shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height() < shoutContent.height()) {
 				shoutContent.scrollTop(
 					shoutContent[0].scrollHeight - shoutContent.height()
 				);

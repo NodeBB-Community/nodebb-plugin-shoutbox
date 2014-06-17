@@ -13,12 +13,14 @@
     .img-circle();
     border: 2px solid @status-offline;
     display: inline-block;
-    position: absolute;
-    left: 0;
     vertical-align: top;
     width: @avatar-size;
     height: @avatar-size;
     box-shadow: 0 1px 1px #555555;
+    &-link {
+      position: absolute;
+      left: 0;
+    }
     &.online {
       border: 2px solid @status-online;
     }

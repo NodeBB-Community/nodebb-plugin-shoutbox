@@ -1,14 +1,8 @@
-var	fs = require('fs'),
-	path = require('path'),
-
-	NodeBB = require('./lib/nodebb'),
+var	NodeBB = require('./lib/nodebb'),
 	Config = require('./lib/config'),
 	Sockets = require('./lib/sockets'),
 
-	ModulesSockets = NodeBB.ModulesSockets,
-
-	User = NodeBB.User,
-	db = NodeBB.db,
+	SocketPlugins = NodeBB.SocketPlugins,
 
 	app;
 
@@ -32,7 +26,7 @@ Shoutbox.init = {
 
 		app.get('/admin/shoutbox', middleware.admin.buildHeader, renderAdmin);
 		app.get('/api/admin/shoutbox', renderAdmin);
-		ModulesSockets.shoutbox = Sockets;
+		SocketPlugins.shoutbox = Sockets;
 	},
 	global: {
 		addNavigation: function(custom_header, callback) {

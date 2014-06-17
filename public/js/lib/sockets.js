@@ -1,15 +1,15 @@
 (function(Shoutbox) {
 
 	var Messages = {
-		getShouts: 'modules.shoutbox.get',
-		sendShout: 'modules.shoutbox.send',
-		removeShout : 'modules.shoutbox.remove',
-		editShout: 'modules.shoutbox.edit',
-		saveSettings: 'modules.shoutbox.saveSetting',
+		getShouts: 'plugins.shoutbox.get',
+		sendShout: 'plugins.shoutbox.send',
+		removeShout : 'plugins.shoutbox.remove',
+		editShout: 'plugins.shoutbox.edit',
+		saveSettings: 'plugins.shoutbox.saveSetting',
+		getOriginalShout: 'plugins.shoutbox.getOriginalShout',
+		getSettings: 'plugins.shoutbox.getSettings',
 		getUsers: 'user.loadMore',
-		getUserStatus: 'user.isOnline',
-		getOriginalShout: 'modules.shoutbox.getOriginalShout',
-		getSettings: 'modules.shoutbox.getSettings'
+		getUserStatus: 'user.isOnline'
 	};
 
 	var Events = {

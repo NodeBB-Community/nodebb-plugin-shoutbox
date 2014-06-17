@@ -6,6 +6,10 @@
 				Shoutbox.settings.load(shoutPanel, function() {
 					Shoutbox.utils.registerHandlers(shoutPanel);
 					Base.getShouts(shoutPanel);
+
+					if (Mentions && Mentions.addAutofill) {
+						Mentions.addAutofill(shoutPanel.find('#shoutbox-message-input'), []);
+					}
 				});
 			}
 		},
@@ -22,6 +26,14 @@
 				} else {
 					shoutContent.append(Shoutbox.utils.parseShout(shout));
 				}
+
+				if (jQuery.timeago) {
+					shout.timestamp = jQuery.timeago(new Date(shout.timestamp));
+				} else {
+					shout.timestamp = new Date(shout.timestamp);
+				}
+
+				shoutContent.find('[data-uid="' + shout.fromuid + '"] .shoutbox-shout-timestamp span').text(shout.timestamp);
 
 				Shoutbox.utils.scrollToBottom(shoutContent);
 				Shoutbox.vars.lastSid = shout.sid;

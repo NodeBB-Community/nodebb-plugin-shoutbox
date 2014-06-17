@@ -9,6 +9,11 @@
     margin: 5px 0;
     position: relative;
   }
+  &-details {
+    &:hover .shoutbox-shout-timestamp {
+      opacity: 1;
+    }
+  }
   &-avatar {
     .img-circle();
     border: 2px solid @status-offline;
@@ -60,7 +65,7 @@
       margin: 0;
     }
   }
-  &-options {
+  &-options, &-timestamp {
     opacity: 0;
     transition: opacity 0.4s;
   }

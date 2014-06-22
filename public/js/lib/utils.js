@@ -2,7 +2,10 @@
 	var shoutTpl, textTpl;
 
 	var Utils = {
-		init: function(callback) {
+		initialize: function(shoutPanel, callback) {
+			Shoutbox.sockets.initialize();
+			Shoutbox.actions.initialize(shoutPanel);
+
 			if (!shoutTpl || !textTpl) {
 				window.ajaxify.loadTemplate('shoutbox/shout', function(shout) {
 					window.ajaxify.loadTemplate('shoutbox/shout/text', function(text) {
@@ -27,10 +30,6 @@
 				);
 			}
 		},
-		registerHandlers: function(shoutPanel) {
-			Shoutbox.sockets.registerHandlers();
-			Shoutbox.actions.registerHandlers(shoutPanel);
-		},
 		isAnon: function() {
 			console.log(app.uid);
 			return app.uid === 0;
@@ -41,7 +40,7 @@
 	};
 
 	Shoutbox.utils = {
-		init: Utils.init,
+		initialize: Utils.initialize,
 		parseShout: Utils.parseShout,
 		registerHandlers: Utils.registerHandlers,
 		scrollToBottom: Utils.scrollToBottom,

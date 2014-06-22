@@ -73,7 +73,7 @@
 	Shoutbox.sockets = {
 		messages: Messages,
 		events: Events,
-		registerHandlers: function() {
+		initialize: function() {
 			for (var e in Events) {
 				if (Events.hasOwnProperty(e)) {
 					if (socket.listeners(Events[e]).length === 0) {
@@ -81,16 +81,18 @@
 					}
 				}
 			}
+
+			for (var m in Messages) {
+				if (Messages.hasOwnProperty(m)) {
+					Shoutbox.sockets[m] = new Handlers.defaultSocketHandler(Messages[m]);
+				}
+			}
 		}
 	};
 
-	function initialise() {
-		for (var m in Messages) {
-			if (Messages.hasOwnProperty(m)) {
-				Shoutbox.sockets[m] = new Handlers.defaultSocketHandler(Messages[m]);
-			}
-		}
-	}
-
-	initialise();
+//	function init() {
+//
+//	}
+//
+//	init();
 })(window.Shoutbox);

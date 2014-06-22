@@ -7,12 +7,7 @@
 
 	window.Shoutbox = {
 		init: function(url) {
-			Shoutbox.utils.init(function() {
-				Shoutbox.base.load($('#shoutbox'));
-				if (url === 'shoutbox') {
-					Shoutbox.base.showUserPanel();
-				}
-			});
+			Shoutbox.base.load(url, $('#shoutbox'));
 		}
 	};
 })();

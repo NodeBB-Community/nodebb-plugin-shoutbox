@@ -25,9 +25,14 @@
 		"public/js/lib/base.js",
 		"public/js/lib/utils.js",
 		"public/js/lib/sockets.js",
-		"public/js/lib/actions.js",
 		"public/js/lib/settings.js",
-		"public/js/lib/vars.js"
+		"public/js/lib/vars.js",
+		"public/js/lib/actions/default.js",
+		"public/js/lib/actions/archive.js",
+		"public/js/lib/actions/bug.js",
+		"public/js/lib/actions/gist.js",
+		"public/js/lib/actions/hide.js",
+		"public/js/lib/actions/settings.js"
 	],
 	"templates": "./templates",
 	"minver": "0.4.0"

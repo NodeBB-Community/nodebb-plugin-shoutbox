@@ -1,15 +1,20 @@
 (function(Shoutbox) {
 	var Base = {
-		load: function(shoutPanel) {
+		load: function(url, shoutPanel) {
 			Base.vars.shoutPanel = shoutPanel;
 			if (!Shoutbox.utils.isAnon()) {
-				Shoutbox.settings.load(shoutPanel, function() {
-					Shoutbox.utils.registerHandlers(shoutPanel);
-					Base.getShouts(shoutPanel);
+				Shoutbox.utils.initialize(shoutPanel, function() {
+					Shoutbox.settings.load(shoutPanel, function() {
+						Base.getShouts(shoutPanel);
 
-					if (Mentions && Mentions.addAutofill) {
-						Mentions.addAutofill(shoutPanel.find('#shoutbox-message-input'), []);
-					}
+						if (Mentions && Mentions.addAutofill) {
+							Mentions.addAutofill(shoutPanel.find('#shoutbox-message-input'), []);
+						}
+
+						if (url === 'shoutbox') {
+							Shoutbox.base.showUserPanel();
+						}
+					});
 				});
 			}
 		},

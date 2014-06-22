@@ -6,6 +6,9 @@
     <div class="shoutbox-shout-content">
         <div class="shoutbox-shout-details">
             <a href="/user/{user.userslug}">{user.username}</a>
+            <span class="shoutbox-shout-typing">
+                <i class="text-muted fa fa-keyboard-o"></i>
+            </span>
             <span class="shoutbox-shout-timestamp">
                 <small class="text-muted"><i class="fa fa-clock-o"></i> <span></span> </small>
             </span>

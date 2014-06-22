@@ -7,7 +7,7 @@
 
 	window.Shoutbox = {
 		init: function(url) {
-			Shoutbox.base.load(url, $('#shoutbox'));
+			Shoutbox.base.initialize(url, $('#shoutbox'));
 		}
 	};
 })();

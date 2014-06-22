@@ -11,11 +11,11 @@
 					window.ajaxify.loadTemplate('shoutbox/shout/text', function(text) {
 						shoutTpl = shout;
 						textTpl = text;
-						callback();
+						Shoutbox.settings.load(shoutPanel, callback);
 					});
 				});
 			} else {
-				callback();
+				Shoutbox.settings.load(shoutPanel, callback);
 			}
 		},
 		parseShout: function(shout, onlyText) {
@@ -31,7 +31,6 @@
 			}
 		},
 		isAnon: function() {
-			console.log(app.uid);
 			return app.uid === 0;
 		},
 		showMessage: function(message, shoutPanel) {

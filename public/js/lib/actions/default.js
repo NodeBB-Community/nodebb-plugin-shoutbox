@@ -73,6 +73,12 @@
 					if(e.which === 38) {
 						handle(shoutPanel, shoutPanel.find('[data-uid="' + app.uid + '"] [data-sid]:last').data('sid'));
 					}
+					//Piggyback on this event handler
+					if ($(this).val()) {
+						Shoutbox.sockets.notifyStartTyping();
+					} else {
+						Shoutbox.sockets.notifyStopTyping();
+					}
 				});
 			},
 			handle: function(shoutPanel, sid) {

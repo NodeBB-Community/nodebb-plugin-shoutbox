@@ -5,8 +5,10 @@
 		sendShout: 'plugins.shoutbox.send',
 		removeShout : 'plugins.shoutbox.remove',
 		editShout: 'plugins.shoutbox.edit',
-		saveSettings: 'plugins.shoutbox.saveSetting',
+		notifyStartTyping: 'plugins.shoutbox.notifyStartTyping',
+		notifyStopTyping: 'plugins.shoutbox.notifyStopTyping',
 		getOriginalShout: 'plugins.shoutbox.getOriginalShout',
+		saveSettings: 'plugins.shoutbox.saveSetting',
 		getSettings: 'plugins.shoutbox.getSettings',
 		getUsers: 'user.loadMore',
 		getUserStatus: 'user.isOnline'
@@ -16,7 +18,9 @@
 		onUserStatusChange: Messages.getUserStatus,
 		onReceive: 'event:shoutbox.receive',
 		onDelete: 'event:shoutbox.delete',
-		onEdit: 'event:shoutbox.edit'
+		onEdit: 'event:shoutbox.edit',
+		onStartTyping: 'event:shoutbox.startTyping',
+		onStopTyping: 'event:shoutbox.stopTyping'
 	};
 
 	var Handlers = {
@@ -55,6 +59,12 @@
 		onUserStatusChange: function(err, data) {
 			Shoutbox.base.updateUserStatus(data.uid, data.status, Shoutbox.base.getShoutPanel());
 		},
+		onStartTyping: function(data) {
+			$('[data-uid="' + data.uid + '"]').find('.shoutbox-shout-typing').addClass('isTyping');
+		},
+		onStopTyping: function(data) {
+			$('[data-uid="' + data.uid + '"]').find('.shoutbox-shout-typing').removeClass('isTyping');
+		},
 		defaultSocketHandler: function(message) {
 			this.message = message;
 			var self = this;
@@ -89,10 +99,4 @@
 			}
 		}
 	};
-
-//	function init() {
-//
-//	}
-//
-//	init();
 })(window.Shoutbox);

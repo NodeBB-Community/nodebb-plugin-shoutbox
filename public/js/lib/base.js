@@ -1,20 +1,18 @@
 (function(Shoutbox) {
 	var Base = {
-		load: function(url, shoutPanel) {
+		initialize: function(url, shoutPanel) {
 			Base.vars.shoutPanel = shoutPanel;
 			if (!Shoutbox.utils.isAnon()) {
 				Shoutbox.utils.initialize(shoutPanel, function() {
-					Shoutbox.settings.load(shoutPanel, function() {
-						Base.getShouts(shoutPanel);
+					Base.getShouts(shoutPanel);
 
-						if (Mentions && Mentions.addAutofill) {
-							Mentions.addAutofill(shoutPanel.find('#shoutbox-message-input'), []);
-						}
+					if (Mentions && Mentions.addAutofill) {
+						Mentions.addAutofill(shoutPanel.find('#shoutbox-message-input'), []);
+					}
 
-						if (url === 'shoutbox') {
-							Shoutbox.base.showUserPanel();
-						}
-					});
+					if (url === 'shoutbox') {
+						Shoutbox.base.showUserPanel();
+					}
 				});
 			}
 		},
@@ -22,7 +20,7 @@
 			if (shout && shout.sid) {
 				var shoutContent = shoutPanel.find('#shoutbox-content');
 
-				if (shoutContent.find('div[class="shoutbox-shout-container"]').length === 0) {
+				if (shoutContent.find('div.shoutbox-shout-container').length === 0) {
 					shoutContent.html('');
 				}
 
@@ -65,6 +63,10 @@
 
 			var setStatus = function(uid, status) {
 				shoutPanel.find('[data-uid="' + uid + '"] .shoutbox-shout-avatar').removeClass().addClass('shoutbox-shout-avatar ' + status);
+				//Probably need a better way to handle people going offline
+//				if (status === 'offline') {
+//					Shoutbox.sockets.notifyStopTyping({uid: uid});
+//				}
 			}
 
 			if (!uid) {
@@ -130,7 +132,7 @@
 	};
 
 	Shoutbox.base = {
-		load: Base.load,
+		initialize: Base.initialize,
 		addShout: Base.addShout,
 		getShoutPanel: Base.getShoutPanel,
 		updateUserStatus: Base.updateUserStatus

@@ -4,6 +4,8 @@
 @status-dnd: #900;
 @status-offline: gray;
 
+//Todo cleanup
+
 .shoutbox-shout {
   &-container {
     margin: 5px 0;
@@ -65,9 +67,17 @@
       margin: 0;
     }
   }
-  &-options, &-timestamp {
+  &-options, &-timestamp, &-typing {
     opacity: 0;
     transition: opacity 0.4s;
+  }
+
+  &-typing {
+    position: absolute;
+    &.isTyping {
+      position: relative;
+      opacity: 1;
+    }
   }
 }
 

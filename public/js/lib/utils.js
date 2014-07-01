@@ -1,5 +1,10 @@
 (function(Shoutbox) {
-	var shoutTpl, textTpl;
+	var shoutTpl, textTpl,
+		sounds;
+
+	require(['sounds'], function(s) {
+		sounds = s;
+	});
 
 	var Utils = {
 		initialize: function(shoutPanel, callback) {
@@ -35,16 +40,28 @@
 		},
 		showMessage: function(message, shoutPanel) {
 			shoutPanel.find('#shoutbox-content').html(message);
+		},
+		notify: function(data) {
+			if (Shoutbox.settings.get('notification') === 1) {
+				app.alternatingTitle(Shoutbox.vars.messages.alert.replace(/%u/g, data.user.username));
+			}
+			if (Shoutbox.settings.get('sound') === 1) {
+				Shoutbox.utils.playSound('notification');
+			}
+		},
+		playSound: function(sound) {
+			sounds.playFile('shoutbox-' + sound + '.mp3');
 		}
 	};
 
 	Shoutbox.utils = {
 		initialize: Utils.initialize,
 		parseShout: Utils.parseShout,
-		registerHandlers: Utils.registerHandlers,
 		scrollToBottom: Utils.scrollToBottom,
 		showMessage: Utils.showMessage,
-		isAnon: Utils.isAnon
+		isAnon: Utils.isAnon,
+		notify: Utils.notify,
+		playSound: Utils.playSound
 	};
 })(window.Shoutbox);
 

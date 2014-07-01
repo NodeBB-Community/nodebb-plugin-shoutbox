@@ -30,12 +30,7 @@
 			if (shoutPanel.length > 0) {
 				Shoutbox.base.addShout(data, shoutPanel);
 				if (data.fromuid !== app.uid) {
-					if (Shoutbox.settings.get('notification') === 1) {
-						app.alternatingTitle(Shoutbox.vars.messages.alert.replace(/%u/g, data.user.username));
-					}
-					if (Shoutbox.settings.get('sound') === 1) {
-						$('#shoutbox-sounds-notification')[0].play();
-					}
+					Shoutbox.utils.notify(data);
 				}
 			}
 		},

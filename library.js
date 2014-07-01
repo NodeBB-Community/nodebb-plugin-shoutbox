@@ -8,7 +8,7 @@ var	NodeBB = require('./lib/nodebb'),
 
 var Shoutbox = {};
 
-Shoutbox.init = {
+Shoutbox.register = {
 	load: function(expressApp, middleware, controllers) {
 		app = expressApp;
 		function renderGlobal(req, res, next) {
@@ -52,7 +52,7 @@ Shoutbox.init = {
 			callback(null, custom_header);
 		}
 	}
-}
+};
 
 Shoutbox.widget = {
 	define: function(widgets, callback) {
@@ -84,7 +84,7 @@ Shoutbox.widget = {
 //			});
 		}
 	}
-}
+};
 
 Shoutbox.settings = {
 	addUserSettings: function(settings, callback) {
@@ -95,7 +95,6 @@ Shoutbox.settings = {
 			});
 			callback(null, settings);
 		});
-
 	},
 	getUserSettings: function(data, callback) {
 		Config.settings.get(data, callback);
@@ -103,6 +102,14 @@ Shoutbox.settings = {
 	saveUserSettings: function(data) {
 		Config.settings.save(data);
 	}
-}
+};
+
+Shoutbox.sounds = {
+	getSounds: function(sounds, callback) {
+		sounds.push(__dirname + '/public/sounds/shoutbox-notification.mp3');
+
+		callback(null, sounds);
+	}
+};
 
 module.exports = Shoutbox;

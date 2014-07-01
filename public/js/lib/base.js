@@ -20,6 +20,9 @@
 			if (shout && shout.sid) {
 				var shoutContent = shoutPanel.find('#shoutbox-content');
 
+				// add timeString to shout
+				shout.timeString = (new Date( parseInt( shout.timestamp, 10 ) ).toLocaleString() );
+				
 				if (shoutContent.find('div.shoutbox-shout-container').length === 0) {
 					shoutContent.html('');
 				}
@@ -30,13 +33,11 @@
 					shoutContent.append(Shoutbox.utils.parseShout(shout));
 				}
 
+				// execute jQuery.timeago() on shout's span.timeago
 				if (jQuery.timeago) {
-					shout.timestamp = jQuery.timeago(new Date(shout.timestamp));
-				} else {
-					shout.timestamp = new Date(shout.timestamp);
+					shoutContent.find('[data-uid="' + shout.fromuid + '"] span.timeago').timeago();
 				}
-
-				shoutContent.find('[data-uid="' + shout.fromuid + '"] .shoutbox-shout-timestamp span').text(shout.timestamp);
+				// else span.timeago text will be empty, but timeString will appear on hover <-- see templates/shoutbox/shout.tpl
 
 				Shoutbox.utils.scrollToBottom(shoutContent);
 				Shoutbox.vars.lastSid = shout.sid;

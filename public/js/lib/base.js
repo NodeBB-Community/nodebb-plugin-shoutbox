@@ -6,8 +6,14 @@
 				Shoutbox.utils.initialize(shoutPanel, function() {
 					Base.getShouts(shoutPanel);
 
-					if (Mentions && Mentions.addAutofill) {
+					//Add mentions autofill
+					if (typeof Mentions !== 'undefined' && typeof Mentions.addAutofill !== 'undefined') {
 						Mentions.addAutofill(shoutPanel.find('#shoutbox-message-input'), []);
+					}
+
+					//Add emoji autocomplete
+					if (typeof emojiExtended !== 'undefined' && typeof emojiExtended.addCompletion !== 'undefined') {
+						emojiExtended.addCompletion(shoutPanel.find('#shoutbox-message-input'));
 					}
 
 					if (url === 'shoutbox') {

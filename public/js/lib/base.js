@@ -12,8 +12,13 @@
 					}
 
 					//Add emoji autocomplete
-					if (typeof emojiExtended !== 'undefined' && typeof emojiExtended.addCompletion !== 'undefined') {
-						emojiExtended.addCompletion(shoutPanel.find('#shoutbox-message-input'));
+					function addEmoji(emoji) {
+						emoji.addCompletion(shoutPanel.find('#shoutbox-message-input'));
+					}
+					if (typeof emojiExtended !== 'undefined') {
+						addEmoji(emojiExtended);
+					} else {
+						$(window).one('emoji-extended:initialized', addEmoji);
 					}
 
 					if (url === 'shoutbox') {

@@ -21,7 +21,8 @@
 				var shoutContent = shoutPanel.find('#shoutbox-content');
 
 				// add timeString to shout
-				shout.timeString = (new Date( parseInt( shout.timestamp, 10 ) ).toLocaleString() );
+				// jQuery.timeago only works properly with ISO timestamps
+				shout.timeString = (new Date( parseInt( shout.timestamp, 10 ) ).toISOString() );
 				
 				if (shoutContent.find('div.shoutbox-shout-container').length === 0) {
 					shoutContent.html('');
@@ -33,9 +34,14 @@
 					shoutContent.append(Shoutbox.utils.parseShout(shout));
 				}
 
+				// We need to update the timestring on every new activity. Shout.tpl is only parsed for the shout of a
+				// chain breaking user, after that only text.tpl is parsed.
+				shoutContent.find('[data-uid="' + shout.fromuid + '"] span.timeago').attr('title', shout.timeString);
+
 				// execute jQuery.timeago() on shout's span.timeago
 				if (jQuery.timeago) {
-					shoutContent.find('[data-uid="' + shout.fromuid + '"] span.timeago').timeago();
+					// Reset timeago to use the new timestamp
+					shoutContent.find('[data-uid="' + shout.fromuid + '"] span.timeago').data('timeago', null).timeago();
 				}
 				// else span.timeago text will be empty, but timeString will appear on hover <-- see templates/shoutbox/shout.tpl
 

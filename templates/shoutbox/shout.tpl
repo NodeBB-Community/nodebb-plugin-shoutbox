@@ -10,7 +10,7 @@
                 <i class="text-muted fa fa-keyboard-o"></i>
             </span>
             <span class="shoutbox-shout-timestamp">
-                <small class="text-muted"><i class="fa fa-clock-o"></i> <span></span> </small>
+                <small class="text-muted"><i class="fa fa-clock-o"></i> <span class="timeago" title="{timeString}"></span> </small>
             </span>
         </div>
         <!-- IMPORT shoutbox/shout/text.tpl -->

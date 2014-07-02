@@ -85,7 +85,7 @@
 					}).on('dblclick.edit', '[data-sid]', function(e) {
 						handle(shoutPanel, $(e.currentTarget).data('sid'));
 					}).find('#shoutbox-message-input').on('keyup.edit', function(e) {
-						if(e.which === 38) {
+						if(e.which === 38 && !$(this).val()) {
 							handle(shoutPanel, shoutPanel.find('[data-uid="' + app.uid + '"] [data-sid]:last').data('sid'));
 						}
 					});

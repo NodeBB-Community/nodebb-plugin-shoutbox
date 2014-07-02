@@ -73,19 +73,34 @@
 			register: function(shoutPanel) {
 				var handle = this.handle;
 
-				shoutPanel.off('click.edit', '.shoutbox-shout-option-edit').on('click.edit', '.shoutbox-shout-option-edit', function(e) {
-					handle(shoutPanel, $(e.currentTarget).parents('[data-sid]').data('sid'));
+				function eventsOff() {
+					shoutPanel.off('click.edit', '.shoutbox-shout-option-edit')
+						.off('dblclick.edit', '[data-sid]')
+						.find('#shoutbox-message-input').off('keyup.edit');
+				}
+
+				function eventsOn() {
+					shoutPanel.on('click.edit', '.shoutbox-shout-option-edit', function(e) {
+						handle(shoutPanel, $(e.currentTarget).parents('[data-sid]').data('sid'));
+					}).on('dblclick.edit', '[data-sid]', function(e) {
+						handle(shoutPanel, $(e.currentTarget).data('sid'));
+					}).find('#shoutbox-message-input').on('keyup.edit', function(e) {
+						if(e.which === 38) {
+							handle(shoutPanel, shoutPanel.find('[data-uid="' + app.uid + '"] [data-sid]:last').data('sid'));
+						}
+					});
+				}
+
+				shoutPanel.find('#shoutbox-message-input').off('textComplete:show').on('textComplete:show', function() {
+					eventsOff();
 				});
 
-				shoutPanel.off('dblclick.edit', '[data-sid]').on('dblclick.edit', '[data-sid]', function(e) {
-					handle(shoutPanel, $(e.currentTarget).data('sid'));
+				shoutPanel.find('#shoutbox-message-input').off('textComplete:hide').on('textComplete:hide', function() {
+					eventsOn();
 				});
 
-				shoutPanel.find('#shoutbox-message-input').off('keyup.edit').on('keyup.edit', function(e) {
-					if(e.which === 38) {
-						handle(shoutPanel, shoutPanel.find('[data-uid="' + app.uid + '"] [data-sid]:last').data('sid'));
-					}
-				});
+				eventsOff();
+				eventsOn();
 			},
 			handle: function(shoutPanel, sid) {
 				var shout = shoutPanel.find('[data-sid="' + sid + '"]');

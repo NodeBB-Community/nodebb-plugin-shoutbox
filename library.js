@@ -107,7 +107,7 @@ Shoutbox.settings = {
 Shoutbox.sounds = {
 	getSounds: function(sounds, callback) {
 		sounds.push(__dirname + '/public/sounds/shoutbox-notification.mp3');
-
+		sounds.push(__dirname + '/public/sounds/shoutbox-wobblysausage.mp3');
 		callback(null, sounds);
 	}
 };

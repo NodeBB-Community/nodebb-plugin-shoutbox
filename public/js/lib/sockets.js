@@ -11,7 +11,8 @@
 		saveSettings: 'plugins.shoutbox.saveSetting',
 		getSettings: 'plugins.shoutbox.getSettings',
 		getUsers: 'user.loadMore',
-		getUserStatus: 'user.isOnline'
+		getUserStatus: 'user.isOnline',
+		wobble: 'plugins.shoutbox.wobble'
 	};
 
 	var Events = {
@@ -20,7 +21,8 @@
 		onDelete: 'event:shoutbox.delete',
 		onEdit: 'event:shoutbox.edit',
 		onStartTyping: 'event:shoutbox.startTyping',
-		onStopTyping: 'event:shoutbox.stopTyping'
+		onStopTyping: 'event:shoutbox.stopTyping',
+		onWobble: 'event:shoutbox.wobble'
 	};
 
 	var Handlers = {
@@ -59,6 +61,9 @@
 		},
 		onStopTyping: function(data) {
 			$('[data-uid="' + data.uid + '"]').find('.shoutbox-shout-typing').removeClass('isTyping');
+		},
+		onWobble: function(data) {
+			Shoutbox.utils.playSound('wobblysausage');
 		},
 		defaultSocketHandler: function(message) {
 			this.message = message;

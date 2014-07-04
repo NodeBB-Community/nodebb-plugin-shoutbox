@@ -1,7 +1,9 @@
 (function(Shoutbox) {
 	var DefaultCommands = {
-		test: function(argument, sendShout) {
-			alert(argument || "Yay!");
+		wobble: function(argument, sendShout) {
+			Shoutbox.sockets.wobble({
+				victim: utils.slugify(argument)
+			});
 		}
 	};
 

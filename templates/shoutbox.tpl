@@ -1,5 +1,4 @@
 <div class="row shoutbox-row">
-    <audio id="shoutbox-sounds-notification" src="/plugins/nodebb-plugin-shoutbox/public/notif.mp3" preload="auto"></audio>
     <div class="col-md-12">
         <div class="panel panel-default" id="shoutbox">
             <div class="panel-heading">

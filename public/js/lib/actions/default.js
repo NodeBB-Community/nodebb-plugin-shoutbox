@@ -1,19 +1,6 @@
 (function(Shoutbox) {
 	var S, actions = [];
 
-	Shoutbox.actions = {
-		register: function(obj) {
-			actions.push(obj);
-		},
-		initialize: function(shoutPanel) {
-			for (var a in actions) {
-				if (actions.hasOwnProperty(a)) {
-					actions[a].register(shoutPanel);
-				}
-			}
-		}
-	};
-
 	var DefaultActions = {
 		typing: {
 			register: function(shoutPanel) {
@@ -46,7 +33,9 @@
 				var msg = S(shoutPanel.find('#shoutbox-message-input').val()).stripTags().trim().s;
 
 				if (msg.length) {
-					Shoutbox.sockets.sendShout({ message: msg });
+					Shoutbox.commands.parse(msg, function() {
+						Shoutbox.sockets.sendShout({ message: msg });
+					});
 				}
 				shoutPanel.find('#shoutbox-message-input').val('');
 			}

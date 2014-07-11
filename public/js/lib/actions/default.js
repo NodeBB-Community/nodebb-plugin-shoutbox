@@ -14,6 +14,52 @@
 				}
 			}
 		},
+		overlay: {
+			register: function(shoutPanel) {
+				var handle = this.handle;
+				shoutPanel.find('.shoutbox-content-overlay-close').off('click.overlay').on('click.overlay', function(e){
+					handle(shoutPanel);
+					return false;
+				});
+			},
+			handle: function(shoutPanel) {
+				shoutPanel.find('#shoutbox-content-overlay').removeClass('active');
+			}
+		},
+		scrolling: {
+			register: function(shoutPanel) {
+				var handle = this.handle,
+					t,
+					shoutContent = shoutPanel.find('#shoutbox-content'),
+					shoutOverlay = shoutPanel.find('#shoutbox-content-overlay');
+
+				shoutContent.scroll(function() {
+					clearTimeout(t);
+					t = setTimeout(function() {
+						handle(shoutPanel);
+					}, 200);
+				});
+
+				shoutOverlay.off('click.overlay').on('click.overlay', function(e) {
+					shoutContent.scrollTop(
+						shoutContent[0].scrollHeight - shoutContent.height()
+					);
+					return false;
+				});
+			},
+			handle: function(shoutPanel) {
+				var shoutContent = shoutPanel.find('#shoutbox-content'),
+					shoutOverlay = shoutPanel.find('#shoutbox-content-overlay');
+
+				if (!shoutOverlay.hasClass('active') &&
+					(shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height() >= Shoutbox.vars.scrollBreakpoint) {
+					Shoutbox.utils.showMessage(Shoutbox.vars.messages.scrolled);
+				} else if (shoutOverlay.hasClass('active') &&
+					(shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height() < Shoutbox.vars.scrollBreakpoint) {
+					shoutOverlay.removeClass('active');
+				}
+			}
+		},
 		send: {
 			register: function(shoutPanel) {
 				var sendMessage = this.handle;

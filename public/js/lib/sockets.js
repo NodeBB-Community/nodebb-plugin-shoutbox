@@ -80,7 +80,7 @@
 		events: Events,
 		registerMessage: function(handle, message) {
 			if (!Shoutbox.sockets.hasOwnProperty(handle)) {
-				Shoutbox.sockets[handle] = new Handlers.defaultSocketHandler(message);;
+				Shoutbox.sockets[handle] = new Handlers.defaultSocketHandler(message);
 			}
 		},
 		registerEvent: function(event, handler) {

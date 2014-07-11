@@ -56,8 +56,4 @@
         </div>
     </div>
 
-    <!-- IMPORT shoutbox/features/gist.tpl -->
-
-    <!-- IMPORT shoutbox/features/archive.tpl -->
-
 </div>

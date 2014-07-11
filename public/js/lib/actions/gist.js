@@ -1,15 +1,19 @@
 (function(Shoutbox) {
 	var Gist = {
 		register: function(shoutPanel) {
-			var handle = this.handle,
-				gistModal = $('#shoutbox-modal-gist');
+			var handle = this.handle;
+			window.ajaxify.loadTemplate('shoutbox/features/gist', function(tpl){
+				$(document.body).append(tpl);
 
-			shoutPanel.find('#shoutbox-button-gist').off('click').on('click', function(e) {
-				handle(gistModal);
-			});
+				var gistModal = $('#shoutbox-modal-gist');
 
-			gistModal.find('#shoutbox-button-create-gist-submit').off('click').on('click', function(e) {
-				createGist(gistModal.find('textarea').val(), gistModal, shoutPanel);
+				shoutPanel.find('#shoutbox-button-gist').off('click').on('click', function(e) {
+					handle(gistModal);
+				});
+
+				gistModal.find('#shoutbox-button-create-gist-submit').off('click').on('click', function(e) {
+					createGist(gistModal.find('textarea').val(), gistModal, shoutPanel);
+				});
 			});
 		},
 		handle: function(gistModal) {

@@ -1,17 +1,21 @@
 (function(Shoutbox) {
 	var Archive = {
 		register: function(shoutPanel) {
-			var handle = this.handle,
-				archiveModal = $('#shoutbox-archive-modal');
+			var handle = this.handle;
+			window.ajaxify.loadTemplate('shoutbox/features/archive', function(tpl){
+				$(document.body).append(tpl);
 
-			shoutPanel.find('#shoutbox-button-archive').off('click').on('click', function(e) {
-				handle(archiveModal, handle);
-			});
-			archiveModal.find('#shoutbox-button-archive-prev').off('click').on('click', function(e) {
-				prev(archiveModal, handle);
-			});
-			archiveModal.find('#shoutbox-button-archive-next').off('click').on('click', function(e) {
-				next(archiveModal, handle);
+				var archiveModal = $('#shoutbox-archive-modal');
+
+				shoutPanel.find('#shoutbox-button-archive').off('click').on('click', function(e) {
+					handle(archiveModal, handle);
+				});
+				archiveModal.find('#shoutbox-button-archive-prev').off('click').on('click', function(e) {
+					prev(archiveModal, handle);
+				});
+				archiveModal.find('#shoutbox-button-archive-next').off('click').on('click', function(e) {
+					next(archiveModal, handle);
+				});
 			});
 		},
 		handle: function(archiveModal, handle) {

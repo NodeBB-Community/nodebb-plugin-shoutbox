@@ -4,19 +4,16 @@
 @status-dnd: #900;
 @status-offline: gray;
 
-//Todo cleanup
+.shoutbox-opacity-transition {
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0s linear 0.3s;
+}
 
-.shoutbox-shout {
-  &-container {
-    margin: 5px 0;
-    position: relative;
-  }
-  &-details {
-    &:hover .shoutbox-shout-timestamp {
-      opacity: 1;
-    }
-  }
-  &-avatar {
+.shoutbox-shout-container {
+  margin: 5px 0;
+  position: relative;
+
+  .shoutbox-shout-avatar {
     .img-circle();
     border: 2px solid @status-offline;
     display: inline-block;
@@ -41,10 +38,8 @@
       border: 2px solid @status-offline;
     }
   }
-  &-info {
-    display: inline-block;
-  }
-  &-content {
+
+  .shoutbox-shout-content {
     display: inline-block;
     width: 100%;
     padding-left: @avatar-size + 5px;
@@ -66,24 +61,33 @@
     & p {
       margin: 0;
     }
-  }
-  &-options, &-timestamp, &-typing {
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
 
-  &-typing {
-    position: absolute;
-    &.isTyping {
-      position: relative;
-      opacity: 1;
+    .shoutbox-shout-details {
+      &:hover .shoutbox-shout-timestamp {
+        opacity: 1;
+      }
+
+      .shoutbox-shout-typing {
+        position: absolute;
+        &.isTyping {
+          position: relative;
+          opacity: 1;
+        }
+      }
+
+      .shoutbox-shout-timestamp, .shoutbox-shout-typing {
+        .shoutbox-opacity-transition;
+      }
+    }
+
+    .shoutbox-shout-options {
+      .shoutbox-opacity-transition;
     }
   }
 }
 
 #shoutbox {
   &-content, &-archive-content {
-//    font-size: 14px;
     height: 200px;
     overflow-y: scroll;
 
@@ -103,12 +107,38 @@
   & .btn-group {
     margin-top: 5px;
   }
+
+  #shoutbox-content-container {
+    position: relative;
+
+    #shoutbox-content-overlay {
+      width: 100%;
+      max-height: 100%;
+      padding: 10px;
+      position: absolute;
+      background-color: @body-bg;
+      overflow-y: scroll;
+      z-index: 1;
+      visibility: hidden;
+      .shoutbox-opacity-transition;
+
+      &.active {
+        opacity: 0.9;
+        visibility: visible;
+        transition-delay: 0s;
+      }
+
+      .shoutbox-content-overlay-close {
+        float: right;
+      }
+    }
+  }
 }
 
 .shoutbox-admin {
   &-feature {
     opacity: 1;
-    transition: opacity 0.3s;
+    .shoutbox-opacity-transition;
     &.disabled {
       opacity: 0.5;
     }

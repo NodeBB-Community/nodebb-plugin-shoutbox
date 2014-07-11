@@ -29,7 +29,7 @@
 			return window.templates.parse(tpl, shout);
 		},
 		scrollToBottom: function(shoutContent) {
-			if(shoutContent[0] && (shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height() < shoutContent.height()) {
+			if(shoutContent[0] && (shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height() < Shoutbox.vars.scrollBreakpoint) {
 				shoutContent.scrollTop(
 					shoutContent[0].scrollHeight - shoutContent.height()
 				);
@@ -38,8 +38,8 @@
 		isAnon: function() {
 			return app.uid === 0;
 		},
-		showMessage: function(message, shoutPanel) {
-			shoutPanel.find('#shoutbox-content').html(message);
+		showMessage: function(message) {
+			$('#shoutbox-content-overlay').find('span').html(message).parent().addClass('active');
 		},
 		notify: function(data) {
 			if (Shoutbox.settings.get('notification') === 1) {

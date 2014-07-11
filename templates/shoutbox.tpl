@@ -9,7 +9,13 @@
             </div>
 
             <div class="panel-body" style="{hiddenStyle}">
-                <div id="shoutbox-content" class="well well-sm"></div>
+                <div id="shoutbox-content-container">
+                    <div id="shoutbox-content-overlay">
+                        <a href="#" class="shoutbox-content-overlay-close fa fa-times"></a>
+                        <span></span>
+                    </div>
+                    <div id="shoutbox-content" class="well well-sm"></div>
+                </div>
                 <div class="input-group">
                     <input id="shoutbox-message-input" type="text" placeholder="enter message" name="shoutbox-message" class="form-control">
                     <span class="input-group-btn">

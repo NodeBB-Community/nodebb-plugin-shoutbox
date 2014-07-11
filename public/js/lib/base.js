@@ -15,6 +15,7 @@
 					function addEmoji(emoji) {
 						emoji.addCompletion(shoutPanel.find('#shoutbox-message-input'));
 					}
+
 					if (typeof emojiExtended !== 'undefined') {
 						addEmoji(emojiExtended);
 					} else {
@@ -34,10 +35,6 @@
 				// add timeString to shout
 				// jQuery.timeago only works properly with ISO timestamps
 				shout.timeString = (new Date( parseInt( shout.timestamp, 10 ) ).toISOString() );
-				
-				if (shoutContent.find('div.shoutbox-shout-container').length === 0) {
-					shoutContent.html('');
-				}
 
 				if (parseInt(shout.fromuid, 10) === shoutContent.find('[data-uid]:last').data('uid')) {
 					shoutContent.find('[data-sid]:last').after(Shoutbox.utils.parseShout(shout, true));
@@ -68,7 +65,6 @@
 					for(var i = 0; i < shouts.length; i++) {
 						Shoutbox.base.addShout(shouts[i], shoutPanel);
 					}
-					//Base.updateUserStatus(shoutBox);
 				}
 			});
 		},
@@ -77,15 +73,11 @@
 				Shoutbox.sockets.getUserStatus(uid, function(err, data) {
 					setStatus(uid, data.status);
 				});
-			}
+			};
 
 			var setStatus = function(uid, status) {
 				shoutPanel.find('[data-uid="' + uid + '"] .shoutbox-shout-avatar').removeClass().addClass('shoutbox-shout-avatar ' + status);
-				//Probably need a better way to handle people going offline
-//				if (status === 'offline') {
-//					Shoutbox.sockets.notifyStopTyping({uid: uid});
-//				}
-			}
+			};
 
 			if (!uid) {
 				uid = [];
@@ -101,7 +93,7 @@
 				if (typeof(uid) === 'number') {
 					getStatus(uid);
 				} else if (Array.isArray(uid)) {
-					for(var i = 0, l = uid.length; i < l; i++) {
+					for (var i = 0, l = uid.length; i < l; i++) {
 						getStatus(uid[i]);
 					}
 				}
@@ -109,7 +101,7 @@
 				if (typeof(uid) === 'number') {
 					setStatus(uid, status);
 				} else if (Array.isArray(uid)) {
-					for(var i = 0, l = uid.length; i < l; i++) {
+					for (var i = 0, l = uid.length; i < l; i++) {
 						setStatus(uid[i], status);
 					}
 				}

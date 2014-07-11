@@ -5,7 +5,7 @@
 		},
 		handle: function(e) {
 			var el = $(e.currentTarget).find('span'),
-				body = el.parents('#shoutbox');
+				body = el.parents('#shoutbox').find('.panel-body');
 
 			if (el.hasClass('fa-arrow-up')) {
 				body.slideUp();

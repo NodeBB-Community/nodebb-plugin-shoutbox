@@ -1,17 +1,41 @@
 (function(Shoutbox) {
-	var Messages = {
+	var SocketMessages = {
 		wobble: 'plugins.shoutbox.wobble'
 	};
 
-	var Events = {
+	var SocketEvents = {
 		onWobble: 'event:shoutbox.wobble'
 	};
 
 	var DefaultCommands = {
+		help: {
+			info: {
+				usage: '/help',
+				description: 'Displays the available commands'
+			},
+			handlers: {
+				action: function(argument, sendShout) {
+					var message = '<strong>Available commands:</strong><br>',
+						commands = Shoutbox.commands.get();
+
+					for (var c in commands) {
+						if (commands.hasOwnProperty(c)) {
+							message += commands[c].usage + ' - ' + commands[c].description + '<br>';
+						}
+					}
+
+					Shoutbox.utils.showMessage(message);
+				}
+			}
+		},
 		wobble: {
+			info: {
+				usage: '/wobble &lt;username&gt;',
+				description: 'WOBULLY SASUGE'
+			},
 			register: function() {
-				Shoutbox.sockets.registerMessage('wobble', Messages.wobble);
-				Shoutbox.sockets.registerEvent(Events.onWobble, this.handlers.socket);
+				Shoutbox.sockets.registerMessage('wobble', SocketMessages.wobble);
+				Shoutbox.sockets.registerEvent(SocketEvents.onWobble, this.handlers.socket);
 			},
 			handlers: {
 				action: function(argument, sendShout) {
@@ -28,8 +52,10 @@
 
 	for (var c in DefaultCommands) {
 		if (DefaultCommands.hasOwnProperty(c)) {
-			DefaultCommands[c].register();
-			Shoutbox.commands.register(c, DefaultCommands[c].handlers.action);
+			if (DefaultCommands[c].register) {
+				DefaultCommands[c].register();
+			}
+			Shoutbox.commands.register(c, DefaultCommands[c]);
 		}
 	}
 })(window.Shoutbox);

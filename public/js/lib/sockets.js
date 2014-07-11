@@ -11,8 +11,7 @@
 		saveSettings: 'plugins.shoutbox.saveSetting',
 		getSettings: 'plugins.shoutbox.getSettings',
 		getUsers: 'user.loadMore',
-		getUserStatus: 'user.isOnline',
-		wobble: 'plugins.shoutbox.wobble'
+		getUserStatus: 'user.isOnline'
 	};
 
 	var Events = {
@@ -21,8 +20,7 @@
 		onDelete: 'event:shoutbox.delete',
 		onEdit: 'event:shoutbox.edit',
 		onStartTyping: 'event:shoutbox.startTyping',
-		onStopTyping: 'event:shoutbox.stopTyping',
-		onWobble: 'event:shoutbox.wobble'
+		onStopTyping: 'event:shoutbox.stopTyping'
 	};
 
 	var Handlers = {
@@ -62,9 +60,6 @@
 		onStopTyping: function(data) {
 			$('[data-uid="' + data.uid + '"]').find('.shoutbox-shout-typing').removeClass('isTyping');
 		},
-		onWobble: function(data) {
-			Shoutbox.utils.playSound('wobblysausage');
-		},
 		defaultSocketHandler: function(message) {
 			this.message = message;
 			var self = this;
@@ -83,18 +78,26 @@
 	Shoutbox.sockets = {
 		messages: Messages,
 		events: Events,
+		registerMessage: function(handle, message) {
+			if (!Shoutbox.sockets.hasOwnProperty(handle)) {
+				Shoutbox.sockets[handle] = new Handlers.defaultSocketHandler(message);;
+			}
+		},
+		registerEvent: function(event, handler) {
+			if (socket.listeners(event).length === 0) {
+				socket.on(event, handler);
+			}
+		},
 		initialize: function() {
 			for (var e in Events) {
 				if (Events.hasOwnProperty(e)) {
-					if (socket.listeners(Events[e]).length === 0) {
-						socket.on(Events[e], Handlers[e]);
-					}
+					this.registerEvent(Events[e], Handlers[e]);
 				}
 			}
 
 			for (var m in Messages) {
 				if (Messages.hasOwnProperty(m)) {
-					Shoutbox.sockets[m] = new Handlers.defaultSocketHandler(Messages[m]);
+					this.registerMessage(m, Messages[m]);
 				}
 			}
 		}

@@ -26,7 +26,7 @@ Shoutbox.register = {
 
 		app.get('/admin/shoutbox', middleware.admin.buildHeader, renderAdmin);
 		app.get('/api/admin/shoutbox', renderAdmin);
-		SocketPlugins.shoutbox = Sockets;
+		SocketPlugins.shoutbox = Sockets.events;
 	},
 	global: {
 		addNavigation: function(custom_header, callback) {

@@ -17,7 +17,7 @@
 		overlay: {
 			register: function(shoutPanel) {
 				var handle = this.handle;
-				shoutPanel.find('.shoutbox-content-overlay-close').off('click.overlay').on('click.overlay', function(e){
+				shoutPanel.find('#shoutbox-content-overlay').off('click.overlay', '.shoutbox-content-overlay-close').on('click.overlay', '.shoutbox-content-overlay-close', function(e){
 					handle(shoutPanel);
 					return false;
 				});
@@ -40,7 +40,7 @@
 					}, 200);
 				});
 
-				shoutOverlay.off('click.overlay').on('click.overlay', function(e) {
+				shoutOverlay.off('click.overlay', '#shoutbox-content-overlay-scrolldown').on('click.overlay', '#shoutbox-content-overlay-scrolldown', function(e) {
 					shoutContent.scrollTop(
 						shoutContent[0].scrollHeight - shoutContent.height()
 					);

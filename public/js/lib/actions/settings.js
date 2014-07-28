@@ -6,7 +6,7 @@
 		handle: function(e) {
 			var el = $(e.currentTarget),
 				statusEl = el.find('span'),
-				key = el.attr('id').split('shoutbox-settings-')[1],
+				key = el.data('shoutbox-setting'),
 				status = statusEl.hasClass('fa-check');
 
 			if (status) {

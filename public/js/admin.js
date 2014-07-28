@@ -1,35 +1,71 @@
 (function() {
+	var settings, wrapper, saveInterval;
+
 	$(document).ready(function() {
-		require(['forum/admin/settings'], function(Settings) {
-			Settings.prepare(function() {
-				prepareFeatures();
+		require(['settings'], function(_settings) {
+			settings = _settings;
+
+			wrapper = $('#shoutboxAdminForm');
+
+			settings.sync('shoutbox', wrapper, function() {
+				prepareFeatures(settings.get().toggles.features);
+			});
+
+			$('#save').click(function(event) {
+				event.preventDefault();
+				save();
+			});
+
+			$('#reset').click(function(event) {
+				event.preventDefault();
+				reset();
+			});
+
+			prepareButtons();
+
+			wrapper.on('change', function(event) {
+				save();
 			});
 		});
-		prepareButtons();
 	});
 
-	function prepareFeatures() {
-		function updateSettings() {
-			var features = {};
-			$('[data-feature]').each(function() {
-				var feature = $(this).data('feature');
-				features[feature] = {
-					feature: feature,
-					enabled: $(this).find('.fa').hasClass('fa-check-circle')
-				};
-			});
-			$('#features-settings').val(JSON.stringify(features));
-		}
+	function save() {
+		clearTimeout(saveInterval);
 
+		saveInterval = setTimeout(function() {
+			settings.persist('shoutbox', wrapper, function() {
+				socket.emit('admin.plugins.shoutbox.sync');
+			});
+		}, 1000);
+	}
+
+	function reset() {
+		bootbox.confirm('Are you sure you wish to reset the settings?', function(sure) {
+			if (sure) {
+				socket.emit('admin.plugins.shoutbox.getDefaults', null, function (err, data) {
+					settings.set('shoutbox', data, wrapper, function(){
+						socket.emit('admin.plugins.shoutbox.sync');
+					});
+				});
+			}
+		});
+	}
+
+	function prepareFeatures(featureSettings) {
 		function on(feature) {
 			var el = $('[data-feature="' + feature + '"]');
 			el.find('.fa').removeClass('fa-times-circle').addClass('fa-check-circle');
 			el.removeClass('disabled');
+
+			el.find('input:checkbox').prop('checked', true);
 		}
+
 		function off(feature) {
 			var el = $('[data-feature="' + feature + '"]');
 			el.find('.fa').removeClass('fa-check-circle').addClass('fa-times-circle');
 			el.addClass('disabled');
+
+			el.find('input:checkbox').prop('checked', false);
 		}
 
 		function toggleFeature(el) {
@@ -39,7 +75,7 @@
 			} else {
 				off(feature);
 			}
-			updateSettings();
+			save();
 		}
 
 		$('.features').on('click', '.toggle-feature', function() {
@@ -54,15 +90,15 @@
 			return false;
 		});
 
-		var saved = JSON.parse($('#features-settings').val());
-		for (var feature in saved) {
-			if (saved.hasOwnProperty(feature)) {
-				if (!saved[feature].enabled) {
+		for (var feature in featureSettings) {
+			if (featureSettings.hasOwnProperty(feature)) {
+				if (!featureSettings[feature]) {
 					off(feature);
+				} else {
+					on(feature);
 				}
 			}
 		}
-		updateSettings();
 	}
 
 	function prepareButtons() {

@@ -1,17 +1,23 @@
 <div class="row">
-    <div class="col-md-12"><h1>Shoutbox</h1></div>
+    <div class="col-md-12">
+        <h1>Shoutbox</h1>
+    </div>
 </div>
 
-
 <div class="row">
-    <form class="form">
+    <form class="form" id="shoutboxAdminForm">
         <div class="col-xs-6 pull-left">
-            <h3>Settings <small>change settings</small> <button id="save" class="btn btn-success btn-xs pull-right">Save</button></h3>
+            <h3>Settings
+                <small>change settings</small>
+            </h3>
+
+            <hr>
+
             <div class="form-group">
                 <label for="shoutlimit">Maximum number of shouts that can be returned</label>
-                <select class="form-control" id="shoutlimit" data-field="shoutbox:shoutlimit">
+                <select class="form-control" data-key="limits.shoutLimit">
                     <option value="10">10</option>
-                    <option value="25" selected>25</option>
+                    <option value="25">25</option>
                     <option value="50">50</option>
                 </select>
                 <p class="help-block"><small>Shouts marked as deleted will be included in this number</small></p>
@@ -20,12 +26,17 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" data-field="shoutbox:headerlink" id="headerlink"> Show navigation link
+                        <input type="checkbox" data-key="toggles.headerLink" data-empty="false" data-trim="false"> Show navigation link
                     </label>
                 </div>
             </div>
 
-            <h3>Features <small>enable or disable features</small> <button class="features-save btn btn-success btn-xs pull-right">Save</button></h3>
+            <h3>Features
+                <small>enable or disable features</small>
+            </h3>
+
+            <hr>
+
             <div class="features">
                 <!-- BEGIN features -->
                 <div data-feature="{features.id}" class="panel panel-default pointer shoutbox-admin-feature">
@@ -42,20 +53,28 @@
                             </span>&nbsp;
                         </div>
                     </div>
+                    <input class="hidden" type="checkbox" data-key="toggles.features.{features.id}" data-empty="false" data-trim="false">
                 </div>
                 <!-- END features -->
             </div>
-            <input id="features-settings" class="hidden" type="text" data-field="shoutbox:features">
         </div>
 
         <div class="col-xs-6 pull-right">
             <h3>Actions</h3>
-            <div class="alert alert-danger">Warning: These actions are permanent and <strong>cannot</strong> be undone!</div>
-            <button type="button" class="btn btn-danger" id="shoutbox-remove-deleted-button">Remove deleted shouts</button>
-            <button type="button" class="btn btn-danger" id="shoutbox-remove-all-button">Remove all shouts</button>
 
             <hr>
-            Like my plugins? Consider buying me a beer!<br>
+
+            <div class="alert alert-danger">Warning: These actions are permanent and <strong>cannot</strong> be undone!</div>
+
+            <button type="button" class="btn btn-danger" id="shoutbox-remove-deleted-button">Remove deleted shouts</button>
+            <button type="button" class="btn btn-danger" id="shoutbox-remove-all-button">Remove all shouts</button>
+        </div>
+    </form>
+    <div class="col-xs-12">
+        <hr>
+        <div class="pull-left">
+            Like my plugins? Consider buying me a beer!
+            <br>
             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_s-xclick">
                 <input type="hidden" name="hosted_button_id" value="ALVPTE4H99RD4">
@@ -63,7 +82,17 @@
                 <img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1">
             </form>
         </div>
-    </form>
+
+        <div class="pull-right">
+            <small>
+                Settings are saved automatically but here's a save button in case you don't trust me
+            </small>
+            <br>
+            <button id="save" class="btn btn-success btn-xs pull-right">
+                Save
+            </button>
+        </div>
+    </div>
 </div>
 
 <script src="/plugins/nodebb-plugin-shoutbox/public/js/admin.js"></script>

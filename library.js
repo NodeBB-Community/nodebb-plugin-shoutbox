@@ -3,34 +3,42 @@ var	NodeBB = require('./lib/nodebb'),
 	Sockets = require('./lib/sockets'),
 
 	SocketPlugins = NodeBB.SocketPlugins,
+	SocketAdmin = NodeBB.SocketAdmin,
 
 	app;
 
 var Shoutbox = {};
 
 Shoutbox.register = {
-	load: function(expressApp, middleware, controllers) {
+	load: function(expressApp, middleware, controllers, callback) {
 		app = expressApp;
-		function renderGlobal(req, res, next) {
-			Config.api(function(data) {
-				res.render('shoutbox', data);
-			});
-		}
-		function renderAdmin(req, res, next) {
-			Config.api(function(data) {
-				res.render('shoutbox/admin', data);
-			});
-		}
-		app.get('/shoutbox', middleware.buildHeader, renderGlobal);
-		app.get('/api/shoutbox', renderGlobal);
 
-		app.get('/admin/shoutbox', middleware.admin.buildHeader, renderAdmin);
-		app.get('/api/admin/shoutbox', renderAdmin);
-		SocketPlugins.shoutbox = Sockets.events;
+		function renderGlobal(req, res, next) {
+			Config.getTemplateData(function(data) {
+				res.render(Config.plugin.id, data);
+			});
+		}
+
+		function renderAdmin(req, res, next) {
+			Config.getTemplateData(function(data) {
+				res.render(Config.plugin.id + '/admin', data);
+			});
+		}
+
+		app.get(Config.plugin.route, middleware.buildHeader, renderGlobal);
+		app.get('/api' + Config.plugin.route, renderGlobal);
+
+		app.get('/admin' + Config.plugin.route, middleware.admin.buildHeader, renderAdmin);
+		app.get('/api/admin' + Config.plugin.route, renderAdmin);
+
+		SocketPlugins[Config.plugin.id] = Sockets.events;
+		SocketAdmin[Config.plugin.id] = Config.adminSockets;
+
+		callback();
 	},
 	global: {
 		addNavigation: function(custom_header, callback) {
-			if (Config.get('headerlink') === '1') {
+			if (Config.global.get('toggles.headerLink')) {
 				custom_header.navigation.push({
 					class: '',
 					iconClass: 'fa fa-fw ' + Config.plugin.icon,
@@ -38,6 +46,7 @@ Shoutbox.register = {
 					text: Config.plugin.name
 				});
 			}
+
 			callback(null, custom_header);
 		}
 	},
@@ -62,6 +71,7 @@ Shoutbox.widget = {
 			description: Config.plugin.description,
 			content: ''
 		});
+
 		callback(null, widgets);
 	},
 	render: function(widget, callback) {
@@ -69,10 +79,10 @@ Shoutbox.widget = {
 		widget.data.container = '';
 		if (widget.uid !== 0) {
 			//Currently doing this on the server -- still debating what's better
-			Config.settings.get({ uid: widget.uid, settings: {} }, function(err, result) {
-				Config.api(function(data) {
+			Config.user.get({ uid: widget.uid, settings: {} }, function(err, result) {
+				Config.getTemplateData(function(data) {
 					data.hiddenStyle = '';
-					if (result.settings[Config.prefix + 'hide'] == 1) {
+					if (parseInt(result.settings['shoutbox:toggles:hide'], 10) == 1) {
 						data.hiddenStyle = 'display: none;';
 					}
 					app.render('shoutbox', data, callback);
@@ -97,10 +107,10 @@ Shoutbox.settings = {
 		});
 	},
 	getUserSettings: function(data, callback) {
-		Config.settings.get(data, callback);
+		Config.user.get(data, callback);
 	},
 	saveUserSettings: function(data) {
-		Config.settings.save(data);
+		Config.user.save(data);
 	}
 };
 

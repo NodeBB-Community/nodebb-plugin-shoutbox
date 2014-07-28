@@ -4,7 +4,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">
                     <a href="/shoutbox" title="Shoutbox">Shoutbox</a>
-                    <a href="#" id="shoutbox-settings-hide"><span class="fa fa-arrow-up pull-right"></span></a>
+                    <a href="#" id="shoutbox-settings-hide" data-shoutbox-setting="toggles.hide"><span class="fa fa-arrow-up pull-right"></span></a>
                 </h3>
             </div>
 
@@ -37,12 +37,12 @@
                     </button>
                     <ul id="shoutbox-settings-menu" class="dropdown-menu" role="menu">
                         <li>
-                            <a id="shoutbox-settings-sound" href="#">
+                            <a data-shoutbox-setting="toggles.sound" href="#">
                                 <span class="fa fa-check"></span> Sound
                             </a>
                         </li>
                         <li>
-                            <a id="shoutbox-settings-notification" href="#">
+                            <a data-shoutbox-setting="toggles.notification" href="#">
                                 <span class="fa fa-check"></span> Notification
                             </a>
                         </li>

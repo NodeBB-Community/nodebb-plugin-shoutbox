@@ -2,9 +2,11 @@
 	var Settings = {
 		settings: null,
 		get: function(key) {
+			key = Settings.formalString(key);
 			return Settings.settings[key];
 		},
 		set: function(key, value) {
+			key = Settings.formalString(key);
 			Settings.settings[key] = value;
 
 			Shoutbox.sockets.saveSettings({ key: key, value: value }, function(err, result) {
@@ -14,8 +16,8 @@
 			});
 		},
 		load: function(shoutPanel, callback) {
-			Shoutbox.sockets.getSettings(function(err, settings) {
-				Settings.settings = settings.settings;
+			Shoutbox.sockets.getSettings(function(err, result) {
+				Settings.settings = result.settings;
 
 				Settings.parse(shoutPanel);
 
@@ -34,11 +36,12 @@
 			for (var key in settings) {
 				if (settings.hasOwnProperty(key)) {
 					var value = settings[key];
-					var el = shoutPanel.find('#shoutbox-settings-' + key + ' span');
+					key = Settings.prettyString(key);
+					var el = shoutPanel.find('[data-shoutbox-setting="' + key + '"] span');
 
 					if (el.length > 0) {
 						// Not the best way but it'll have to do for now
-						if (key !== 'hide') {
+						if (key !== 'toggles.hide') {
 							if (parseInt(value, 10) === 1) {
 								el.removeClass('fa-times').addClass('fa-check');
 							} else {
@@ -54,6 +57,55 @@
 					}
 				}
 			}
+		},
+		prettyString: function(key) {
+			return key.replace('shoutbox:', '').replace(/:/g, '.');
+		},
+		formalString: function(key) {
+			return 'shoutbox:' + key.replace(/\./g, ':');
+		},
+		inflate: function(object, startIndex, separator) {
+			var keys = Object.keys(object),
+				obj = {};
+
+			for (var i = 0, l = keys.length; i < l; i++) {
+				var cur = keys[i],
+					parts = cur.split(separator || ':'),
+					curObj = obj;
+
+				for (var j = startIndex || 0; j < parts.length; j++) {
+					if (typeof curObj[parts[j]] !== 'object' && j !== parts.length - 1) {
+						curObj = curObj[parts[j]] = {};
+					} else if (j === parts.length - 1) {
+						curObj[parts[j]] = object[cur];
+					} else {
+						curObj = curObj[parts[j]];
+					}
+				}
+			}
+
+			return obj;
+		},
+		deflate: function(object, separator) {
+			var result = {},
+				sep = separator || ':';
+
+			function iterate(obj, path) {
+				for (var prop in obj) {
+					if (obj.hasOwnProperty(prop)) {
+						if (typeof obj[prop] === 'object') {
+							path.push(prop);
+							iterate(obj[prop], path);
+						} else {
+							result[path.join(sep) + sep + prop] = obj[prop];
+						}
+					}
+				}
+			}
+
+			iterate(object, ['shoutbox']);
+
+			return result;
 		}
 	};
 

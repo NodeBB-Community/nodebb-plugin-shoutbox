@@ -42,10 +42,10 @@
 			$('#shoutbox-content-overlay').find('span').html(message).parent().addClass('active');
 		},
 		notify: function(data) {
-			if (Shoutbox.settings.get('notification') === 1) {
+			if (Shoutbox.settings.get('toggles.notification') === 1) {
 				app.alternatingTitle(Shoutbox.vars.messages.alert.replace(/%u/g, data.user.username));
 			}
-			if (Shoutbox.settings.get('sound') === 1) {
+			if (Shoutbox.settings.get('toggles.sound') === 1) {
 				Shoutbox.utils.playSound('notification');
 			}
 		},

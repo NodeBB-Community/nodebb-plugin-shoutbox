@@ -5,7 +5,7 @@
 	"url": "https://github.com/Schamper/nodebb-plugin-shoutbox",
 	"library": "./library.js",
 	"hooks": [
-		{ "hook": "filter:app.load", "method": "register.load" },
+		{ "hook": "static:app.load", "method": "register.load" },
 		{ "hook": "filter:admin.header.build", "method": "register.admin.addNavigation" },
 		{ "hook": "filter:header.build", "method": "register.global.addNavigation" },
 

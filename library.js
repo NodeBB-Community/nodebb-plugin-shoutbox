@@ -34,7 +34,7 @@ Shoutbox.register = {
 		SocketPlugins[Config.plugin.id] = Sockets.events;
 		SocketAdmin[Config.plugin.id] = Config.adminSockets;
 
-		callback();
+		callback(expressApp, middleware, controllers);
 	},
 	global: {
 		addNavigation: function(custom_header, callback) {

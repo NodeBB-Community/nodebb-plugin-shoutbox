@@ -44,12 +44,13 @@
 
 				// We need to update the timestring on every new activity. Shout.tpl is only parsed for the shout of a
 				// chain breaking user, after that only text.tpl is parsed.
-				shoutContent.find('[data-uid="' + shout.fromuid + '"] span.timeago').attr('title', shout.timeString);
+				var lastChainTimestamp = shoutContent.find('[data-uid="' + shout.fromuid + '"] span.timeago:last');
+				lastChainTimestamp.attr('title', shout.timeString);
 
 				// execute jQuery.timeago() on shout's span.timeago
 				if (jQuery.timeago) {
 					// Reset timeago to use the new timestamp
-					shoutContent.find('[data-uid="' + shout.fromuid + '"] span.timeago').data('timeago', null).timeago();
+					lastChainTimestamp.data('timeago', null).timeago();
 				}
 				// else span.timeago text will be empty, but timeString will appear on hover <-- see templates/shoutbox/shout.tpl
 

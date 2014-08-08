@@ -7,6 +7,16 @@
 		onWobble: 'event:shoutbox.wobble'
 	};
 
+	var ArgumentHandlers = {
+		username: function(argument) {
+			if (argument.indexOf('@') === 0) {
+				argument = argument.slice(1);
+			}
+
+			return utils.slugify(argument);
+		}
+	};
+
 	var DefaultCommands = {
 		help: {
 			info: {
@@ -40,7 +50,7 @@
 			handlers: {
 				action: function(argument, sendShout) {
 					Shoutbox.sockets.wobble({
-						victim: utils.slugify(argument)
+						victim: ArgumentHandlers.username(argument)
 					});
 				},
 				socket: function(data) {

@@ -55,10 +55,10 @@
 			Shoutbox.base.updateUserStatus(data.uid, data.status, Shoutbox.base.getShoutPanel());
 		},
 		onStartTyping: function(data) {
-			$('[data-uid="' + data.uid + '"]').find('.shoutbox-shout-typing').addClass('isTyping');
+			$('[data-uid="' + data.uid + '"]').addClass('isTyping');
 		},
 		onStopTyping: function(data) {
-			$('[data-uid="' + data.uid + '"]').find('.shoutbox-shout-typing').removeClass('isTyping');
+			$('[data-uid="' + data.uid + '"]').removeClass('isTyping');
 		},
 		defaultSocketHandler: function(message) {
 			this.message = message;

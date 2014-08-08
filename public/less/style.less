@@ -1,4 +1,6 @@
+@border-size: 2px;
 @avatar-size: 30px;
+@avatar-image-size: @avatar-size - (2 * @border-size);
 @status-online: #060;
 @status-away: #cc0;
 @status-dnd: #900;
@@ -12,19 +14,11 @@
 .shoutbox-shout-container {
   margin: 5px 0;
   position: relative;
-
-  .shoutbox-shout-avatar {
+  .shoutbox-shout-avatar-link {
     .img-circle();
+    position: absolute;
+    left: 0;
     border: 2px solid @status-offline;
-    display: inline-block;
-    vertical-align: top;
-    width: @avatar-size;
-    height: @avatar-size;
-    box-shadow: 0 1px 1px #555555;
-    &-link {
-      position: absolute;
-      left: 0;
-    }
     &.online {
       border: 2px solid @status-online;
     }
@@ -36,6 +30,37 @@
     }
     &.offline {
       border: 2px solid @status-offline;
+    }
+    .shoutbox-shout-avatar {
+      border-radius: inherit;
+      display: inline-block;
+      vertical-align: top;
+      width: @avatar-image-size;
+      height: @avatar-image-size;
+    }
+    .shoutbox-shout-avatar-overlay {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      background-color: black;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      text-align: center;
+      line-height: @avatar-image-size;
+    }
+
+    .shoutbox-shout-avatar-overlay, .shoutbox-shout-typing {
+      .shoutbox-opacity-transition;
+    }
+  }
+
+  &.isTyping {
+    .shoutbox-shout-avatar-overlay {
+      opacity: 0.6;
+    }
+    .shoutbox-shout-typing {
+      opacity: 1;
     }
   }
 
@@ -67,15 +92,7 @@
         opacity: 1;
       }
 
-      .shoutbox-shout-typing {
-        position: absolute;
-        &.isTyping {
-          position: relative;
-          opacity: 1;
-        }
-      }
-
-      .shoutbox-shout-timestamp, .shoutbox-shout-typing {
+      .shoutbox-shout-timestamp {
         .shoutbox-opacity-transition;
       }
     }

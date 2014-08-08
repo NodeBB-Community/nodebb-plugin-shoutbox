@@ -21,7 +21,7 @@ Shoutbox.register = {
 
 		function renderAdmin(req, res, next) {
 			Config.getTemplateData(function(data) {
-				res.render(Config.plugin.id + '/admin', data);
+				res.render('admin/' + Config.plugin.id, data);
 			});
 		}
 
@@ -85,7 +85,7 @@ Shoutbox.widget = {
 					if (parseInt(result.settings['shoutbox:toggles:hide'], 10) == 1) {
 						data.hiddenStyle = 'display: none;';
 					}
-					app.render('shoutbox', data, callback);
+					app.render('shoutbox/panel', data, callback);
 				});
 			});
 			// Client or server?

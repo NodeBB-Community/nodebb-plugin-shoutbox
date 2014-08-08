@@ -12,7 +12,7 @@
 		parse: function(msg, sendShout) {
 			var match = msg.match(regex);
 			if (match && typeof commandActions[match[1]] === 'function') {
-				commandActions[match[1]](match[2], sendShout);
+				commandActions[match[1]](match[2] || '', sendShout);
 			} else {
 				sendShout();
 			}

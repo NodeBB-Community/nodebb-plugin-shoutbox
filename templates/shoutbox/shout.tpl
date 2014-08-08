@@ -1,6 +1,6 @@
 <div data-uid="{fromuid}" class="shoutbox-shout-container">
-    <a class="shoutbox-shout-avatar-link" href="/user/{user.userslug}">
-        <img class="shoutbox-shout-avatar {user.status}" title="{user.username}" src="{user.picture}"/>
+    <a class="shoutbox-shout-avatar-link {user.status}" href="/user/{user.userslug}">
+        <img class="shoutbox-shout-avatar" title="{user.username}" src="{user.picture}"/>
         <div class="shoutbox-shout-avatar-overlay">
             <span class="shoutbox-shout-typing">
                 <i class="text-muted fa fa-keyboard-o"></i>

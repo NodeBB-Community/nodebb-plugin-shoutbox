@@ -77,7 +77,7 @@
 			};
 
 			var setStatus = function(uid, status) {
-				shoutPanel.find('[data-uid="' + uid + '"] .shoutbox-shout-avatar').removeClass().addClass('shoutbox-shout-avatar ' + status);
+				shoutPanel.find('[data-uid="' + uid + '"] .shoutbox-shout-avatar-link').removeClass().addClass('shoutbox-shout-avatar-link ' + status);
 			};
 
 			if (!uid) {

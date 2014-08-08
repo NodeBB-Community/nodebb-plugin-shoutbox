@@ -49,13 +49,12 @@
 			},
 			handle: function(shoutPanel) {
 				var shoutContent = shoutPanel.find('#shoutbox-content'),
-					shoutOverlay = shoutPanel.find('#shoutbox-content-overlay');
+					shoutOverlay = shoutPanel.find('#shoutbox-content-overlay'),
+					scrollHeight = Shoutbox.utils.getScrollHeight(shoutContent);
 
-				if (!shoutOverlay.hasClass('active') &&
-					(shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height() >= Shoutbox.vars.scrollBreakpoint) {
+				if (!shoutOverlay.hasClass('active') && scrollHeight >= Shoutbox.vars.scrollBreakpoint) {
 					Shoutbox.utils.showMessage(Shoutbox.vars.messages.scrolled);
-				} else if (shoutOverlay.hasClass('active') &&
-					(shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height() < Shoutbox.vars.scrollBreakpoint) {
+				} else if (shoutOverlay.hasClass('active') && scrollHeight < Shoutbox.vars.scrollBreakpoint) {
 					shoutOverlay.removeClass('active');
 				}
 			}

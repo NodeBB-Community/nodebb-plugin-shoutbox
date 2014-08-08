@@ -29,10 +29,23 @@
 			return window.templates.parse(tpl, shout);
 		},
 		scrollToBottom: function(shoutContent) {
-			if(shoutContent[0] && (shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height() < Shoutbox.vars.scrollBreakpoint) {
-				shoutContent.scrollTop(
-					shoutContent[0].scrollHeight - shoutContent.height()
-				);
+			if (shoutContent[0]) {
+				var	lastShoutHeight = $('[data-sid]:last').height(),
+					scrollHeight = Utils.getScrollHeight(shoutContent) - lastShoutHeight;
+
+				if (scrollHeight < Shoutbox.vars.scrollBreakpoint) {
+					shoutContent.scrollTop(
+						shoutContent[0].scrollHeight - shoutContent.height()
+					);
+				}
+			}
+		},
+		getScrollHeight: function(shoutContent) {
+			if (shoutContent[0]) {
+				var padding = shoutContent.css('padding-top').replace('px', '') + shoutContent.css('padding-bottom').replace('px', '');
+				return (((shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height()) - padding);
+			} else {
+				return -1;
 			}
 		},
 		isAnon: function() {
@@ -58,6 +71,7 @@
 		initialize: Utils.initialize,
 		parseShout: Utils.parseShout,
 		scrollToBottom: Utils.scrollToBottom,
+		getScrollHeight: Utils.getScrollHeight,
 		showMessage: Utils.showMessage,
 		isAnon: Utils.isAnon,
 		notify: Utils.notify,

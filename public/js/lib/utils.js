@@ -54,6 +54,9 @@
 		showMessage: function(message) {
 			$('#shoutbox-content-overlay').find('span').html(message).parent().addClass('active');
 		},
+		closeMessage: function() {
+			$('#shoutbox-content-overlay').removeClass('active');
+		},
 		notify: function(data) {
 			if (Shoutbox.settings.get('toggles.notification') === 1) {
 				app.alternatingTitle(Shoutbox.vars.messages.alert.replace(/%u/g, data.user.username));

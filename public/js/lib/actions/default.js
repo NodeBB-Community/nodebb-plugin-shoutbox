@@ -52,10 +52,12 @@
 					shoutOverlay = shoutPanel.find('#shoutbox-content-overlay'),
 					scrollHeight = Shoutbox.utils.getScrollHeight(shoutContent);
 
-				if (!shoutOverlay.hasClass('active') && scrollHeight >= Shoutbox.vars.scrollBreakpoint) {
+				if (!shoutOverlay.hasClass('active') && scrollHeight >= Shoutbox.vars.scrollBreakpoint && !Shoutbox.vars.scrollMessageShowing) {
 					Shoutbox.utils.showMessage(Shoutbox.vars.messages.scrolled);
-				} else if (shoutOverlay.hasClass('active') && scrollHeight < Shoutbox.vars.scrollBreakpoint) {
+					Shoutbox.vars.scrollMessageShowing = true;
+				} else if (shoutOverlay.hasClass('active') && scrollHeight < Shoutbox.vars.scrollBreakpoint && Shoutbox.vars.scrollMessageShowing) {
 					shoutOverlay.removeClass('active');
+					Shoutbox.vars.scrollMessageShowing = false;
 				}
 			}
 		},

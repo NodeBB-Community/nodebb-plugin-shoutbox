@@ -7,6 +7,7 @@
 		},
 		editing: 0,
 		lastSid: 0,
-		scrollBreakpoint: 50
+		scrollBreakpoint: 50,
+		scrollMessageShowing: false
 	};
 })(window.Shoutbox);

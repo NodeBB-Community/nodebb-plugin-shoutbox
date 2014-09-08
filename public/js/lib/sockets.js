@@ -49,7 +49,7 @@
 		},
 		onEdit: function(data) {
 			data.content = '<abbr title="edited">' + data.content + '</abbr>';
-			$('[data-sid="' + data.sid + '"]').html(Shoutbox.utils.parseShout(data, true));
+			$('[data-sid="' + data.sid + '"]').replaceWith(Shoutbox.utils.parseShout(data, true));
 		},
 		onUserStatusChange: function(err, data) {
 			Shoutbox.base.updateUserStatus(data.uid, data.status, Shoutbox.base.getShoutPanel());

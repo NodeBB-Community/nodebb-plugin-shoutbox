@@ -14,7 +14,7 @@
 			if (match && typeof commandActions[match[1]] === 'function') {
 				commandActions[match[1]](match[2] || '', sendShout);
 			} else {
-				sendShout();
+				sendShout(msg);
 			}
 		}
 	};

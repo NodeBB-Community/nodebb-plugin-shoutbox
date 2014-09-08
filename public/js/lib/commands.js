@@ -1,5 +1,5 @@
 (function(Shoutbox) {
-	var regex = /\/(\w+)\s?(.+)?/, commandActions = {}, commandInfo = {};
+	var regex = /^\/(\w+)\s?(.+)?/, commandActions = {}, commandInfo = {};
 
 	Shoutbox.commands = {
 		get: function() {

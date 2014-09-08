@@ -57,6 +57,17 @@
 					Shoutbox.utils.playSound('wobblysausage');
 				}
 			}
+		},
+		thisagain: {
+			info: {
+				usage: '/thisagain',
+				description: 'Remind the n00bs of the obvious'
+			},
+			handlers: {
+				action: function(argument, sendShout) {
+					sendShout('This again... Clear your cache and refresh.');
+				}
+			}
 		}
 	};
 

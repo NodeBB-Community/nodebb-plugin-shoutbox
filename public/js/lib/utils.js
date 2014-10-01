@@ -58,10 +58,10 @@
 			$('#shoutbox-content-overlay').removeClass('active');
 		},
 		notify: function(data) {
-			if (Shoutbox.settings.get('toggles.notification') === 1) {
+			if (parseInt(Shoutbox.settings.get('toggles.notification'), 10) === 1) {
 				app.alternatingTitle(Shoutbox.vars.messages.alert.replace(/%u/g, data.user.username));
 			}
-			if (Shoutbox.settings.get('toggles.sound') === 1) {
+			if (parseInt(Shoutbox.settings.get('toggles.sound'), 10) === 1) {
 				Shoutbox.utils.playSound('notification');
 			}
 		},

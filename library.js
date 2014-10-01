@@ -75,24 +75,27 @@ Shoutbox.widget = {
 		callback(null, widgets);
 	},
 	render: function(widget, callback) {
+		if (widget.uid === 0) {
+			return callback();
+		}
 		//Remove any container
 		widget.data.container = '';
-		if (widget.uid !== 0) {
-			//Currently doing this on the server -- still debating what's better
-			Config.user.get({ uid: widget.uid, settings: {} }, function(err, result) {
-				Config.getTemplateData(function(data) {
-					data.hiddenStyle = '';
-					if (parseInt(result.settings['shoutbox:toggles:hide'], 10) == 1) {
-						data.hiddenStyle = 'display: none;';
-					}
-					app.render('shoutbox/panel', data, callback);
-				});
+
+		//Currently doing this on the server -- still debating what's better
+		Config.user.get({ uid: widget.uid, settings: {} }, function(err, result) {
+			Config.getTemplateData(function(data) {
+				data.hiddenStyle = '';
+				if (parseInt(result.settings['shoutbox:toggles:hide'], 10) == 1) {
+					data.hiddenStyle = 'display: none;';
+				}
+				app.render('shoutbox/panel', data, callback);
 			});
-			// Client or server?
+		});
+		// Client or server?
 //			Config.api(function(data) {
 //				app.render('shoutbox', data, callback);
 //			});
-		}
+
 	}
 };
 

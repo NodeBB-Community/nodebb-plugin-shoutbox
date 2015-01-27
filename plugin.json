@@ -1,32 +1,31 @@
 {
-	"id": "nodebb-plugin-shoutbox",
-	"name": "Shoutbox",
-	"description": "NodeBB Plugin Shoutbox",
-	"url": "https://github.com/Schamper/nodebb-plugin-shoutbox",
-	"library": "./library.js",
-	"hooks": [
-		{ "hook": "static:app.load", "method": "register.load" },
-		{ "hook": "filter:admin.header.build", "method": "register.admin.addNavigation" },
-		{ "hook": "filter:header.build", "method": "register.global.addNavigation" },
+  "id": "nodebb-plugin-shoutbox",
+  "name": "Shoutbox",
+  "description": "NodeBB Plugin Shoutbox",
+  "url": "https://github.com/Schamper/nodebb-plugin-shoutbox",
+  "library": "./library.js",
+  "hooks": [
+    { "hook": "static:app.load", "method": "init.load" },
+    { "hook": "filter:admin.header.build", "method": "init.addAdminNavigation" },
+    { "hook": "filter:header.build", "method": "init.addGlobalNavigation" },
+    { "hook": "filter:sounds.get", "method": "init.getSounds" },
 
-		{ "hook": "filter:user.settings", "method": "settings.addUserSettings" },
-		{ "hook": "filter:user.getSettings", "method": "settings.getUserSettings" },
-		{ "hook": "action:user.saveSettings", "method": "settings.saveUserSettings" },
+    { "hook": "filter:user.settings", "method": "settings.addUserSettings" },
+    { "hook": "filter:user.getSettings", "method": "settings.getUserSettings" },
+    { "hook": "action:user.saveSettings", "method": "settings.saveUserSettings" },
 
-		{ "hook": "filter:sounds.get", "method": "sounds.getSounds" },
-		{ "hook": "filter:widgets.getWidgets", "method": "widget.define" },
-		{ "hook": "filter:widget.render:shoutbox", "method": "widget.render" }
-	],
-	"staticDirs": {
-		"public": "./public"
-	},
-	"less": [
-		"public/less/style.less"
-	],
-	"scripts": [
-		"public/js/loader.js",
-		"public/js/lib/"
-	],
-	"templates": "./templates",
-	"minver": "0.5.0"
+    { "hook": "filter:widgets.getWidgets", "method": "widget.define" },
+    { "hook": "filter:widget.render:shoutbox", "method": "widget.render" }
+  ],
+  "staticDirs": {
+    "public": "./public"
+  },
+  "less": [
+    "public/less/style.less"
+  ],
+  "scripts": [
+    "public/js/loader.js",
+    "public/js/lib/"
+  ],
+  "templates": "./templates"
 }

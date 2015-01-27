@@ -22,7 +22,6 @@
     },
     "dependencies": {
         "async": "~0.2.9",
-        "path": "~0.4.9",
         "string": "~1.8.0"
     }
 }

@@ -4,9 +4,6 @@ var	NodeBB = require('./lib/nodebb'),
 	Config = require('./lib/config'),
 	Sockets = require('./lib/sockets'),
 
-	SocketPlugins = NodeBB.SocketPlugins,
-	SocketAdmin = NodeBB.SocketAdmin,
-
 	app,
 
 	Shoutbox = {};
@@ -35,8 +32,8 @@ Shoutbox.init.load = function(params, callback) {
 	router.get('/admin/plugins/' + Config.plugin.id, params.middleware.admin.buildHeader, renderAdmin);
 	router.get('/api/admin/plugins/' + Config.plugin.id, renderAdmin);
 
-	SocketPlugins[Config.plugin.id] = Sockets.events;
-	SocketAdmin[Config.plugin.id] = Config.adminSockets;
+	NodeBB.SocketPlugins[Config.plugin.id] = Sockets.events;
+	NodeBB.SocketAdmin[Config.plugin.id] = Config.adminSockets;
 
 	app = params.app;
 

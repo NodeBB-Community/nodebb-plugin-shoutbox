@@ -22,7 +22,7 @@ Shoutbox.init.load = function(params, callback) {
 
 	function renderAdmin(req, res, next) {
 		Config.getTemplateData(function(data) {
-			res.render('admin/' + Config.plugin.id, data);
+			res.render('admin/plugins/' + Config.plugin.id, data);
 		});
 	}
 

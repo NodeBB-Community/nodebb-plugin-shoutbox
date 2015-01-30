@@ -3,6 +3,7 @@
 var	NodeBB = require('./lib/nodebb'),
 	Config = require('./lib/config'),
 	Sockets = require('./lib/sockets'),
+	Commands = require('./lib/commands'),
 
 	app,
 

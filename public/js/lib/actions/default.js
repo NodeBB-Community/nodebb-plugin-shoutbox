@@ -145,6 +145,7 @@
 					Shoutbox.vars.editing = sid;
 
 					Shoutbox.sockets.getOriginalShout({ sid: sid }, function(err, orig) {
+						orig = orig[0].content;
 						shoutPanel.find('#shoutbox-message-send-btn').off('click.send').on('click.send', function(e){
 							edit(orig);
 						}).text('Edit');

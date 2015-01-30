@@ -5,9 +5,9 @@
 		sendShout: 'plugins.shoutbox.send',
 		removeShout : 'plugins.shoutbox.remove',
 		editShout: 'plugins.shoutbox.edit',
-		notifyStartTyping: 'plugins.shoutbox.notifyStartTyping',
-		notifyStopTyping: 'plugins.shoutbox.notifyStopTyping',
-		getOriginalShout: 'plugins.shoutbox.getOriginalShout',
+		notifyStartTyping: 'plugins.shoutbox.startTyping',
+		notifyStopTyping: 'plugins.shoutbox.stopTyping',
+		getOriginalShout: 'plugins.shoutbox.getPlain',
 		saveSettings: 'plugins.shoutbox.saveSetting',
 		getSettings: 'plugins.shoutbox.getSettings',
 		getUsers: 'user.loadMore',
@@ -28,9 +28,10 @@
 			var shoutPanel = Shoutbox.base.getShoutPanel();
 
 			if (shoutPanel.length > 0) {
-				Shoutbox.base.addShout(data, shoutPanel);
-				if (data.fromuid !== app.uid) {
-					Shoutbox.utils.notify(data);
+				var shout = data[0];
+				Shoutbox.base.addShout(shout, shoutPanel);
+				if (shout.fromuid !== app.uid) {
+					Shoutbox.utils.notify(shout);
 				}
 			}
 		},
@@ -48,8 +49,9 @@
 			}
 		},
 		onEdit: function(data) {
-			data.content = '<abbr title="edited">' + data.content + '</abbr>';
-			$('[data-sid="' + data.sid + '"]').replaceWith(Shoutbox.utils.parseShout(data, true));
+			var shout = data[0];
+			shout.content = '<abbr title="edited">' + shout.content + '</abbr>';
+			$('[data-sid="' + shout.sid + '"]').replaceWith(Shoutbox.utils.parseShout(shout, true));
 		},
 		onUserStatusChange: function(err, data) {
 			Shoutbox.base.updateUserStatus(data.uid, data.status, Shoutbox.base.getShoutPanel());

@@ -38,7 +38,7 @@ Shoutbox.init.load = function(params, callback) {
 
 	app = params.app;
 
-	callback();
+	Config.init(callback);
 };
 
 Shoutbox.init.addGlobalNavigation = function(header, callback) {

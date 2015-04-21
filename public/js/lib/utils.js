@@ -25,6 +25,7 @@
 		},
 		parseShout: function(shout, onlyText) {
 			var tpl = onlyText ? textTpl : shoutTpl;
+			shout.ownShout = shout.fromuid === app.user.uid;
 			shout.user.hasRights = shout.fromuid === app.uid || app.isAdmin === true;
 			return window.templates.parse(tpl, shout);
 		},

@@ -1,4 +1,4 @@
-<div data-uid="{fromuid}" class="shoutbox-shout-container">
+<div data-uid="{fromuid}" class="shoutbox-shout-container <!-- IF ownShout -->ownShout<!-- ENDIF ownShout -->">
     <a class="shoutbox-shout-avatar-link {user.status}" href="/user/{user.userslug}">
         <img class="shoutbox-shout-avatar" title="{user.username}" src="{user.picture}"/>
         <div class="shoutbox-shout-avatar-overlay">

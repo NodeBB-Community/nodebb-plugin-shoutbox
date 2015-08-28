@@ -1,6 +1,10 @@
+/* Dimensions */
 @border-size: 2px;
 @avatar-size: 30px;
 @avatar-image-size: @avatar-size - (2 * @border-size);
+@chain-margin: 10px;
+
+/* Colours */
 @status-online: #060;
 @status-away: #cc0;
 @status-dnd: #900;
@@ -11,102 +15,118 @@
   transition: opacity 0.3s, visibility 0s linear 0.3s;
 }
 
-.shoutbox-shout-container {
-  margin: 5px 0;
-  position: relative;
-  .shoutbox-shout-avatar-link {
-    .img-circle();
-    position: absolute;
-    left: 0;
-    border: 2px solid @status-offline;
-    &.online {
-      border: 2px solid @status-online;
-    }
-    &.away {
-      border: 2px solid @status-away;
-    }
-    &.dnd {
-      border: 2px solid @status-dnd;
-    }
-    &.offline {
-      border: 2px solid @status-offline;
-    }
-    .shoutbox-shout-avatar {
-      border-radius: inherit;
-      display: inline-block;
-      vertical-align: top;
-      width: @avatar-image-size;
-      height: @avatar-image-size;
-    }
-    .shoutbox-shout-avatar-overlay {
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      background-color: black;
-      width: 100%;
-      height: 100%;
-      border-radius: inherit;
-      text-align: center;
-      line-height: @avatar-image-size;
-    }
+.shoutbox-avatar {
+  .img-circle();
+  position: absolute;
+  left: 0;
+  border: 2px solid @status-offline;
 
-    .shoutbox-shout-avatar-overlay, .shoutbox-shout-typing {
-      .shoutbox-opacity-transition;
-    }
+  margin-top: @chain-margin;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  &.online {
+    border: 2px solid @status-online;
+  }
+
+  &.away {
+    border: 2px solid @status-away;
+  }
+
+  &.dnd {
+    border: 2px solid @status-dnd;
+  }
+
+  &.offline {
+    border: 2px solid @status-offline;
+  }
+
+  .shoutbox-avatar-image {
+    border-radius: inherit;
+    width: @avatar-image-size;
+    height: @avatar-image-size;
+  }
+
+  .shoutbox-avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    text-align: center;
+    line-height: @avatar-image-size;
   }
 
   &.isTyping {
-    .shoutbox-shout-avatar-overlay {
+    .shoutbox-avatar-overlay {
       opacity: 0.6;
     }
-    .shoutbox-shout-typing {
+
+    .shoutbox-avatar-typing {
       opacity: 1;
     }
   }
 
-  .shoutbox-shout-content {
-    display: inline-block;
-    width: 100%;
-    padding-left: @avatar-size + 5px;
-    font-size: @font-size-base;
-    line-height: @font-size-base;
-    & > a {
-      font-size: @font-size-base + 2px;
-      line-height: @font-size-base + 2px;
-    }
-    & > div {
-      margin: 1px 0 3px;
-      &:hover .shoutbox-shout-options {
-        opacity: 1;
-      }
-      &:last-child {
-        margin: 1px 0 0;
-      }
-    }
-    & p {
-      margin: 0;
-    }
-
-    .shoutbox-shout-details {
-      &:hover .shoutbox-shout-timestamp {
-        opacity: 1;
-      }
-
-      .shoutbox-shout-timestamp {
-        .shoutbox-opacity-transition;
-      }
-    }
-
-    .shoutbox-shout-options {
-      .shoutbox-opacity-transition;
-    }
+  .shoutbox-avatar-overlay, .shoutbox-avatar-typing {
+    .shoutbox-opacity-transition;
   }
 }
 
-#shoutbox {
+.shoutbox-user {
+  margin-top: @chain-margin;
+  margin-left: @avatar-size + 5px;
+  margin-bottom: 3px;
+  font-size: @font-size-base;
+  line-height: @font-size-base;
+
+  .shoutbox-shout-timestamp {
+    .shoutbox-opacity-transition;
+  }
+
+  &:hover .shoutbox-shout-timestamp {
+    opacity: 1;
+  }
+}
+
+.shoutbox-shout {
+  margin-left: @avatar-size + 5px;
+  margin-bottom: 3px;
+  font-size: @font-size-base;
+  line-height: @font-size-base;
+
+  .shoutbox-shout-edited:after {
+    content: "edited";
+    font-size: 10px;
+    float: right;
+    padding-right: 10px;
+    color: @text-muted;
+
+    .shoutbox-opacity-transition;
+  }
+
+  .shoutbox-shout-options {
+    .shoutbox-opacity-transition;
+  }
+
+  &:hover {
+    .shoutbox-shout-options, .shoutbox-shout-edited:after {
+      opacity: 1;
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.shoutbox {
   &-content, &-archive-content {
     height: 200px;
     overflow-y: scroll;
+    padding-top: 0;
+    position: relative;
 
     & p {
       margin: 0;
@@ -125,10 +145,10 @@
     margin-top: 5px;
   }
 
-  #shoutbox-content-container {
+  .shoutbox-content-container {
     position: relative;
 
-    #shoutbox-content-overlay {
+    .shoutbox-content-overlay {
       width: 100%;
       max-height: 100%;
       padding: 10px;

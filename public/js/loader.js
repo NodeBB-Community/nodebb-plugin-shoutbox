@@ -1,13 +1,14 @@
 (function() {
-	$(window).on('action:widgets.loaded', function(e, data) {
-		if ($('#shoutbox').length > 0) {
-			Shoutbox.init(data.url);
+	$(window).on('action:widgets.loaded', function() {
+		if ($('#shoutbox-main').length > 0) {
+			Shoutbox.init();
 		}
 	});
 
 	window.Shoutbox = {
-		init: function(url) {
-			Shoutbox.base.initialize(url, $('#shoutbox'));
-		}
+		init: function() {
+			Shoutbox.instances.main = Shoutbox.base.init($('#shoutbox-main'), {});
+		},
+		instances: {}
 	};
 })();

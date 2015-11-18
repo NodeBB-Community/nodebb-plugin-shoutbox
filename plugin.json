@@ -10,7 +10,7 @@
     { "hook": "filter:header.build", "method": "init.addGlobalNavigation" },
     { "hook": "filter:sounds.get", "method": "init.getSounds" },
 
-    { "hook": "filter:user.settings", "method": "settings.addUserSettings" },
+    { "hook": "filter:user.customSettings", "method": "settings.addUserSettings" },
     { "hook": "filter:user.getSettings", "method": "settings.getUserSettings" },
     { "hook": "action:user.saveSettings", "method": "settings.saveUserSettings" },
 

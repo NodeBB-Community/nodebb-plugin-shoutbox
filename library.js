@@ -99,7 +99,7 @@ Shoutbox.widget.render = function(widget, callback) {
 };
 
 Shoutbox.settings.addUserSettings = function(settings, callback) {
-	app.render('shoutbox/user/settings', function(err, html) {
+	app.render('shoutbox/user/settings', { settings: settings.settings }, function(err, html) {
 		settings.customSettings.push({
 			title: Config.plugin.name,
 			content: html

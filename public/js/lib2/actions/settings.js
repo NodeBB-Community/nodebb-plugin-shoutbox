@@ -7,11 +7,11 @@
 				.off('click', '.shoutbox-settings-menu a')
 				.on('click', '.shoutbox-settings-menu a', handle);
 		};
-		
+
 		function handle() {
 			var el = $(this),
-				statusEl = el.find('span'),
 				key = el.data('shoutbox-setting'),
+				statusEl = el.find('span'),
 				status = statusEl.hasClass('fa-check');
 
 			if (status) {

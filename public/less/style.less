@@ -47,6 +47,11 @@
     height: @avatar-image-size;
   }
 
+  .shoutbox-avatar-icon {
+    .shoutbox-avatar-image;
+    padding: 2px;
+  }
+
   .shoutbox-avatar-overlay {
     position: absolute;
     top: 0;
@@ -122,6 +127,14 @@
 }
 
 .shoutbox {
+  & .panel-heading .btn-group {
+    display: block;
+  }
+
+  & .panel-title {
+    display: inline-block;
+  }
+
   &-content, &-archive-content {
     height: 200px;
     overflow-y: scroll;
@@ -137,11 +150,15 @@
     height: 300px;
   }
 
+  & .shoutbox-button-settings {
+    color: inherit;
+  }
+
   &-settings-menu span {
     width: 15px;
   }
 
-  & .btn-group {
+  & .panel-body .btn-group {
     margin-top: 5px;
   }
 
@@ -168,21 +185,6 @@
       .shoutbox-content-overlay-close {
         float: right;
       }
-    }
-  }
-}
-
-.shoutbox-admin {
-  &-feature {
-    .shoutbox-opacity-transition;
-    opacity: 1;
-
-    &.disabled {
-      opacity: 0.5;
-    }
-
-    & .feature-icon {
-      opacity: 0.8;
     }
   }
 }

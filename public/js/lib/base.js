@@ -1,151 +1,240 @@
+"use strict";
+/*global templates, Mentions, emojiExtended*/
+
 (function(Shoutbox) {
-	var Base = {
-		initialize: function(url, shoutPanel) {
-			Base.vars.shoutPanel = shoutPanel;
-			if (!Shoutbox.utils.isAnon()) {
-				Shoutbox.utils.initialize(shoutPanel, function() {
-					Base.getShouts(shoutPanel);
+	var Instance = function(container, options) {
+		var self = this;
+		
+		this.options = options || {};
 
-					//Add mentions autofill
-					if (typeof Mentions !== 'undefined' && typeof Mentions.addAutofill !== 'undefined') {
-						Mentions.addAutofill(shoutPanel.find('#shoutbox-message-input'), []);
-					}
-
-					//Add emoji autocomplete
-					function addEmoji(emoji) {
-						emoji.addCompletion(shoutPanel.find('#shoutbox-message-input'));
-					}
-
-					if (typeof emojiExtended !== 'undefined') {
-						addEmoji(emojiExtended);
-					} else {
-						$(window).one('emoji-extended:initialized', addEmoji);
-					}
-
-					if (url === 'shoutbox') {
-						Shoutbox.base.showUserPanel();
-					}
+		setupDom.apply(this, [container]);
+		setupVars.apply(this);
+		setupDependencies.apply(this);
+		
+		this.settings.load();
+		getShouts();
+		
+		window.sb = this;
+		
+		function getShouts() {
+			self.sockets.getShouts(function(err, shouts) {
+				shouts = shouts.filter(function(el) {
+					return el !== null;
 				});
-			}
-		},
-		addShout: function(shout, shoutPanel) {
-			if (shout && shout.sid) {
-				var shoutContent = shoutPanel.find('#shoutbox-content');
 
-				// add timeString to shout
-				// jQuery.timeago only works properly with ISO timestamps
-				shout.timeString = (new Date( parseInt( shout.timestamp, 10 ) ).toISOString() );
-
-				if (parseInt(shout.fromuid, 10) === shoutContent.find('[data-uid]:last').data('uid')) {
-					shoutContent.find('[data-sid]:last').after(Shoutbox.utils.parseShout(shout, true));
-				} else {
-					shoutContent.append(Shoutbox.utils.parseShout(shout));
-				}
-
-				// We need to update the timestring on every new activity. Shout.tpl is only parsed for the shout of a
-				// chain breaking user, after that only text.tpl is parsed.
-				var lastChainTimestamp = shoutContent.find('[data-uid="' + shout.fromuid + '"] span.timeago:last');
-				lastChainTimestamp.attr('title', shout.timeString);
-
-				// execute jQuery.timeago() on shout's span.timeago
-				if (jQuery.timeago) {
-					// Reset timeago to use the new timestamp
-					lastChainTimestamp.data('timeago', null).timeago();
-				}
-				// else span.timeago text will be empty, but timeString will appear on hover <-- see templates/shoutbox/shout.tpl
-
-				Shoutbox.utils.scrollToBottom(shoutContent);
-				Shoutbox.vars.lastSid = shout.sid;
-			}
-		},
-		getShouts: function(shoutPanel) {
-			Shoutbox.sockets.getShouts(function(err, shouts) {
 				if (shouts.length === 0) {
-					Shoutbox.utils.showMessage(Shoutbox.vars.messages.empty, shoutPanel);
+					self.utils.showOverlay(self.vars.messages.empty);
 				} else {
-					for(var i = 0; i < shouts.length; i++) {
-						Shoutbox.base.addShout(shouts[i], shoutPanel);
-					}
+					self.addShouts(shouts);
 				}
 			});
-		},
-		updateUserStatus: function(uid, status, shoutPanel) {
-			var getStatus = function(uid) {
-				Shoutbox.sockets.getUserStatus(uid, function(err, data) {
-					setStatus(uid, data.status);
-				});
-			};
+		}
+	};
 
-			var setStatus = function(uid, status) {
-				shoutPanel.find('[data-uid="' + uid + '"] .shoutbox-shout-avatar-link').removeClass().addClass('shoutbox-shout-avatar-link ' + status);
-			};
+	function setupDependencies() {
+		this.utils = Shoutbox.utils.init(this);
+		this.sockets = Shoutbox.sockets.init(this);
+		this.settings = Shoutbox.settings.init(this);
+		this.actions = Shoutbox.actions.init(this);
+		this.commands = Shoutbox.commands.init(this);
+	}
 
-			if (!uid) {
-				uid = [];
-				shoutPanel.find('[data-uid]').each(function(index, el){
-					uid.push($(el).data('uid'))
-				});
-				uid = uid.filter(function(el, index) {
-					return uid.indexOf(el) === index;
-				});
+	Instance.prototype.addShouts = function(shouts) {
+		var self = this,
+			lastUid = this.vars.lastUid,
+			lastSid = this.vars.lastSid,
+			timeStampUpdates = {},
+			uid, sid;
+
+		shouts = shouts.map(function(el) {
+			uid = parseInt(el.fromuid, 10);
+			sid = parseInt(el.sid, 10);
+
+			// Permissions
+			el.user.isMod = parseInt(app.user.uid, 10) === uid || app.user.isAdmin;
+
+			// Add shout chain information to shout
+			el.isChained = lastUid === uid;
+
+			// Add timeString to shout
+			// jQuery.timeago only works properly with ISO timestamps
+			el.timeString = (new Date(parseInt(el.timestamp, 10)).toISOString());
+
+			// Do we need to update the user timestamp?
+			if (el.isChained) {
+				if (timeStampUpdates[lastSid]) {
+					delete timeStampUpdates[lastSid];
+				}
+
+				timeStampUpdates[sid] = el.timeString;
 			}
 
-			if (!status) {
-				if (typeof(uid) === 'number') {
-					getStatus(uid);
-				} else if (Array.isArray(uid)) {
-					for (var i = 0, l = uid.length; i < l; i++) {
-						getStatus(uid[i]);
-					}
-				}
-			} else {
-				if (typeof(uid) === 'number') {
-					setStatus(uid, status);
-				} else if (Array.isArray(uid)) {
-					for (var i = 0, l = uid.length; i < l; i++) {
-						setStatus(uid[i], status);
+			lastUid = uid;
+			lastSid = sid;
+
+			return el;
+		});
+
+		this.vars.lastUid = lastUid;
+		this.vars.lastSid = lastSid;
+
+		templates.parse('shoutbox/shouts', {
+			shouts: shouts
+		}, function(html) {
+			self.dom.shoutsContainer.append(html);
+
+			// Chaos begins here
+			if (Object.keys(timeStampUpdates).length > 0) {
+				// Get all the user elements that belong to the sids that need their timestamp updated
+				var userElements = $('[data-sid]').filter(function() {
+					return timeStampUpdates[$(this).data('sid')] !== undefined;
+				}).prevUntil('.shoutbox-avatar', '.shoutbox-user');
+
+				var i = 0;
+				for (var sid in timeStampUpdates) {
+					if (timeStampUpdates.hasOwnProperty(sid)) {
+						userElements.eq(i).find('span.timeago')
+							.attr('title', timeStampUpdates[sid])
+							.data('timeago', null)
+							.addClass('timeago-update');
+
+						i++;
 					}
 				}
 			}
-		},
-		updateUsers: function() {
-			Shoutbox.sockets.getUsers({ set: 'users:online', after: 0 }, function(err, data) {
+
+			if (jQuery.timeago) {
+				$('.timeago-update').removeClass('timeago-update').timeago();
+			}
+		});
+	};
+
+	Instance.prototype.updateUserStatus = function(uid, status) {
+		var self = this;
+
+		var getStatus = function(uid) {
+			self.sockets.getUserStatus(uid, function(err, data) {
+				setStatus(uid, data.status);
+			});
+		};
+
+		var setStatus = function(uid, status) {
+			self.dom.shoutsContainer.find('[data-uid="' + uid + '"].shoutbox-avatar').removeClass().addClass('shoutbox-avatar ' + status);
+		};
+
+		if (!uid) {
+			uid = [];
+
+			self.dom.shoutsContainer.find('[data-uid].shoutbox-avatar').each(function(index, el){
+				uid.push($(el).data('uid'))
+			});
+
+			uid = uid.filter(function(el, index) {
+				return uid.indexOf(el) === index;
+			});
+		}
+
+		if (!status) {
+			if (typeof(uid) === 'number') {
+				getStatus(uid);
+			} else if (Array.isArray(uid)) {
+				for (var i = 0, l = uid.length; i < l; i++) {
+					getStatus(uid[i]);
+				}
+			}
+		} else {
+			if (typeof(uid) === 'number') {
+				setStatus(uid, status);
+			} else if (Array.isArray(uid)) {
+				for (var i = 0, l = uid.length; i < l; i++) {
+					setStatus(uid[i], status);
+				}
+			}
+		}
+	};
+
+	Instance.prototype.showUserPanel = function() {
+		this.dom.onlineUsers.parent().removeClass('hidden');
+	};
+
+	Instance.prototype.hideUserPanel = function() {
+		this.dom.onlineUsers.parent().addClass('hidden');
+	};
+
+	Instance.prototype.startUserPanelUpdater = function() {
+		var self = this;
+
+		update();
+
+		function update() {
+			this.sockets.getUsers({ set: 'users:online', after: 0 }, function(err, data) {
 				var userCount = data.users.length,
 					usernames = data.users.map(function(i) {
 						return (i.username === null ? 'Anonymous' : i.username);
 					}),
 					userString = usernames.join('; ');
 
-				Shoutbox.base.getUsersPanel().find('.panel-body').text(userString);
-				Shoutbox.base.getUsersPanel().find('.panel-title').text('Users (' + userCount + ')');
+				self.dom.onlineUsers.find('.panel-body').text(userString);
+				self.dom.onlineUsers.find('.panel-title').text('Users (' + userCount + ')');
 			});
 
-			if(Shoutbox.base.userCheck === 0) {
-				Shoutbox.base.userCheck = setInterval(function() {
-					Shoutbox.base.updateUsers();
-				}, 10000);
-			}
-		},
-		showUserPanel: function() {
-			Base.getUsersPanel().parent().removeClass('hidden');
-			Base.updateUsers();
-		},
-		getShoutPanel: function() {
-			return Base.vars.shoutPanel || $('#shoutbox');
-		},
-		getUsersPanel: function() {
-			return $('#shoutbox-users');
-		},
-		vars: {
-			shoutPanel: null,
-			userCheck: 0
+			setInterval(update, 10000);
 		}
 	};
 
+	function setupDom(container) {
+		var self = this;
+
+		this.dom = {};
+		this.dom.container = container;
+		this.dom.overlay = container.find('.shoutbox-content-overlay');
+		this.dom.overlayMessage = this.dom.overlay.find('.shoutbox-content-overlay-message');
+		this.dom.shoutsContainer = container.find('.shoutbox-content');
+		this.dom.settingsMenu = container.find('.shoutbox-settings-menu');
+		this.dom.textInput = container.find('.shoutbox-message-input');
+		this.dom.sendButton = container.find('.shoutbox-message-send-btn');
+		this.dom.onlineUsers = container.parents('.shoutbox-row').find('.shoutbox-users');
+
+		//Add mentions autofill
+		if (typeof window.Mentions !== 'undefined' && typeof window.Mentions.addAutofill !== 'undefined') {
+			window.Mentions.addAutofill(this.dom.textInput, []);
+		}
+
+		//Add emoji autocomplete
+		function addEmoji(emoji) {
+			emoji.addCompletion(self.dom.textInput);
+		}
+
+		if (typeof window.emojiExtended !== 'undefined') {
+			addEmoji(window.emojiExtended);
+		} else {
+			$(window).one('emoji-extended:initialized', addEmoji);
+		}
+
+		if (this.options.showUserPanel) {
+			this.showUserPanel();
+			this.startUserPanelUpdater();
+		}
+	}
+
+	function setupVars() {
+		this.vars = {
+			lastUid: -1,
+			lastSid: -1,
+			scrollBreakpoint: 50,
+			messages: {
+				alert: '[ %u ] - new shout!',
+				empty: 'The shoutbox is empty, start shouting!',
+				scrolled: '<a href="#" id="shoutbox-content-overlay-scrolldown">Scroll down</a>'
+			},
+			userCheck: 0
+		};
+	}
+
 	Shoutbox.base = {
-		initialize: Base.initialize,
-		addShout: Base.addShout,
-		getShoutPanel: Base.getShoutPanel,
-		updateUserStatus: Base.updateUserStatus
+		init: function(container, options) {
+			return new Instance(container, options);
+		}
 	};
+	
 })(window.Shoutbox);

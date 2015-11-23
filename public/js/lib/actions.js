@@ -1,16 +1,28 @@
-(function(Shoutbox) {
-	var actions = [];
+"use strict";
 
+(function(Shoutbox) {
+	var allActions = [];
+	
+	var Actions = function(sbInstance) {
+		var action;
+		allActions.forEach(function(actObj) {
+			action = new actObj.obj(sbInstance);
+			action.register();
+
+			this[actObj.name] = action;
+		}, this);
+	};
+	
 	Shoutbox.actions = {
-		register: function(obj) {
-			actions.push(obj);
+		init: function(sbInstance) {
+			return new Actions(sbInstance);
 		},
-		initialize: function(shoutPanel) {
-			for (var a in actions) {
-				if (actions.hasOwnProperty(a)) {
-					actions[a].register(shoutPanel);
-				}
-			}
+		register: function(name, obj) {
+			allActions.push({
+				name: name,
+				obj: obj
+			});
 		}
 	};
+	
 })(window.Shoutbox);

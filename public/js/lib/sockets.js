@@ -1,3 +1,6 @@
+"use strict";
+/*global socket*/
+
 (function(Shoutbox) {
 
 	var Messages = {
@@ -11,11 +14,11 @@
 		saveSettings: 'plugins.shoutbox.saveSetting',
 		getSettings: 'plugins.shoutbox.getSettings',
 		getUsers: 'user.loadMore',
-		getUserStatus: 'user.isOnline'
+		getUserStatus: 'user.checkStatus'
 	};
 
 	var Events = {
-		onUserStatusChange: Messages.getUserStatus,
+		onUserStatusChange: 'event:user_status_change',
 		onReceive: 'event:shoutbox.receive',
 		onDelete: 'event:shoutbox.delete',
 		onEdit: 'event:shoutbox.edit',
@@ -24,47 +27,9 @@
 	};
 
 	var Handlers = {
-		onReceive: function(data) {
-			var shoutPanel = Shoutbox.base.getShoutPanel();
-
-			if (shoutPanel.length > 0) {
-				var shout = data[0];
-				Shoutbox.base.addShout(shout, shoutPanel);
-				if (shout.fromuid !== app.uid) {
-					Shoutbox.utils.notify(shout);
-				}
-			}
-		},
-		onDelete: function(data) {
-			var selector = $('[data-sid="' + data.sid + '"]'),
-				par = selector.parents('[data-uid]');
-
-			if (par.find('[data-sid]').length === 1) {
-				par.remove();
-			} else {
-				selector.remove();
-			}
-			if (data.sid === Shoutbox.vars.editing) {
-				Shoutbox.actions.finishEdit(Shoutbox.base.getShoutPanel());
-			}
-		},
-		onEdit: function(data) {
-			var shout = data[0];
-			shout.content = '<abbr title="edited">' + shout.content + '</abbr>';
-			$('[data-sid="' + shout.sid + '"]').replaceWith(Shoutbox.utils.parseShout(shout, true));
-		},
-		onUserStatusChange: function(err, data) {
-			Shoutbox.base.updateUserStatus(data.uid, data.status, Shoutbox.base.getShoutPanel());
-		},
-		onStartTyping: function(data) {
-			$('[data-uid="' + data.uid + '"]').addClass('isTyping');
-		},
-		onStopTyping: function(data) {
-			$('[data-uid="' + data.uid + '"]').removeClass('isTyping');
-		},
 		defaultSocketHandler: function(message) {
-			this.message = message;
 			var self = this;
+			this.message = message;
 
 			return function (data, callback) {
 				if (typeof data === 'function') {
@@ -77,31 +42,97 @@
 		}
 	};
 
-	Shoutbox.sockets = {
-		messages: Messages,
-		events: Events,
-		registerMessage: function(handle, message) {
-			if (!Shoutbox.sockets.hasOwnProperty(handle)) {
-				Shoutbox.sockets[handle] = new Handlers.defaultSocketHandler(message);
-			}
-		},
-		registerEvent: function(event, handler) {
-			if (socket.listeners(event).length === 0) {
-				socket.on(event, handler);
-			}
-		},
-		initialize: function() {
-			for (var e in Events) {
-				if (Events.hasOwnProperty(e)) {
-					this.registerEvent(Events[e], Handlers[e]);
-				}
-			}
+	var Sockets = function(sbInstance) {
+		this.sb = sbInstance;
 
-			for (var m in Messages) {
-				if (Messages.hasOwnProperty(m)) {
-					this.registerMessage(m, Messages[m]);
+		this.messages = Messages;
+		this.events = Events;
+		// TODO: move this into its own file?
+		this.handlers = {
+			onReceive: function(data) {
+				sbInstance.addShouts(data);
+
+				if (parseInt(data[0].fromuid, 10) !== app.user.uid) {
+					sbInstance.utils.notify(data[0]);
 				}
+			},
+			onDelete: function(data) {
+				var shout = $('[data-sid="' + data.sid + '"]'),
+					uid = shout.data('uid'),
+
+					prevUser = shout.prev('[data-uid].shoutbox-user'),
+					prevUserUid = parseInt(prevUser.data('uid'), 10),
+
+					nextShout = shout.next('[data-uid].shoutbox-shout'),
+					nextShoutUid = parseInt(nextShout.data('uid'), 10),
+
+					prevUserIsSelf = prevUser.length > 0 && prevUserUid === parseInt(uid, 10),
+					nextShoutIsSelf = nextShout.length > 0 && nextShoutUid === parseInt(uid, 10);
+
+				if (shout.length > 0) {
+					shout.remove();
+				}
+
+				if (prevUserIsSelf && !nextShoutIsSelf) {
+					prevUser.prev('.shoutbox-avatar').remove();
+					prevUser.remove();
+
+					var lastShout = sbInstance.dom.shoutsContainer.find('[data-sid]:last');
+					if (lastShout.length > 0) {
+						sbInstance.vars.lastUid = parseInt(lastShout.data('uid'), 10);
+						sbInstance.vars.lastSid = parseInt(lastShout.data('sid'), 10);
+					} else {
+						sbInstance.vars.lastUid = -1;
+						sbInstance.vars.lastSid = -1;
+					}
+				}
+
+				if (parseInt(data.sid, 10) === parseInt(sbInstance.vars.editing, 10)) {
+					sbInstance.actions.edit.finish();
+				}
+			},
+			onEdit: function(data) {
+				$('[data-sid="' + data[0].sid + '"] .shoutbox-shout-text')
+					.html(data[0].content).addClass('shoutbox-shout-edited');
+			},
+			onUserStatusChange: function(data) {
+				sbInstance.updateUserStatus(data.uid, data.status);
+			},
+			onStartTyping: function(data) {
+				$('[data-uid="' + data.uid + '"].shoutbox-avatar').addClass('isTyping');
+			},
+			onStopTyping: function(data) {
+				$('[data-uid="' + data.uid + '"].shoutbox-avatar').removeClass('isTyping');
+			}
+		};
+
+		for (var e in this.events) {
+			if (this.events.hasOwnProperty(e)) {
+				this.registerEvent(this.events[e], this.handlers[e]);
+			}
+		}
+
+		for (var m in this.messages) {
+			if (this.messages.hasOwnProperty(m)) {
+				this.registerMessage(m, this.messages[m]);
 			}
 		}
 	};
+
+	Sockets.prototype.registerMessage = function(handle, message) {
+		if (!this.hasOwnProperty(handle)) {
+			this[handle] = new Handlers.defaultSocketHandler(message);
+		}
+	};
+
+	Sockets.prototype.registerEvent = function(event, handler) {
+		socket.on(event, handler);
+	};
+
+	Shoutbox.sockets = {
+		init: function(instance) {
+			return new Sockets(instance);
+		}
+	};
+
 })(window.Shoutbox);

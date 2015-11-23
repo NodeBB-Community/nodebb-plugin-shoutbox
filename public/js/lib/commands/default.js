@@ -1,3 +1,6 @@
+/* global utils */
+"use strict";
+
 (function(Shoutbox) {
 	var SocketMessages = {
 		wobble: 'plugins.shoutbox.wobble'
@@ -24,17 +27,17 @@
 				description: 'Displays the available commands'
 			},
 			handlers: {
-				action: function(argument, sendShout) {
+				action: function(argument, sendShout, sbInstance) {
 					var message = '<strong>Available commands:</strong><br>',
-						commands = Shoutbox.commands.get();
+						commands = sbInstance.commands.getCommands();
 
 					for (var c in commands) {
 						if (commands.hasOwnProperty(c)) {
-							message += commands[c].usage + ' - ' + commands[c].description + '<br>';
+							message += commands[c].info.usage + ' - ' + commands[c].info.description + '<br>';
 						}
 					}
 
-					Shoutbox.utils.showMessage(message);
+					sbInstance.utils.showOverlay(message);
 				}
 			}
 		},
@@ -43,18 +46,17 @@
 				usage: '/wobble &lt;username&gt;',
 				description: 'WOBULLY SASUGE'
 			},
-			register: function() {
-				Shoutbox.sockets.registerMessage('wobble', SocketMessages.wobble);
-				Shoutbox.sockets.registerEvent(SocketEvents.onWobble, this.handlers.socket);
+			register: function(sbInstance) {
+				sbInstance.sockets.registerMessage('wobble', SocketMessages.wobble);
+				sbInstance.sockets.registerEvent(SocketEvents.onWobble, function() {
+					sbInstance.utils.playSound('wobblysausage');
+				});
 			},
 			handlers: {
-				action: function(argument, sendShout) {
-					Shoutbox.sockets.wobble({
+				action: function(argument, sendShout, sbInstance) {
+					sbInstance.sockets.wobble({
 						victim: ArgumentHandlers.username(argument)
 					});
-				},
-				socket: function(data) {
-					Shoutbox.utils.playSound('wobblysausage');
 				}
 			}
 		},
@@ -73,10 +75,8 @@
 
 	for (var c in DefaultCommands) {
 		if (DefaultCommands.hasOwnProperty(c)) {
-			if (DefaultCommands[c].register) {
-				DefaultCommands[c].register();
-			}
 			Shoutbox.commands.register(c, DefaultCommands[c]);
 		}
 	}
+
 })(window.Shoutbox);

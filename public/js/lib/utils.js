@@ -1,84 +1,75 @@
+"use strict";
+/* global app */
+
 (function(Shoutbox) {
-	var shoutTpl, textTpl,
-		sounds;
+	var sounds = null;
 
-	require(['sounds'], function(s) {
-		sounds = s;
-	});
+	var Utils = function(instance) {
+		this.sb = instance;
+	};
 
-	var Utils = {
-		initialize: function(shoutPanel, callback) {
-			Shoutbox.sockets.initialize();
-			Shoutbox.actions.initialize(shoutPanel);
+	Utils.prototype.isAnon = function() {
+		return app.user.uid === 0;
+	};
 
-			if (!shoutTpl || !textTpl) {
-				window.ajaxify.loadTemplate('shoutbox/shout', function(shout) {
-					window.ajaxify.loadTemplate('shoutbox/shout/text', function(text) {
-						shoutTpl = shout;
-						textTpl = text;
-						Shoutbox.settings.load(shoutPanel, callback);
-					});
-				});
-			} else {
-				Shoutbox.settings.load(shoutPanel, callback);
-			}
-		},
-		parseShout: function(shout, onlyText) {
-			var tpl = onlyText ? textTpl : shoutTpl;
-			shout.user.hasRights = shout.fromuid === app.uid || app.isAdmin === true;
-			return window.templates.parse(tpl, shout);
-		},
-		scrollToBottom: function(shoutContent) {
-			if (shoutContent[0]) {
-				var	lastShoutHeight = $('[data-sid]:last').height(),
-					scrollHeight = Utils.getScrollHeight(shoutContent) - lastShoutHeight;
+	Utils.prototype.notify = function(data) {
+		if (parseInt(this.sb.settings.get('toggles.notification'), 10) === 1) {
+			app.alternatingTitle(this.sb.vars.messages.alert.replace(/%u/g, data.user.username));
+		}
+		if (parseInt(this.sb.settings.get('toggles.sound'), 10) === 1) {
+			this.playSound('notification');
+		}
+	};
 
-				if (scrollHeight < Shoutbox.vars.scrollBreakpoint) {
-					shoutContent.scrollTop(
-						shoutContent[0].scrollHeight - shoutContent.height()
-					);
-				}
-			}
-		},
-		getScrollHeight: function(shoutContent) {
-			if (shoutContent[0]) {
-				var padding = shoutContent.css('padding-top').replace('px', '') + shoutContent.css('padding-bottom').replace('px', '');
-				return (((shoutContent[0].scrollHeight - shoutContent.scrollTop()) - shoutContent.height()) - padding);
-			} else {
-				return -1;
-			}
-		},
-		isAnon: function() {
-			return app.uid === 0;
-		},
-		showMessage: function(message) {
-			$('#shoutbox-content-overlay').find('span').html(message).parent().addClass('active');
-		},
-		closeMessage: function() {
-			$('#shoutbox-content-overlay').removeClass('active');
-		},
-		notify: function(data) {
-			if (parseInt(Shoutbox.settings.get('toggles.notification'), 10) === 1) {
-				app.alternatingTitle(Shoutbox.vars.messages.alert.replace(/%u/g, data.user.username));
-			}
-			if (parseInt(Shoutbox.settings.get('toggles.sound'), 10) === 1) {
-				Shoutbox.utils.playSound('notification');
-			}
-		},
-		playSound: function(sound) {
+	Utils.prototype.playSound = function(sound) {
+		var self = this;
+		if (sounds === null) {
+			require(['sounds'], function(s) {
+				sounds = s;
+
+				self.playSound(sound);
+			});
+		} else {
 			sounds.playFile('shoutbox-' + sound + '.mp3');
 		}
 	};
 
-	Shoutbox.utils = {
-		initialize: Utils.initialize,
-		parseShout: Utils.parseShout,
-		scrollToBottom: Utils.scrollToBottom,
-		getScrollHeight: Utils.getScrollHeight,
-		showMessage: Utils.showMessage,
-		isAnon: Utils.isAnon,
-		notify: Utils.notify,
-		playSound: Utils.playSound
+	Utils.prototype.showOverlay = function(message) {
+		this.sb.dom.overlayMessage.html(message);
+		this.sb.dom.overlay.addClass('active');
 	};
+
+	Utils.prototype.closeOverlay = function() {
+		this.sb.dom.overlay.removeClass('active');
+	};
+
+	Utils.prototype.scrollToBottom = function() {
+		var	shoutsContainer = this.sb.dom.shoutsContainer,
+			lastShoutHeight = shoutsContainer.find('[data-sid]:last').height(),
+			scrollHeight = getScrollHeight(shoutsContainer) - lastShoutHeight;
+
+		if (scrollHeight < this.sb.vars.scrollBreakpoint) {
+			shoutsContainer.scrollTop(
+				shoutsContainer[0].scrollHeight - shoutsContainer.height()
+			);
+		}
+	};
+
+	function getScrollHeight(container) {
+		if (container[0]) {
+			var padding = container.css('padding-top').replace('px', '') + container.css('padding-bottom').replace('px', '');
+			return (((container[0].scrollHeight - container.scrollTop()) - container.height()) - padding);
+		} else {
+			return -1;
+		}
+	}
+
+	Shoutbox.utils = {
+		init: function(instance) {
+			return new Utils(instance);
+		},
+		getScrollHeight: getScrollHeight
+	}
+
 })(window.Shoutbox);
 

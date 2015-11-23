@@ -1,12 +1,17 @@
+"use strict";
+
 (function(Shoutbox) {
-	var Settings = {
-		register: function(shoutPanel) {
-			shoutPanel.off('click', '#shoutbox-settings-menu a').on('click', '#shoutbox-settings-menu a', this.handle);
-		},
-		handle: function(e) {
-			var el = $(e.currentTarget),
-				statusEl = el.find('span'),
+	var Settings = function(sbInstance) {
+		this.register = function() {
+			sbInstance.dom.container
+				.off('click', '.shoutbox-settings-menu a')
+				.on('click', '.shoutbox-settings-menu a', handle);
+		};
+
+		function handle() {
+			var el = $(this),
 				key = el.data('shoutbox-setting'),
+				statusEl = el.find('span'),
 				status = statusEl.hasClass('fa-check');
 
 			if (status) {
@@ -17,11 +22,11 @@
 				status = 1;
 			}
 
-			Shoutbox.settings.set(key, status);
+			sbInstance.settings.set(key, status);
 
 			return false;
 		}
 	};
 
-	Shoutbox.actions.register(Settings);
+	Shoutbox.actions.register('settings', Settings);
 })(window.Shoutbox);

@@ -1,58 +1,64 @@
+/* global ajaxify */
+"use strict";
+
 (function(Shoutbox) {
-	var Gist = {
-		register: function(shoutPanel) {
-			var handle = this.handle;
-			window.ajaxify.loadTemplate('shoutbox/features/gist', function(tpl){
+	var Gist = function(sbInstance) {
+		this.register = function() {
+			ajaxify.loadTemplate('shoutbox/features/gist', function(tpl){
 				$(document.body).append(tpl);
 
 				var gistModal = $('#shoutbox-modal-gist');
 
-				shoutPanel.find('#shoutbox-button-gist').off('click').on('click', function(e) {
-					handle(gistModal);
+				sbInstance.dom.container.find('.shoutbox-button-gist').off('click').on('click', function(e) {
+					gistModal.modal('show');
 				});
 
 				gistModal.find('#shoutbox-button-create-gist-submit').off('click').on('click', function(e) {
-					createGist(gistModal.find('textarea').val(), gistModal, shoutPanel);
+					createGist(gistModal.find('textarea').val(), gistModal);
 				});
 			});
-		},
-		handle: function(gistModal) {
-			gistModal.modal('show');
-		}
-	}
-
-	function createGist(code, gistModal, shoutPanel) {
-		if (app.uid === null) {
-			gistModal.modal('hide');
-			app.alertError('Only registered users can create Gists!', 3000);
-			return;
-		}
-
-		var json = {
-			"description": "Gist created from NodeBB shoutbox",
-			"public": true,
-			"files": {
-				"file1.txt": {
-					"content": code
-				}
-			}
 		};
-
-		$.post('https://api.github.com/gists', JSON.stringify(json), function(data) {
-			gistModal.modal('hide');
-			var input = shoutPanel.find('#shoutbox-message-input');
-			var link = data.html_url;
-			if (input.val().length > 0) {
-				link = ' ' + link;
+		
+		function createGist(code, gistModal) {
+			if (app.user.uid === null) {
+				gistModal.modal('hide');
+				
+				app.alertError('Only registered users can create Gists!', 3000);
+				
+				return;
 			}
-			input.val(input.val() + link);
-			app.alertSuccess('Successfully created Gist!', 3000);
-			gistModal.find('textarea').val('');
-		}).fail(function(data) {
-			gistModal.modal('hide');
-			app.alertError('Error while creating Gist, try again later!', 3000);
-		});
-	}
+	
+			var json = {
+				"description": "Gist created from NodeBB shoutbox",
+				"public": true,
+				"files": {
+					"Snippet.txt": {
+						"content": code
+					}
+				}
+			};
+	
+			$.post('https://api.github.com/gists', JSON.stringify(json), function(data) {
+				var input = sbInstance.dom.textInput;
+				var link = data.html_url;
+				
+				if (input.val().length > 0) {
+					link = ' ' + link;
+				}
+				
+				input.val(input.val() + link);
+				
+				gistModal.modal('hide');
+				gistModal.find('textarea').val('');
+				
+				app.alertSuccess('Successfully created Gist!', 3000);
+			}).fail(function(data) {
+				gistModal.modal('hide');
+				
+				app.alertError('Error while creating Gist, try again later!', 3000);
+			});
+		}
+	};
 
-	Shoutbox.actions.register(Gist);
+	Shoutbox.actions.register('gist', Gist);
 })(window.Shoutbox);

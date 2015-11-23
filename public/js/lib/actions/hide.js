@@ -1,26 +1,23 @@
-(function(Shoutbox) {
-	var Hide = {
-		register: function(shoutPanel) {
-			shoutPanel.off('click', '#shoutbox-settings-hide').on('click', '#shoutbox-settings-hide', this.handle);
-		},
-		handle: function(e) {
-			var el = $(e.currentTarget).find('span'),
-				body = el.parents('#shoutbox').find('.panel-body'),
-				newSetting;
+"use strict";
 
-			if (el.hasClass('fa-arrow-up')) {
+(function(Shoutbox) {
+	var Hide = function(sbInstance) {
+		this.register = function() {
+			sbInstance.settings
+				.off('toggles.hide')
+				.on('toggles.hide', handle);
+		};
+
+		function handle(value) {
+			var body = sbInstance.dom.container.find('.panel-body');
+
+			if (value === 1) {
 				body.slideUp();
-				el.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-				newSetting = 1;
 			} else {
 				body.slideDown();
-				el.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-				newSetting = 0;
 			}
-
-			Shoutbox.settings.set('toggles.hide', newSetting);
 		}
 	};
 
-	Shoutbox.actions.register(Hide);
+	Shoutbox.actions.register('hide', Hide);
 })(window.Shoutbox);

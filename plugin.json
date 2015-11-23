@@ -26,7 +26,7 @@
   "scripts": [
     "public/js/loader.js",
     "public/js/admin.js",
-    "public/js/lib2/"
+    "public/js/lib/"
   ],
   "templates": "./templates"
 }

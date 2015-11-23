@@ -14,11 +14,11 @@
 		saveSettings: 'plugins.shoutbox.saveSetting',
 		getSettings: 'plugins.shoutbox.getSettings',
 		getUsers: 'user.loadMore',
-		getUserStatus: 'user.isOnline'
+		getUserStatus: 'user.checkStatus'
 	};
 
 	var Events = {
-		onUserStatusChange: Messages.getUserStatus,
+		onUserStatusChange: 'event:user_status_change',
 		onReceive: 'event:shoutbox.receive',
 		onDelete: 'event:shoutbox.delete',
 		onEdit: 'event:shoutbox.edit',
@@ -47,7 +47,7 @@
 
 		this.messages = Messages;
 		this.events = Events;
-		// TODO: move this into it's own file?
+		// TODO: move this into its own file?
 		this.handlers = {
 			onReceive: function(data) {
 				sbInstance.addShouts(data);
@@ -95,8 +95,8 @@
 				$('[data-sid="' + data[0].sid + '"] .shoutbox-shout-text')
 					.html(data[0].content).addClass('shoutbox-shout-edited');
 			},
-			onUserStatusChange: function(err, data) {
-				sbInstance.base.updateUserStatus(data.uid, data.status);
+			onUserStatusChange: function(data) {
+				sbInstance.updateUserStatus(data.uid, data.status);
 			},
 			onStartTyping: function(data) {
 				$('[data-uid="' + data.uid + '"].shoutbox-avatar').addClass('isTyping');
@@ -105,7 +105,7 @@
 				$('[data-uid="' + data.uid + '"].shoutbox-avatar').removeClass('isTyping');
 			}
 		};
-		
+
 		for (var e in this.events) {
 			if (this.events.hasOwnProperty(e)) {
 				this.registerEvent(this.events[e], this.handlers[e]);
@@ -126,9 +126,7 @@
 	};
 
 	Sockets.prototype.registerEvent = function(event, handler) {
-		if (socket.listeners(event).length === 0) {
-			socket.on(event, handler);
-		}
+		socket.on(event, handler);
 	};
 
 	Shoutbox.sockets = {

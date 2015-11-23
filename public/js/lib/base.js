@@ -4,18 +4,18 @@
 (function(Shoutbox) {
 	var Instance = function(container, options) {
 		var self = this;
-		
+
 		this.options = options || {};
 
 		setupDom.apply(this, [container]);
 		setupVars.apply(this);
 		setupDependencies.apply(this);
-		
+
 		this.settings.load();
 		getShouts();
-		
+
 		window.sb = this;
-		
+
 		function getShouts() {
 			self.sockets.getShouts(function(err, shouts) {
 				shouts = shouts.filter(function(el) {
@@ -46,12 +46,17 @@
 			timeStampUpdates = {},
 			uid, sid;
 
+		console.log(shouts);
+
 		shouts = shouts.map(function(el) {
 			uid = parseInt(el.fromuid, 10);
 			sid = parseInt(el.sid, 10);
 
+			// Own shout
+			el.isOwn = parseInt(app.user.uid, 10) === uid;
+
 			// Permissions
-			el.user.isMod = parseInt(app.user.uid, 10) === uid || app.user.isAdmin;
+			el.user.isMod = el.isOwn || app.user.isAdmin;
 
 			// Add shout chain information to shout
 			el.isChained = lastUid === uid;
@@ -68,6 +73,10 @@
 
 				timeStampUpdates[sid] = el.timeString;
 			}
+
+			// Extra classes
+			el.typeClasses = el.isOwn ? "shoutbox-shout-self " : "";
+			el.typeClasses += el.user.isAdmin ? "shoutbox-shout-admin " : "";
 
 			lastUid = uid;
 			lastSid = sid;
@@ -236,5 +245,5 @@
 			return new Instance(container, options);
 		}
 	};
-	
+
 })(window.Shoutbox);

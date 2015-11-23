@@ -22,12 +22,13 @@
 <!-- ENDIF !shouts.isChained -->
 
 <div class="shoutbox-shout" data-sid="{shouts.sid}" data-uid="{shouts.fromuid}">
+    <div class="shoutbox-shout-text">{shouts.content}</div>
+
     <!-- IF shouts.user.isMod -->
-    <div class="shoutbox-shout-options pull-right">
+    <div class="shoutbox-shout-options">
         <a href="#" class="shoutbox-shout-option-edit fa fa-pencil"></a>
-        <a href="#" class="shoutbox-shout-option-close fa fa-times"></a>
+        <a href="#" class="shoutbox-shout-option-close fa fa-trash-o"></a>
     </div>
     <!-- ENDIF shouts.user.isMod -->
-    <div class="shoutbox-shout-text">{shouts.content}</div>
 </div>
 <!-- END shouts -->

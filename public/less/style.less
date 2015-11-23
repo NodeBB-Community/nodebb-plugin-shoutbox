@@ -96,27 +96,37 @@
 }
 
 .shoutbox-shout {
+  display: flex;
   margin-left: @avatar-size + 5px;
   margin-bottom: 3px;
   font-size: @font-size-base;
   line-height: @font-size-base;
 
-  .shoutbox-shout-edited:after {
-    content: "edited";
-    font-size: 10px;
-    float: right;
-    padding-right: 10px;
-    color: @text-muted;
+  .shoutbox-shout-text {
+    //flex-grow: 1;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+  }
 
-    .shoutbox-opacity-transition;
+  .shoutbox-shout-edited p:after {
+    content: "\f040";
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: 10px;
+    text-rendering: auto;
+    color: @text-muted;
+    margin-left: 5px;
   }
 
   .shoutbox-shout-options {
+    white-space: nowrap;
+    margin-left: 5px;
     .shoutbox-opacity-transition;
   }
 
   &:hover {
-    .shoutbox-shout-options, .shoutbox-shout-edited:after {
+    .shoutbox-shout-options, .shoutbox-shout-edited p:after {
       opacity: 1;
     }
   }
@@ -144,6 +154,10 @@
     & p {
       margin: 0;
     }
+  }
+
+  & .shoutbox-message-buttons {
+    margin-top: 5px;
   }
 
   &-archive-content {

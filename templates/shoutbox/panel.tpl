@@ -37,23 +37,26 @@
                 </div>
                 <div class="shoutbox-content well well-sm"></div>
             </div>
+
             <div class="input-group">
                 <input type="text" placeholder="enter message" name="shoutbox-message" class="shoutbox-message-input form-control">
                 <span class="input-group-btn">
                     <button class="shoutbox-message-send-btn btn btn-primary" type="button">Send</button>
                 </span>
             </div>
-            <!-- IF features -->
-            <div class="btn-group">
+
+            <!-- IF features.length -->
+            <div class="shoutbox-message-buttons">
                 <!-- BEGIN features -->
                 <!-- IF features.enabled -->
-                <button type="button" class="shoutbox-button-{features.id} btn btn-primary btn-sm">
+                <button type="button" class="shoutbox-button-{features.id} btn btn-primary btn-xs">
                     <span class="fa {features.icon}"></span> {features.button}
                 </button>
                 <!-- ENDIF features.enabled -->
                 <!-- END features -->
             </div>
-            <!-- ENDIF features -->
+            <!-- ENDIF features.length -->
+
         </div>
     </div>
 </div>

@@ -46,8 +46,6 @@
 			timeStampUpdates = {},
 			uid, sid;
 
-		console.log(shouts);
-
 		shouts = shouts.map(function(el) {
 			uid = parseInt(el.fromuid, 10);
 			sid = parseInt(el.sid, 10);

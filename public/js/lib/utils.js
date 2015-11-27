@@ -43,12 +43,12 @@
 		this.sb.dom.overlay.removeClass('active');
 	};
 
-	Utils.prototype.scrollToBottom = function() {
+	Utils.prototype.scrollToBottom = function(force) {
 		var	shoutsContainer = this.sb.dom.shoutsContainer,
 			lastShoutHeight = shoutsContainer.find('[data-sid]:last').height(),
 			scrollHeight = getScrollHeight(shoutsContainer) - lastShoutHeight;
 
-		if (scrollHeight < this.sb.vars.scrollBreakpoint) {
+		if (scrollHeight < this.sb.vars.scrollBreakpoint || force) {
 			shoutsContainer.scrollTop(
 				shoutsContainer[0].scrollHeight - shoutsContainer.height()
 			);

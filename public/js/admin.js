@@ -1,5 +1,5 @@
 'use strict';
-/* globals $, app, socket */
+/* globals $, app, socket, define, bootbox */
 
 define('admin/plugins/shoutbox', ['settings'], function(Settings) {
 	var wrapper;

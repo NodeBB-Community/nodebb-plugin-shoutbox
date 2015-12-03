@@ -3,7 +3,7 @@
   "name": "Shoutbox",
   "description": "NodeBB Plugin Shoutbox",
   "url": "https://github.com/Schamper/nodebb-plugin-shoutbox",
-  "library": "./library.js",
+  "library": "library.js",
   "hooks": [
     { "hook": "static:app.load", "method": "init.load" },
     { "hook": "filter:admin.header.build", "method": "init.addAdminNavigation" },
@@ -18,7 +18,7 @@
     { "hook": "filter:widget.render:shoutbox", "method": "widget.render" }
   ],
   "staticDirs": {
-    "public": "./public"
+    "public": "public"
   },
   "less": [
     "public/less/style.less"
@@ -28,5 +28,5 @@
     "public/js/admin.js",
     "public/js/lib/"
   ],
-  "templates": "./templates"
+  "templates": "templates"
 }

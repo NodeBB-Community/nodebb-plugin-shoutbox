@@ -82,6 +82,10 @@ Shoutbox.widget.define = function(widgets, callback) {
 };
 
 Shoutbox.widget.render = function(widget, callback) {
+	if (widget.req.query.template == 'shoutbox.tpl') {
+		return callback();
+	}
+
 	//Remove any container
 	widget.data.container = '';
 

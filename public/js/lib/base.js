@@ -89,6 +89,7 @@
 			shouts: shouts
 		}, function(html) {
 			self.dom.shoutsContainer.append(html);
+			self.utils.scrollToBottom(shouts.length > 1);
 
 			// Chaos begins here
 			if (Object.keys(timeStampUpdates).length > 0) {

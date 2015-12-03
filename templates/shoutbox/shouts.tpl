@@ -7,9 +7,9 @@
     <div class="shoutbox-avatar-icon user-icon" title="{shouts.user.username}" style="background-color: {shouts.user.icon:bgColor};">{shouts.user.icon:text}</div>
     <!-- ENDIF shouts.user.picture -->
     <div class="shoutbox-avatar-overlay">
-            <span class="shoutbox-avatar-typing">
-                <i class="text-muted fa fa-keyboard-o"></i>
-            </span>
+        <span class="shoutbox-avatar-typing">
+            <i class="text-muted fa fa-keyboard-o"></i>
+        </span>
     </div>
 </a>
 

@@ -172,7 +172,7 @@
 			function handle(sid) {
 				var shout = sbInstance.dom.shoutsContainer.find('[data-sid="' + sid + '"]');
 
-				if (shout.data('uid') === app.user.uid || app.user.isAdmin) {
+				if (shout.data('uid') === app.user.uid || app.user.isAdmin || app.user.isGlobalMod) {
 					sbInstance.vars.editing = sid;
 
 					sbInstance.sockets.getOriginalShout({ sid: sid }, function(err, orig) {

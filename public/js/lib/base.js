@@ -54,7 +54,7 @@
 			el.isOwn = parseInt(app.user.uid, 10) === uid;
 
 			// Permissions
-			el.user.isMod = el.isOwn || app.user.isAdmin;
+			el.user.isMod = el.isOwn || app.user.isAdmin || app.user.isGlobalMod;
 
 			// Add shout chain information to shout
 			el.isChained = lastUid === uid;

@@ -66,7 +66,8 @@ Shoutbox.init.addAdminNavigation = function(header, callback) {
 
 Shoutbox.init.getSounds = function(sounds, callback) {
 	sounds.push(__dirname + '/public/sounds/shoutbox-notification.mp3');
-	sounds.push(__dirname + '/public/sounds/shoutbox-wobblysausage.mp3');
+	sounds.push(__dirname + '/public/sounds/shoutbox-wobble.mp3');
+	sounds.push(__dirname + '/public/sounds/shoutbox-cena.mp3');
 	callback(null, sounds);
 };
 

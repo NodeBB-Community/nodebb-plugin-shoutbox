@@ -2,14 +2,6 @@
 "use strict";
 
 (function(Shoutbox) {
-	var SocketMessages = {
-		wobble: 'plugins.shoutbox.wobble'
-	};
-
-	var SocketEvents = {
-		onWobble: 'event:shoutbox.wobble'
-	};
-
 	var ArgumentHandlers = {
 		username: function(argument) {
 			if (argument.indexOf('@') === 0) {
@@ -41,25 +33,6 @@
 				}
 			}
 		},
-		wobble: {
-			info: {
-				usage: '/wobble &lt;username&gt;',
-				description: 'WOBULLY SASUGE'
-			},
-			register: function(sbInstance) {
-				sbInstance.sockets.registerMessage('wobble', SocketMessages.wobble);
-				sbInstance.sockets.registerEvent(SocketEvents.onWobble, function() {
-					sbInstance.utils.playSound('wobblysausage');
-				});
-			},
-			handlers: {
-				action: function(argument, sendShout, sbInstance) {
-					sbInstance.sockets.wobble({
-						victim: ArgumentHandlers.username(argument)
-					});
-				}
-			}
-		},
 		thisagain: {
 			info: {
 				usage: '/thisagain',
@@ -70,8 +43,32 @@
 					sendShout('This again... Clear your cache and refresh.');
 				}
 			}
-		}
+		},
+		wobble: soundCommand('wobble', 'WOBULLY SASUGE'),
+		cena: soundCommand('cena', 'AND HIS NAME IS')
 	};
+
+	function soundCommand(sound, description) {
+		return {
+			info: {
+				usage: '/' + sound + ' &lt;username&gt;',
+				description: description
+			},
+			register: function(sbInstance) {
+				sbInstance.sockets.registerMessage(sound, 'plugins.shoutbox.' + sound);
+				sbInstance.sockets.registerEvent('event:shoutbox.' + sound, function() {
+					sbInstance.utils.playSound(sound);
+				});
+			},
+			handlers: {
+				action: function(argument, sendShout, sbInstance) {
+					sbInstance.sockets[sound]({
+						victim: ArgumentHandlers.username(argument)
+					});
+				}
+			}
+		}
+	}
 
 	for (var c in DefaultCommands) {
 		if (DefaultCommands.hasOwnProperty(c)) {

@@ -21,10 +21,10 @@
     "url": "https://github.com/Schamper/nodebb-plugin-shoutbox/issues"
   },
   "dependencies": {
-    "async": "~0.2.9",
-    "string": "~1.8.0"
+    "async": "~1.5.2",
+    "string": "~3.3.1"
   },
   "nbbpm": {
-    "compatibility": "^0.9.0"
+    "compatibility": "^1.0.0"
   }
 }

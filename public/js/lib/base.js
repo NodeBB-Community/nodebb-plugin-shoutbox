@@ -203,22 +203,6 @@
 		this.dom.sendButton = container.find('.shoutbox-message-send-btn');
 		this.dom.onlineUsers = container.parents('.shoutbox-row').find('.shoutbox-users');
 
-		//Add mentions autofill
-		if (typeof window.Mentions !== 'undefined' && typeof window.Mentions.addAutofill !== 'undefined') {
-			window.Mentions.addAutofill(this.dom.textInput, []);
-		}
-
-		//Add emoji autocomplete
-		function addEmoji(emoji) {
-			emoji.addCompletion(self.dom.textInput);
-		}
-
-		if (typeof window.emojiExtended !== 'undefined') {
-			addEmoji(window.emojiExtended);
-		} else {
-			$(window).one('emoji-extended:initialized', addEmoji);
-		}
-
 		if (this.options.showUserPanel) {
 			this.showUserPanel();
 			this.startUserPanelUpdater();

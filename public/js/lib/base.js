@@ -2,6 +2,60 @@
 /*global templates, Mentions, emojiExtended*/
 
 (function(Shoutbox) {
+	// Autocomplete Emoij START
+	var autocomplete = {};
+
+	autocomplete.init = function(postContainer) {
+		var element = postContainer;
+		var data = {
+			element: element,
+			strategies: [],
+			options: {
+				zIndex: 20000,
+				listPosition: function(position) {
+					this.$el.css(this._applyPlacement(position));
+					this.$el.css('position', 'absolute');
+					return this;
+				}
+			}
+		};
+
+		$(window).trigger('composer:autocomplete:init', data);
+		data.element.textcomplete(data.strategies, data.options);
+		$('.textcomplete-wrapper').css('height', '100%').find('textarea').css('height', '100%');
+
+		data.element.on('textComplete:select', function() {
+			preview.render(postContainer);
+		});
+	};
+
+	var preview = {};
+
+	var timeoutId = 0;
+
+	preview.render = function(postContainer, callback) {
+		callback = callback || function() {};
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+			timeoutId = 0;
+		}
+		var textarea = postContainer;
+
+		timeoutId = setTimeout(function() {
+			socket.emit('plugins.composer.renderPreview', textarea.val(), function(err, preview) {
+				timeoutId = 0;
+				if (err) {
+					return;
+				}
+				preview = $(preview);
+				preview.find('img:not(.not-responsive)').addClass('img-responsive');
+				postContainer.find('.preview').html(preview);
+				$(window).trigger('action:composer.preview');
+				callback();
+			});
+		}, 250);
+	};
+	// Autocomplete Emoji END
 	var Instance = function(container, options) {
 		var self = this;
 
@@ -202,6 +256,8 @@
 		this.dom.textInput = container.find('.shoutbox-message-input');
 		this.dom.sendButton = container.find('.shoutbox-message-send-btn');
 		this.dom.onlineUsers = container.parents('.shoutbox-row').find('.shoutbox-users');
+
+		autocomplete.init(this.dom.textInput);
 
 		if (this.options.showUserPanel) {
 			this.showUserPanel();

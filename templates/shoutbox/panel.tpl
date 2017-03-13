@@ -2,7 +2,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <a href="/shoutbox" title="Shoutbox">Shoutbox</a>
+                <a href="/shoutbox" title="[[shoutbox:shoutbox]]">[[shoutbox:shoutbox]]</a>
             </h3>
 
             <div class="btn-group pull-right">
@@ -12,17 +12,17 @@
                 <ul class="shoutbox-settings-menu dropdown-menu">
                     <li>
                         <a data-shoutbox-setting="toggles.sound" href="#">
-                            <span class="fa fa-check"></span> Sound
+                            <span class="fa fa-check"></span> [[shoutbox:sound]]
                         </a>
                     </li>
                     <li>
                         <a data-shoutbox-setting="toggles.notification" href="#">
-                            <span class="fa fa-check"></span> Notification
+                            <span class="fa fa-check"></span> [[shoutbox:notification]]
                         </a>
                     </li>
                     <li>
                         <a data-shoutbox-setting="toggles.hide" href="#">
-                            <span class="fa fa-check"></span> Hide
+                            <span class="fa fa-check"></span> [[shoutbox:hide]]
                         </a>
                     </li>
                 </ul>
@@ -41,7 +41,7 @@
             <div class="input-group">
                 <input type="text" placeholder="enter message" name="shoutbox-message" class="shoutbox-message-input form-control">
                 <span class="input-group-btn">
-                    <button class="shoutbox-message-send-btn btn btn-primary" type="button">Send</button>
+                    <button class="shoutbox-message-send-btn btn btn-primary" type="button">[[shoutbox:send]]</button>
                 </span>
             </div>
 

@@ -30,5 +30,9 @@
   "acpScripts": [
     "public/js/admin.js"
   ],
+  
+  "languages" : "./languages",
+  "defaultLang" : "en-GB",
+  
   "templates": "./templates"
 }

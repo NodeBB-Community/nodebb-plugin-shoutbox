@@ -1,0 +1,43 @@
+{
+	"shoutbox" : "Shoutbox",
+	"sound" : "Sound",
+	"notification" : "Notification",
+	"hide" : "Hide",
+	"enter_message" : "enter message",
+	"send" : "Send",
+	"features" : "Features",
+	
+	"close" : "Close",
+	"submit" : "Submit",
+	"older" : "Older",
+	"newer" : "Newer",
+	
+	"gist_button" : "Create Gist",
+	"gist_description" : "Easily create Gists",
+	"gist_name" : "Gist",
+	
+	"archive_button" : "View Archive",
+	"archive_description" : "View older posts",
+	"archive_name" : "Archive",
+	
+	"bug_button" : "Report Bug",
+	"bug_description" : "View older posts",
+	"bug_name" : "Bugs",
+	
+	"admin_shoutlimit" : "Maximum number of shouts that can be returned.",
+	"admin_shoutlimit_help" : "Shouts marked as deleted will be included in this number",
+	"admin_guestsallowed" : "Allow read access to guests",
+	"admin_headerlink" : "Show navigation link",
+	
+	"admin_controlpanel" : "Shoutbox control panel",
+	"admin_savesettings" : "Save settings",
+	
+	"admin_adminactions" : "Administrative actions",
+	"admin_warning" : "Warning: These actions are permanent and <strong>cannot</strong> be undone!",
+	"admin_removedeletedshouts" : "Remove deleted shouts",
+	"admin_removeallshouts" : "Remove all shouts",
+	
+	"settings_hide" : "Hide shoutbox",
+	"settings_sound" : "Play a sound on a new shout",
+	"settings_notifications" : "Display a notification in the titlebar on a new shout"	
+}

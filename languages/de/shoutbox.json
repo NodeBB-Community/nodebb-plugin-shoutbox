@@ -1,8 +1,11 @@
 {
   "shoutbox": "Shoutbox",
   "sound": "Töne",
+  "play_sound": "Ton bei neuer Nachricht abspielen",
   "notification": "Benachrichtigungen",
+  "show_notification": "Benachrichtigung bei neuer Nachricht anzeigen",
   "hide": "Ausblenden",
+  "hide_shoutbox": "Shoutbox ausblenden",
   "send_message": "Senden",
   "enter_message": "Nachricht eingeben",
   "users_online": "Benutzer (%1)",

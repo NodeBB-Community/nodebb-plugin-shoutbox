@@ -10,7 +10,7 @@
   "empty": "The shoutbox is empty, start shouting!",
   "scroll_down": "Scroll down",
   "error_saving_settings": "Error saving settings!",
-  "displays_available_commands: "Displays the available commands",
+  "displays_available_commands": "Displays the available commands",
   "available_commands": "<strong>Available commands:</strong><br>",
   "reminds_noobs": "Remind the n00bs of the obvious",
   "clear_cache": "This again... Clear your cache and refresh.",

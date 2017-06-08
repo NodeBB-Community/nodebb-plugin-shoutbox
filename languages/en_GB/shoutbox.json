@@ -1,8 +1,11 @@
 {
   "shoutbox": "Shoutbox",
   "sound": "Sound",
+  "play_sound": "Play a sound on a new shout",
   "notification": "Notification",
+  "show_notification": "Display a notification in the titlebar on a new shout",
   "hide": "Hide",
+  "hide_shoutbox": "Hide shoutbox",
   "send_message": "Send",
   "enter_message": "Enter message",
   "users_online": "Users (%1)",

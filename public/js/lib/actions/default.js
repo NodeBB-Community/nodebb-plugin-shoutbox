@@ -1,20 +1,14 @@
-/* global app, $ */
+/* global app, utils, $ */
 "use strict";
 
 (function(Shoutbox) {
-	var S;
-	
-	require(['string'], function(String) {
-		S = String;
-	});
-
 	var DefaultActions = {
 		typing: function(sbInstance) {
 			this.register = function() {
 				sbInstance.dom.container.find('.shoutbox-message-input')
 					.off('keyup.typing').on('keyup.typing', handle);
 			};
-			
+
 			function handle() {
 				if ($(this).val()) {
 					sbInstance.sockets.notifyStartTyping();
@@ -29,7 +23,7 @@
 					.off('click.overlay', '.shoutbox-content-overlay-close')
 					.on('click.overlay', '.shoutbox-content-overlay-close', handle);
 			};
-			
+
 			function handle() {
 				sbInstance.dom.overlay.removeClass('active');
 				return false;
@@ -56,12 +50,12 @@
 						return false;
 					});
 			};
-			
+
 			function handle() {
 				var shoutContent = sbInstance.dom.shoutsContainer,
 					shoutOverlay = sbInstance.dom.overlay,
 					scrollHeight = Shoutbox.utils.getScrollHeight(shoutContent),
-					
+
 					overlayActive = shoutOverlay.hasClass('active'),
 					pastScrollBreakpoint = scrollHeight >= sbInstance.vars.scrollBreakpoint,
 					scrollMessageShowing = sbInstance.vars.scrollMessageShowing;
@@ -88,16 +82,16 @@
 					return false;
 				});
 			};
-			
+
 			function handle() {
-				var msg = S(sbInstance.dom.textInput.val()).stripTags().trim().s;
+				var msg = utils.stripHTMLTags(sbInstance.dom.textInput.val());
 
 				if (msg.length) {
 					sbInstance.commands.parse(msg, function(msg) {
 						sbInstance.sockets.sendShout({ message: msg });
 					});
 				}
-				
+
 				sbInstance.dom.textInput.val('');
 			}
 		},
@@ -107,7 +101,7 @@
 					.off('click.delete', '.shoutbox-shout-option-close')
 					.on('click.delete', '.shoutbox-shout-option-close', handle);
 			};
-			
+
 			function handle() {
 				var sid = $(this).parents('[data-sid]').data('sid');
 
@@ -124,13 +118,13 @@
 		},
 		edit: function(sbInstance) {
 			var self = this;
-			
+
 			this.register = function() {
 				function eventsOff() {
 					sbInstance.dom.shoutsContainer
 						.off('click.edit', '.shoutbox-shout-option-edit')
 						.off('dblclick.edit', '[data-sid]');
-						
+
 					sbInstance.dom.textInput.off('keyup.edit');
 				}
 
@@ -145,7 +139,7 @@
 								$(this).data('sid')
 							);
 						});
-						
+
 					sbInstance.dom.textInput.on('keyup.edit', function(e) {
 						if (e.which === 38 && !$(this).val()) {
 							handle(
@@ -168,7 +162,7 @@
 				eventsOff();
 				eventsOn();
 			};
-			
+
 			function handle(sid) {
 				var shout = sbInstance.dom.shoutsContainer.find('[data-sid="' + sid + '"]');
 
@@ -177,7 +171,7 @@
 
 					sbInstance.sockets.getOriginalShout({ sid: sid }, function(err, orig) {
 						orig = orig[0].content;
-						
+
 						sbInstance.dom.sendButton.off('click.send').on('click.send', function(e){
 							edit(orig);
 						}).text('Edit');
@@ -195,7 +189,7 @@
 				}
 
 				function edit(orig) {
-					var msg = S(sbInstance.dom.textInput.val()).stripTags().s;
+					var msg = utils.stripHTMLTags(sbInstance.dom.textInput.val());
 
 					if (msg === orig || msg === '' || msg === null) {
 						return self.finish();
@@ -213,14 +207,14 @@
 
 				return false;
 			}
-			
+
 			this.finish = function() {
 				sbInstance.dom.textInput.val('').parents('.input-group').removeClass('has-warning');
 				sbInstance.dom.sendButton.text('Send').removeClass('hide');
-				
+
 				sbInstance.actions['send'].register();
 				sbInstance.actions['edit'].register();
-				
+
 				sbInstance.vars.editing = 0;
 			};
 		}

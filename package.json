@@ -25,6 +25,6 @@
     "string": "~3.3.1"
   },
   "nbbpm": {
-    "compatibility": "^1.0.0"
+    "compatibility": "^1.6.1"
   }
 }

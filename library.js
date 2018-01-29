@@ -111,6 +111,7 @@ Shoutbox.settings.addUserSettings = function(settings, callback) {
 };
 
 Shoutbox.settings.addUserFieldWhitelist = function (data, callback) {
+	data.whitelist.push('shoutbox:toggles:sound');
 	data.whitelist.push('shoutbox:toggles:notification');
 	data.whitelist.push('shoutbox:toggles:hide');
 

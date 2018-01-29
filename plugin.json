@@ -13,6 +13,7 @@
     { "hook": "filter:user.customSettings", "method": "settings.addUserSettings" },
     { "hook": "filter:user.getSettings", "method": "settings.getUserSettings" },
     { "hook": "action:user.saveSettings", "method": "settings.saveUserSettings" },
+    { "hook": "filter:user.whitelistFields", "method": "settings.addUserFieldWhitelist" },
 
     { "hook": "filter:widgets.getWidgets", "method": "widget.define" },
     { "hook": "filter:widget.render:shoutbox", "method": "widget.render" }

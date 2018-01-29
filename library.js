@@ -110,6 +110,15 @@ Shoutbox.settings.addUserSettings = function(settings, callback) {
 	});
 };
 
+Shoutbox.settings.addUserFieldWhitelist = function (data, callback) {
+	data.whitelist.push('shoutbox:toggles:notification');
+	data.whitelist.push('shoutbox:toggles:hide');
+
+	data.whitelist.push('shoutbox:muted');
+
+	callback(null, data);
+};
+
 Shoutbox.settings.getUserSettings = function(data, callback) {
 	Config.user.get(data, callback);
 };

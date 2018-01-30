@@ -8,7 +8,6 @@
     { "hook": "static:app.load", "method": "init.load" },
     { "hook": "filter:admin.header.build", "method": "init.addAdminNavigation" },
     { "hook": "filter:header.build", "method": "init.addGlobalNavigation" },
-    { "hook": "filter:sounds.get", "method": "init.getSounds" },
 
     { "hook": "filter:user.customSettings", "method": "settings.addUserSettings" },
     { "hook": "filter:user.getSettings", "method": "settings.getUserSettings" },
@@ -31,5 +30,14 @@
   "acpScripts": [
     "public/js/admin.js"
   ],
+  "soundpack": {
+    "name": "Shoutbox",
+    "dir": "public/sounds",
+    "sounds": {
+      "shoutbox-notification": "shoutbox-notification.mp3",
+      "shoutbox-wobble": "shoutbox-wobble.mp3",
+      "shoutbox-cena": "shoutbox-cena.mp3"
+    }
+  },
   "templates": "./templates"
 }

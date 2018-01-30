@@ -21,7 +21,7 @@
 		}
 	};
 
-	Utils.prototype.playSound = function(sound) {
+	Utils.prototype.playSound = function (sound) {
 		var self = this;
 		if (sounds === null) {
 			require(['sounds'], function(s) {
@@ -30,7 +30,7 @@
 				self.playSound(sound);
 			});
 		} else {
-			sounds.playFile('shoutbox-' + sound + '.mp3');
+			sounds.playSound('Shoutbox | shoutbox-' + sound);
 		}
 	};
 
@@ -72,4 +72,3 @@
 	}
 
 })(window.Shoutbox);
-

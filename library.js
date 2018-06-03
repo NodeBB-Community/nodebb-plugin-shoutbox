@@ -64,13 +64,6 @@ Shoutbox.init.addAdminNavigation = function(header, callback) {
 	callback(null, header);
 };
 
-Shoutbox.init.getSounds = function(sounds, callback) {
-	sounds.push(__dirname + '/public/sounds/shoutbox-notification.mp3');
-	sounds.push(__dirname + '/public/sounds/shoutbox-wobble.mp3');
-	sounds.push(__dirname + '/public/sounds/shoutbox-cena.mp3');
-	callback(null, sounds);
-};
-
 Shoutbox.widget.define = function(widgets, callback) {
 	widgets.push({
 		name: Config.plugin.name,
@@ -108,6 +101,16 @@ Shoutbox.settings.addUserSettings = function(settings, callback) {
 
 		callback(null, settings);
 	});
+};
+
+Shoutbox.settings.addUserFieldWhitelist = function (data, callback) {
+	data.whitelist.push('shoutbox:toggles:sound');
+	data.whitelist.push('shoutbox:toggles:notification');
+	data.whitelist.push('shoutbox:toggles:hide');
+
+	data.whitelist.push('shoutbox:muted');
+
+	callback(null, data);
 };
 
 Shoutbox.settings.getUserSettings = function(data, callback) {

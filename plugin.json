@@ -30,6 +30,7 @@
   "acpScripts": [
     "public/js/admin.js"
   ],
+  "languages": "languages",
   "soundpack": {
     "name": "Shoutbox",
     "dir": "public/sounds",

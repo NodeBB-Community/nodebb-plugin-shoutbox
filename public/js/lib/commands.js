@@ -1,9 +1,10 @@
-"use strict";
+'use strict';
 
-(function(Shoutbox) {
-	var regex = /^\/(\w+)\s?(.+)?/, allCommands = {};
+(function (Shoutbox) {
+	var regex = /^\/(\w+)\s?(.+)?/;
+	var allCommands = {};
 
-	var Commands = function(instance) {
+	var Commands = function (instance) {
 		this.sb = instance;
 		this.commands = {};
 
@@ -13,17 +14,17 @@
 				if (typeof allCommands[c].register === 'function') {
 					allCommands[c].register(this.sb);
 				}
-				
+
 				this.commands[c] = allCommands[c];
 			}
 		}
 	};
-	
-	Commands.prototype.getCommands = function() {
+
+	Commands.prototype.getCommands = function () {
 		return this.commands;
 	};
 
-	Commands.prototype.parse = function(msg, sendShout) {
+	Commands.prototype.parse = function (msg, sendShout) {
 		var match = msg.match(regex);
 
 		if (match && match.length > 0 && this.commands.hasOwnProperty(match[1])) {
@@ -34,15 +35,14 @@
 	};
 
 	Shoutbox.commands = {
-		init: function(instance) {
+		init: function (instance) {
 			return new Commands(instance);
 		},
-		getCommands: function() {
+		getCommands: function () {
 			return allCommands;
 		},
-		register: function(command, commandObj) {
+		register: function (command, commandObj) {
 			allCommands[command] = commandObj;
-		}
+		},
 	};
-
-})(window.Shoutbox);
+}(window.Shoutbox));

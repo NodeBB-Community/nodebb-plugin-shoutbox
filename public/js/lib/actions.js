@@ -1,28 +1,27 @@
-"use strict";
+'use strict';
 
-(function(Shoutbox) {
+(function (Shoutbox) {
 	var allActions = [];
-	
-	var Actions = function(sbInstance) {
+
+	var Actions = function (sbInstance) {
 		var action;
-		allActions.forEach(function(actObj) {
+		allActions.forEach(function (actObj) {
 			action = new actObj.obj(sbInstance);
 			action.register();
 
 			this[actObj.name] = action;
 		}, this);
 	};
-	
+
 	Shoutbox.actions = {
-		init: function(sbInstance) {
+		init: function (sbInstance) {
 			return new Actions(sbInstance);
 		},
-		register: function(name, obj) {
+		register: function (name, obj) {
 			allActions.push({
 				name: name,
-				obj: obj
+				obj: obj,
 			});
-		}
+		},
 	};
-	
-})(window.Shoutbox);
+}(window.Shoutbox));

@@ -1,18 +1,18 @@
-"use strict";
+'use strict';
 
-(function(Shoutbox) {
-	var Settings = function(sbInstance) {
-		this.register = function() {
+(function (Shoutbox) {
+	var Settings = function (sbInstance) {
+		this.register = function () {
 			sbInstance.dom.container
 				.off('click', '.shoutbox-settings-menu a')
 				.on('click', '.shoutbox-settings-menu a', handle);
 		};
 
 		function handle() {
-			var el = $(this),
-				key = el.data('shoutbox-setting'),
-				statusEl = el.find('span'),
-				status = statusEl.hasClass('fa-check');
+			var el = $(this);
+			var key = el.data('shoutbox-setting');
+			var statusEl = el.find('span');
+			var status = statusEl.hasClass('fa-check');
 
 			if (status) {
 				statusEl.removeClass('fa-check').addClass('fa-times');
@@ -27,6 +27,7 @@
 			return false;
 		}
 	};
-
-	Shoutbox.actions.register('settings', Settings);
-})(window.Shoutbox);
+	$(window).on('action:app.load', function () {
+		Shoutbox.actions.register('settings', Settings);
+	});
+}(window.Shoutbox));

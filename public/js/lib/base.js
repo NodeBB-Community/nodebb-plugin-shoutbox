@@ -1,8 +1,7 @@
-"use strict";
-/*global templates, Mentions, emojiExtended*/
+'use strict';
 
-(function(Shoutbox) {
-	var Instance = function(container, options) {
+(function (Shoutbox) {
+	var Instance = function (container, options) {
 		var self = this;
 
 		this.options = options || {};
@@ -17,8 +16,11 @@
 		window.sb = this;
 
 		function getShouts() {
-			self.sockets.getShouts(function(err, shouts) {
-				shouts = shouts.filter(function(el) {
+			self.sockets.getShouts(function (err, shouts) {
+				if (err) {
+					return app.alertError(err);
+				}
+				shouts = shouts.filter(function (el) {
 					return el !== null;
 				});
 
@@ -39,14 +41,26 @@
 		this.commands = Shoutbox.commands.init(this);
 	}
 
-	Instance.prototype.addShouts = function(shouts) {
-		var self = this,
-			lastUid = this.vars.lastUid,
-			lastSid = this.vars.lastSid,
-			timeStampUpdates = {},
-			uid, sid;
+	Instance.prototype.addShouts = function (shouts) {
+		if (!shouts.length) {
+			return;
+		}
+		var self = this;
+		var lastUid = this.vars.lastUid;
+		var lastSid = this.vars.lastSid;
+		var uid;
+		var sid;
 
-		shouts = shouts.map(function(el) {
+
+		for (let i = shouts.length - 1; i > 0; i -= 1) {
+			var s = shouts[i];
+			var prev = shouts[i - 1];
+			if (parseInt(s.fromuid, 10) === parseInt(prev.fromuid, 10)) {
+				prev.timestamp = s.timestamp;
+			}
+		}
+
+		shouts = shouts.map(function (el) {
 			uid = parseInt(el.fromuid, 10);
 			sid = parseInt(el.sid, 10);
 
@@ -63,18 +77,9 @@
 			// jQuery.timeago only works properly with ISO timestamps
 			el.timeString = (new Date(parseInt(el.timestamp, 10)).toISOString());
 
-			// Do we need to update the user timestamp?
-			if (el.isChained) {
-				if (timeStampUpdates[lastSid]) {
-					delete timeStampUpdates[lastSid];
-				}
-
-				timeStampUpdates[sid] = el.timeString;
-			}
-
 			// Extra classes
-			el.typeClasses = el.isOwn ? "shoutbox-shout-self " : "";
-			el.typeClasses += el.user.isAdmin ? "shoutbox-shout-admin " : "";
+			el.typeClasses = el.isOwn ? 'shoutbox-shout-self ' : '';
+			el.typeClasses += el.user.isAdmin ? 'shoutbox-shout-admin ' : '';
 
 			lastUid = uid;
 			lastSid = sid;
@@ -85,102 +90,81 @@
 		this.vars.lastUid = lastUid;
 		this.vars.lastSid = lastSid;
 
-		templates.parse('shoutbox/shouts', {
-			shouts: shouts
-		}, function(html) {
+		app.parseAndTranslate('shoutbox/shouts', {
+			shouts: shouts,
+		}, function (html) {
 			self.dom.shoutsContainer.append(html);
 			self.utils.scrollToBottom(shouts.length > 1);
-
-			// Chaos begins here
-			if (Object.keys(timeStampUpdates).length > 0) {
-				// Get all the user elements that belong to the sids that need their timestamp updated
-				var userElements = $('[data-sid]').filter(function() {
-					return timeStampUpdates[$(this).data('sid')] !== undefined;
-				}).prevUntil('.shoutbox-avatar', '.shoutbox-user');
-
-				var i = 0;
-				for (var sid in timeStampUpdates) {
-					if (timeStampUpdates.hasOwnProperty(sid)) {
-						userElements.eq(i).find('span.timeago')
-							.attr('title', timeStampUpdates[sid])
-							.data('timeago', null)
-							.addClass('timeago-update');
-
-						i++;
-					}
-				}
-			}
-
-			if (jQuery.timeago) {
-				$('.timeago-update').removeClass('timeago-update').timeago();
-			}
 		});
 	};
 
-	Instance.prototype.updateUserStatus = function(uid, status) {
+	Instance.prototype.updateUserStatus = function (uid, status) {
 		var self = this;
-
-		var getStatus = function(uid) {
-			self.sockets.getUserStatus(uid, function(err, data) {
-				setStatus(uid, data.status);
-			});
+		var setStatus = function (uid, status) {
+			self.dom.shoutsContainer.find('[data-uid="' + uid + '"].shoutbox-avatar').removeClass().addClass('shoutbox-avatar ' + status);
 		};
 
-		var setStatus = function(uid, status) {
-			self.dom.shoutsContainer.find('[data-uid="' + uid + '"].shoutbox-avatar').removeClass().addClass('shoutbox-avatar ' + status);
+		var getStatus = function (uid) {
+			self.sockets.getUserStatus(uid, function (err, data) {
+				if (err) {
+					return app.alertError(err);
+				}
+				setStatus(uid, data.status);
+			});
 		};
 
 		if (!uid) {
 			uid = [];
 
-			self.dom.shoutsContainer.find('[data-uid].shoutbox-avatar').each(function(index, el){
-				uid.push($(el).data('uid'))
+			self.dom.shoutsContainer.find('[data-uid].shoutbox-avatar').each(function (index, el) {
+				uid.push($(el).data('uid'));
 			});
 
-			uid = uid.filter(function(el, index) {
+			uid = uid.filter(function (el, index) {
 				return uid.indexOf(el) === index;
 			});
 		}
 
 		if (!status) {
-			if (typeof(uid) === 'number') {
+			if (typeof uid === 'number') {
 				getStatus(uid);
 			} else if (Array.isArray(uid)) {
-				for (var i = 0, l = uid.length; i < l; i++) {
+				for (let i = 0, l = uid.length; i < l; i++) {
 					getStatus(uid[i]);
 				}
 			}
-		} else {
-			if (typeof(uid) === 'number') {
-				setStatus(uid, status);
-			} else if (Array.isArray(uid)) {
-				for (var i = 0, l = uid.length; i < l; i++) {
-					setStatus(uid[i], status);
-				}
+		} else if (typeof uid === 'number') {
+			setStatus(uid, status);
+		} else if (Array.isArray(uid)) {
+			for (let i = 0, l = uid.length; i < l; i++) {
+				setStatus(uid[i], status);
 			}
 		}
 	};
 
-	Instance.prototype.showUserPanel = function() {
+	Instance.prototype.showUserPanel = function () {
 		this.dom.onlineUsers.parent().removeClass('hidden');
 	};
 
-	Instance.prototype.hideUserPanel = function() {
+	Instance.prototype.hideUserPanel = function () {
 		this.dom.onlineUsers.parent().addClass('hidden');
 	};
 
-	Instance.prototype.startUserPanelUpdater = function() {
+	Instance.prototype.startUserPanelUpdater = function () {
 		var self = this;
 
 		update();
 
 		function update() {
-			this.sockets.getUsers({ set: 'users:online', after: 0 }, function(err, data) {
-				var userCount = data.users.length,
-					usernames = data.users.map(function(i) {
-						return (i.username === null ? 'Anonymous' : i.username);
-					}),
-					userString = usernames.join('; ');
+			this.sockets.getUsers({ set: 'users:online', after: 0 }, function (err, data) {
+				if (err) {
+					return app.alertError(err);
+				}
+				var userCount = data.users.length;
+				var usernames = data.users.map(function (i) {
+					return (i.username === null ? 'Anonymous' : i.username);
+				});
+				var userString = usernames.join('; ');
 
 				self.dom.onlineUsers.find('.panel-body').text(userString);
 				self.dom.onlineUsers.find('.panel-title').text('Users (' + userCount + ')');
@@ -191,8 +175,6 @@
 	};
 
 	function setupDom(container) {
-		var self = this;
-
 		this.dom = {};
 		this.dom.container = container;
 		this.dom.overlay = container.find('.shoutbox-content-overlay');
@@ -217,16 +199,16 @@
 			messages: {
 				alert: '[ %u ] - new shout!',
 				empty: 'The shoutbox is empty, start shouting!',
-				scrolled: '<a href="#" id="shoutbox-content-overlay-scrolldown">Scroll down</a>'
+				scrolled: '<a href="#" id="shoutbox-content-overlay-scrolldown">Scroll down</a>',
 			},
-			userCheck: 0
+			userCheck: 0,
 		};
 	}
 
 	Shoutbox.base = {
-		init: function(container, options) {
+		init: function (container, options) {
 			return new Instance(container, options);
-		}
+		},
 	};
+}(window.Shoutbox));
 
-})(window.Shoutbox);

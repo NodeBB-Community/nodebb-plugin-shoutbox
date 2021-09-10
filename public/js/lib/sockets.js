@@ -1,12 +1,10 @@
-"use strict";
-/*global socket*/
+'use strict';
 
-(function(Shoutbox) {
-
+(function (Shoutbox) {
 	var Messages = {
 		getShouts: 'plugins.shoutbox.get',
 		sendShout: 'plugins.shoutbox.send',
-		removeShout : 'plugins.shoutbox.remove',
+		removeShout: 'plugins.shoutbox.remove',
 		editShout: 'plugins.shoutbox.edit',
 		notifyStartTyping: 'plugins.shoutbox.startTyping',
 		notifyStopTyping: 'plugins.shoutbox.stopTyping',
@@ -14,7 +12,7 @@
 		saveSettings: 'plugins.shoutbox.saveSetting',
 		getSettings: 'plugins.shoutbox.getSettings',
 		getUsers: 'user.loadMore',
-		getUserStatus: 'user.checkStatus'
+		getUserStatus: 'user.checkStatus',
 	};
 
 	var Events = {
@@ -23,11 +21,11 @@
 		onDelete: 'event:shoutbox.delete',
 		onEdit: 'event:shoutbox.edit',
 		onStartTyping: 'event:shoutbox.startTyping',
-		onStopTyping: 'event:shoutbox.stopTyping'
+		onStopTyping: 'event:shoutbox.stopTyping',
 	};
 
 	var Handlers = {
-		defaultSocketHandler: function(message) {
+		defaultSocketHandler: function (message) {
 			var self = this;
 			this.message = message;
 
@@ -39,35 +37,35 @@
 
 				socket.emit(self.message, data, callback);
 			};
-		}
+		},
 	};
 
-	var Sockets = function(sbInstance) {
+	var Sockets = function (sbInstance) {
 		this.sb = sbInstance;
 
 		this.messages = Messages;
 		this.events = Events;
 		// TODO: move this into its own file?
 		this.handlers = {
-			onReceive: function(data) {
+			onReceive: function (data) {
 				sbInstance.addShouts(data);
 
 				if (parseInt(data[0].fromuid, 10) !== app.user.uid) {
 					sbInstance.utils.notify(data[0]);
 				}
 			},
-			onDelete: function(data) {
-				var shout = $('[data-sid="' + data.sid + '"]'),
-					uid = shout.data('uid'),
+			onDelete: function (data) {
+				var shout = $('[data-sid="' + data.sid + '"]');
+				var uid = shout.data('uid');
 
-					prevUser = shout.prev('[data-uid].shoutbox-user'),
-					prevUserUid = parseInt(prevUser.data('uid'), 10),
+				var prevUser = shout.prev('[data-uid].shoutbox-user');
+				var prevUserUid = parseInt(prevUser.data('uid'), 10);
 
-					nextShout = shout.next('[data-uid].shoutbox-shout'),
-					nextShoutUid = parseInt(nextShout.data('uid'), 10),
+				var nextShout = shout.next('[data-uid].shoutbox-shout');
+				var nextShoutUid = parseInt(nextShout.data('uid'), 10);
 
-					prevUserIsSelf = prevUser.length > 0 && prevUserUid === parseInt(uid, 10),
-					nextShoutIsSelf = nextShout.length > 0 && nextShoutUid === parseInt(uid, 10);
+				var prevUserIsSelf = prevUser.length > 0 && prevUserUid === parseInt(uid, 10);
+				var nextShoutIsSelf = nextShout.length > 0 && nextShoutUid === parseInt(uid, 10);
 
 				if (shout.length > 0) {
 					shout.remove();
@@ -91,19 +89,19 @@
 					sbInstance.actions.edit.finish();
 				}
 			},
-			onEdit: function(data) {
+			onEdit: function (data) {
 				$('[data-sid="' + data[0].sid + '"] .shoutbox-shout-text')
 					.html(data[0].content).addClass('shoutbox-shout-edited');
 			},
-			onUserStatusChange: function(data) {
+			onUserStatusChange: function (data) {
 				sbInstance.updateUserStatus(data.uid, data.status);
 			},
-			onStartTyping: function(data) {
+			onStartTyping: function (data) {
 				$('[data-uid="' + data.uid + '"].shoutbox-avatar').addClass('isTyping');
 			},
-			onStopTyping: function(data) {
+			onStopTyping: function (data) {
 				$('[data-uid="' + data.uid + '"].shoutbox-avatar').removeClass('isTyping');
-			}
+			},
 		};
 
 		for (var e in this.events) {
@@ -119,20 +117,19 @@
 		}
 	};
 
-	Sockets.prototype.registerMessage = function(handle, message) {
+	Sockets.prototype.registerMessage = function (handle, message) {
 		if (!this.hasOwnProperty(handle)) {
 			this[handle] = new Handlers.defaultSocketHandler(message);
 		}
 	};
 
-	Sockets.prototype.registerEvent = function(event, handler) {
+	Sockets.prototype.registerEvent = function (event, handler) {
 		socket.on(event, handler);
 	};
 
 	Shoutbox.sockets = {
-		init: function(instance) {
+		init: function (instance) {
 			return new Sockets(instance);
-		}
+		},
 	};
-
-})(window.Shoutbox);
+}(window.Shoutbox));

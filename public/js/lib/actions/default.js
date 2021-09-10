@@ -1,10 +1,9 @@
-/* global app, utils, $ */
-"use strict";
+'use strict';
 
-(function(Shoutbox) {
+(function (Shoutbox) {
 	var DefaultActions = {
-		typing: function(sbInstance) {
-			this.register = function() {
+		typing: function (sbInstance) {
+			this.register = function () {
 				sbInstance.dom.container.find('.shoutbox-message-input')
 					.off('keyup.typing').on('keyup.typing', handle);
 			};
@@ -17,8 +16,8 @@
 				}
 			}
 		},
-		overlay: function(sbInstance) {
-			this.register = function() {
+		overlay: function (sbInstance) {
+			this.register = function () {
 				sbInstance.dom.overlay
 					.off('click.overlay', '.shoutbox-content-overlay-close')
 					.on('click.overlay', '.shoutbox-content-overlay-close', handle);
@@ -29,21 +28,21 @@
 				return false;
 			}
 		},
-		scrolling: function(sbInstance) {
-			this.register = function() {
-				var t,
-					shoutContent = sbInstance.dom.shoutsContainer;
+		scrolling: function (sbInstance) {
+			this.register = function () {
+				var t;
+				var shoutContent = sbInstance.dom.shoutsContainer;
 
-				shoutContent.scroll(function() {
+				shoutContent.scroll(function () {
 					clearTimeout(t);
-					t = setTimeout(function() {
+					t = setTimeout(function () {
 						handle();
 					}, 200);
 				});
 
 				sbInstance.dom.overlay
 					.off('click.overlay', '#shoutbox-content-overlay-scrolldown')
-					.on('click.overlay', '#shoutbox-content-overlay-scrolldown', function(e) {
+					.on('click.overlay', '#shoutbox-content-overlay-scrolldown', function () {
 						shoutContent.scrollTop(
 							shoutContent[0].scrollHeight - shoutContent.height()
 						);
@@ -52,13 +51,13 @@
 			};
 
 			function handle() {
-				var shoutContent = sbInstance.dom.shoutsContainer,
-					shoutOverlay = sbInstance.dom.overlay,
-					scrollHeight = Shoutbox.utils.getScrollHeight(shoutContent),
+				var shoutContent = sbInstance.dom.shoutsContainer;
+				var shoutOverlay = sbInstance.dom.overlay;
+				var scrollHeight = Shoutbox.utils.getScrollHeight(shoutContent);
 
-					overlayActive = shoutOverlay.hasClass('active'),
-					pastScrollBreakpoint = scrollHeight >= sbInstance.vars.scrollBreakpoint,
-					scrollMessageShowing = sbInstance.vars.scrollMessageShowing;
+				var overlayActive = shoutOverlay.hasClass('active');
+				var pastScrollBreakpoint = scrollHeight >= sbInstance.vars.scrollBreakpoint;
+				var scrollMessageShowing = sbInstance.vars.scrollMessageShowing;
 
 				if (!overlayActive && pastScrollBreakpoint && !scrollMessageShowing) {
 					sbInstance.utils.showOverlay(sbInstance.vars.messages.scrolled);
@@ -69,15 +68,15 @@
 				}
 			}
 		},
-		send: function(sbInstance) {
-			this.register = function() {
-				sbInstance.dom.textInput.off('keypress.send').on('keypress.send', function(e) {
+		send: function (sbInstance) {
+			this.register = function () {
+				sbInstance.dom.textInput.off('keypress.send').on('keypress.send', function (e) {
 					if (e.which === 13 && !e.shiftKey) {
 						handle();
 					}
 				});
 
-				sbInstance.dom.sendButton.off('click.send').on('click.send', function(e){
+				sbInstance.dom.sendButton.off('click.send').on('click.send', function () {
 					handle();
 					return false;
 				});
@@ -87,7 +86,7 @@
 				var msg = utils.stripHTMLTags(sbInstance.dom.textInput.val());
 
 				if (msg.length) {
-					sbInstance.commands.parse(msg, function(msg) {
+					sbInstance.commands.parse(msg, function (msg) {
 						sbInstance.sockets.sendShout({ message: msg });
 					});
 				}
@@ -95,8 +94,8 @@
 				sbInstance.dom.textInput.val('');
 			}
 		},
-		delete: function(sbInstance) {
-			this.register = function() {
+		delete: function (sbInstance) {
+			this.register = function () {
 				sbInstance.dom.container
 					.off('click.delete', '.shoutbox-shout-option-close')
 					.on('click.delete', '.shoutbox-shout-option-close', handle);
@@ -116,10 +115,10 @@
 				return false;
 			}
 		},
-		edit: function(sbInstance) {
+		edit: function (sbInstance) {
 			var self = this;
 
-			this.register = function() {
+			this.register = function () {
 				function eventsOff() {
 					sbInstance.dom.shoutsContainer
 						.off('click.edit', '.shoutbox-shout-option-edit')
@@ -130,17 +129,17 @@
 
 				function eventsOn() {
 					sbInstance.dom.shoutsContainer
-						.on('click.edit', '.shoutbox-shout-option-edit', function() {
+						.on('click.edit', '.shoutbox-shout-option-edit', function () {
 							handle(
 								$(this).parents('[data-sid]').data('sid')
 							);
-						}).on('dblclick.edit', '[data-sid]', function() {
+						}).on('dblclick.edit', '[data-sid]', function () {
 							handle(
 								$(this).data('sid')
 							);
 						});
 
-					sbInstance.dom.textInput.on('keyup.edit', function(e) {
+					sbInstance.dom.textInput.on('keyup.edit', function (e) {
 						if (e.which === 38 && !$(this).val()) {
 							handle(
 								sbInstance.dom.shoutsContainer
@@ -151,11 +150,11 @@
 					});
 				}
 
-				sbInstance.dom.textInput.off('textComplete:show').on('textComplete:show', function() {
+				sbInstance.dom.textInput.off('textComplete:show').on('textComplete:show', function () {
 					eventsOff();
 				});
 
-				sbInstance.dom.textInput.off('textComplete:hide').on('textComplete:hide', function() {
+				sbInstance.dom.textInput.off('textComplete:hide').on('textComplete:hide', function () {
 					eventsOn();
 				});
 
@@ -169,22 +168,30 @@
 				if (shout.data('uid') === app.user.uid || app.user.isAdmin || app.user.isGlobalMod) {
 					sbInstance.vars.editing = sid;
 
-					sbInstance.sockets.getOriginalShout({ sid: sid }, function(err, orig) {
+					sbInstance.sockets.getOriginalShout({ sid: sid }, function (err, orig) {
+						if (err) {
+							return app.alertError(err);
+						}
 						orig = orig[0].content;
 
-						sbInstance.dom.sendButton.off('click.send').on('click.send', function(e){
+						sbInstance.dom.sendButton.off('click.send').on('click.send', function () {
 							edit(orig);
 						}).text('Edit');
 
-						sbInstance.dom.textInput.off('keyup.edit').off('keypress.send').on('keypress.send', function(e) {
+						sbInstance.dom.textInput.off('keyup.edit').off('keypress.send').on('keypress.send', function (e) {
 							if (e.which === 13 && !e.shiftKey) {
 								edit(orig);
 							}
-						}).on('keyup.edit', function(e) {
+						}).on('keyup.edit', function (e) {
 							if (e.currentTarget.value.length === 0) {
 								self.finish();
 							}
-						}).val(orig).focus().putCursorAtEnd().parents('.input-group').addClass('has-warning');
+						})
+							.val(orig)
+							.focus()
+							.putCursorAtEnd()
+							.parents('.input-group')
+							.addClass('has-warning');
 					});
 				}
 
@@ -208,21 +215,23 @@
 				return false;
 			}
 
-			this.finish = function() {
+			this.finish = function () {
 				sbInstance.dom.textInput.val('').parents('.input-group').removeClass('has-warning');
 				sbInstance.dom.sendButton.text('Send').removeClass('hide');
 
-				sbInstance.actions['send'].register();
-				sbInstance.actions['edit'].register();
+				sbInstance.actions.send.register();
+				sbInstance.actions.edit.register();
 
 				sbInstance.vars.editing = 0;
 			};
-		}
+		},
 	};
 
-	for (var a in DefaultActions) {
-		if (DefaultActions.hasOwnProperty(a))
-			Shoutbox.actions.register(a, DefaultActions[a]);
-	}
-
-})(window.Shoutbox);
+	$(window).on('action:app.load', function () {
+		for (var a in DefaultActions) {
+			if (DefaultActions.hasOwnProperty(a)) {
+				Shoutbox.actions.register(a, DefaultActions[a]);
+			}
+		}
+	});
+}(window.Shoutbox));

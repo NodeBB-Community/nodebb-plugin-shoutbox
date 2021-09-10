@@ -1,37 +1,30 @@
-"use strict";
+'use strict';
 
-var	NodeBB = require('./lib/nodebb'),
-	Config = require('./lib/config'),
-	Sockets = require('./lib/sockets'),
-	Commands = require('./lib/commands'),
+const NodeBB = require('./lib/nodebb');
+const Config = require('./lib/config');
+const Sockets = require('./lib/sockets');
+require('./lib/commands');
 
-	app,
+let app;
 
-	Shoutbox = {};
+const Shoutbox = module.exports;
 
 Shoutbox.init = {};
 Shoutbox.widget = {};
 Shoutbox.settings = {};
 
-Shoutbox.init.load = function(params, callback) {
-	function renderGlobal(req, res, next) {
-		Config.getTemplateData(function(data) {
-			res.render(Config.plugin.id, data);
-		});
-	}
+Shoutbox.init.load = function (params, callback) {
+	const { router, middleware } = params;
+	const routeHelpers = require.main.require('./src/routes/helpers');
+	routeHelpers.setupPageRoute(router, `/${Config.plugin.id}`, middleware, [], async (req, res) => {
+		const data = Config.getTemplateData();
+		res.render(Config.plugin.id, data);
+	});
 
-	function renderAdmin(req, res, next) {
-		Config.getTemplateData(function(data) {
-			res.render('admin/plugins/' + Config.plugin.id, data);
-		});
-	}
-
-	var router = params.router;
-	router.get('/' + Config.plugin.id, params.middleware.buildHeader, renderGlobal);
-	router.get('/api/' + Config.plugin.id, renderGlobal);
-
-	router.get('/admin/plugins/' + Config.plugin.id, params.middleware.admin.buildHeader, renderAdmin);
-	router.get('/api/admin/plugins/' + Config.plugin.id, renderAdmin);
+	routeHelpers.setupAdminPageRoute(router, `/admin/plugins/${Config.plugin.id}`, middleware, [], async (req, res) => {
+		const data = Config.getTemplateData();
+		res.render(`admin/plugins/${Config.plugin.id}`, data);
+	});
 
 	NodeBB.SocketPlugins[Config.plugin.id] = Sockets.events;
 	NodeBB.SocketAdmin[Config.plugin.id] = Config.adminSockets;
@@ -41,66 +34,56 @@ Shoutbox.init.load = function(params, callback) {
 	Config.init(callback);
 };
 
-Shoutbox.init.addGlobalNavigation = function(header, callback) {
-	if (Config.global.get('toggles.headerLink')) {
-		header.navigation.push({
-			class: '',
-			iconClass: 'fa fa-fw ' + Config.plugin.icon,
-			route: '/' + Config.plugin.id,
-			text: Config.plugin.name
-		});
-	}
-
-	callback(null, header);
+Shoutbox.init.filterConfigGet = async (config) => {
+	config.shoutbox = Config.getTemplateData();
+	config.shoutbox.settings = await Config.user.load(config.uid);
+	return config;
 };
 
-Shoutbox.init.addAdminNavigation = function(header, callback) {
+Shoutbox.init.addAdminNavigation = function (header, callback) {
 	header.plugins.push({
-		route: '/plugins/' + Config.plugin.id,
+		route: `/plugins/${Config.plugin.id}`,
 		icon: Config.plugin.icon,
-		name: Config.plugin.name
+		name: Config.plugin.name,
 	});
 
 	callback(null, header);
 };
 
-Shoutbox.widget.define = function(widgets, callback) {
+Shoutbox.widget.define = function (widgets, callback) {
 	widgets.push({
 		name: Config.plugin.name,
 		widget: Config.plugin.id,
 		description: Config.plugin.description,
-		content: ''
+		content: '',
 	});
 
 	callback(null, widgets);
 };
 
-Shoutbox.widget.render = function(widget, callback) {
-	//Remove any container
+Shoutbox.widget.render = async function (widget) {
+	// Remove any container
 	widget.data.container = '';
 
-	Config.user.get({ uid: widget.uid, settings: {} }, function(err, result) {
-		Config.getTemplateData(function(data) {
+	const settings = await Config.user.load(widget.uid);
+	const data = Config.getTemplateData();
 
-			data.hiddenStyle = '';
-			if (!err && result && result.settings && parseInt(result.settings['shoutbox:toggles:hide'], 10) == 1) {
-				data.hiddenStyle = 'display: none;';
-			}
-
-			app.render('shoutbox/panel', data, callback);
-		});
-	});
+	data.hiddenStyle = '';
+	if (settings && parseInt(settings['shoutbox:toggles:hide'], 10) === 1) {
+		data.hiddenStyle = 'display: none;';
+	}
+	widget.html = await app.renderAsync('shoutbox/panel', data);
+	return widget;
 };
 
-Shoutbox.settings.addUserSettings = function(settings, callback) {
-	app.render('shoutbox/user/settings', { settings: settings.settings }, function(err, html) {
-		settings.customSettings.push({
-			title: Config.plugin.name,
-			content: html
-		});
-
-		callback(null, settings);
+Shoutbox.settings.addUserSettings = async function (settings) {
+	const html = await app.renderAsync('shoutbox/user/settings', { settings: settings.settings });
+	settings.customSettings.push({
+		title: Config.plugin.name,
+		content: html,
 	});
+
+	return settings;
 };
 
 Shoutbox.settings.addUserFieldWhitelist = function (data, callback) {
@@ -113,12 +96,10 @@ Shoutbox.settings.addUserFieldWhitelist = function (data, callback) {
 	callback(null, data);
 };
 
-Shoutbox.settings.getUserSettings = function(data, callback) {
-	Config.user.get(data, callback);
+Shoutbox.settings.filterUserGetSettings = async function (data) {
+	return await Config.user.get(data);
 };
 
-Shoutbox.settings.saveUserSettings = function(data) {
-	Config.user.save(data);
+Shoutbox.settings.filterUserSaveSettings = async function (hookData) {
+	return await Config.user.save(hookData);
 };
-
-module.exports = Shoutbox;

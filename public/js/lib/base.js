@@ -17,7 +17,6 @@
 
 		function getShouts() {
 			self.sockets.getShouts(function (err, shouts) {
-				console.log('gg shouts', shouts);
 				if (err) {
 					return app.alertError(err);
 				}

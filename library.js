@@ -64,11 +64,11 @@ Shoutbox.widget.render = async function (widget) {
 	// Remove any container
 	widget.data.container = '';
 
-	const result = await Config.user.get({ uid: widget.uid, settings: {} });
+	const settings = await Config.user.load(widget.uid);
 	const data = Config.getTemplateData();
 
 	data.hiddenStyle = '';
-	if (result && result.settings && parseInt(result.settings['shoutbox:toggles:hide'], 10) === 1) {
+	if (settings && parseInt(settings['shoutbox:toggles:hide'], 10) === 1) {
 		data.hiddenStyle = 'display: none;';
 	}
 	widget.html = await app.renderAsync('shoutbox/panel', data);

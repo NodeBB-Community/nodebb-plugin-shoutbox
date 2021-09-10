@@ -42,12 +42,23 @@
 	}
 
 	Instance.prototype.addShouts = function (shouts) {
+		if (!shouts.length) {
+			return;
+		}
 		var self = this;
 		var lastUid = this.vars.lastUid;
 		var lastSid = this.vars.lastSid;
-		var timeStampUpdates = {};
 		var uid;
 		var sid;
+
+
+		for (let i = shouts.length - 1; i > 0; i -= 1) {
+			var s = shouts[i];
+			var prev = shouts[i - 1];
+			if (parseInt(s.fromuid, 10) === parseInt(prev.fromuid, 10)) {
+				prev.timestamp = s.timestamp;
+			}
+		}
 
 		shouts = shouts.map(function (el) {
 			uid = parseInt(el.fromuid, 10);
@@ -65,15 +76,6 @@
 			// Add timeString to shout
 			// jQuery.timeago only works properly with ISO timestamps
 			el.timeString = (new Date(parseInt(el.timestamp, 10)).toISOString());
-
-			// Do we need to update the user timestamp?
-			if (el.isChained) {
-				if (timeStampUpdates[lastSid]) {
-					delete timeStampUpdates[lastSid];
-				}
-
-				timeStampUpdates[sid] = el.timeString;
-			}
 
 			// Extra classes
 			el.typeClasses = el.isOwn ? 'shoutbox-shout-self ' : '';
@@ -93,30 +95,6 @@
 		}, function (html) {
 			self.dom.shoutsContainer.append(html);
 			self.utils.scrollToBottom(shouts.length > 1);
-
-			// Chaos begins here
-			if (Object.keys(timeStampUpdates).length > 0) {
-				// Get all the user elements that belong to the sids that need their timestamp updated
-				var userElements = $('[data-sid]').filter(function () {
-					return timeStampUpdates[$(this).data('sid')] !== undefined;
-				}).prevUntil('.shoutbox-avatar', '.shoutbox-user');
-
-				var i = 0;
-				for (var sid in timeStampUpdates) {
-					if (timeStampUpdates.hasOwnProperty(sid)) {
-						userElements.eq(i).find('span.timeago')
-							.attr('title', timeStampUpdates[sid])
-							.data('timeago', null)
-							.addClass('timeago-update');
-
-						i += 1;
-					}
-				}
-			}
-
-			if (jQuery.timeago) {
-				$('.timeago-update').removeClass('timeago-update').timeago();
-			}
 		});
 	};
 

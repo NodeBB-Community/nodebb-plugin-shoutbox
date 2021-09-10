@@ -1,8 +1,6 @@
 'use strict';
 
 (function (Shoutbox) {
-	var sounds = null;
-
 	var Utils = function (instance) {
 		this.sb = instance;
 	};

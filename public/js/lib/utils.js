@@ -12,10 +12,11 @@
 	};
 
 	Utils.prototype.notify = function (data) {
-		if (parseInt(this.sb.settings.get('toggles.notification'), 10) === 1) {
-			app.alternatingTitle(this.sb.vars.messages.alert.replace(/%u/g, data.user.username));
+		const shoutboxOnPage = $('#shoutbox-main').length > 0;
+		if (parseInt(this.sb.settings.get('toggles.notification'), 10) === 1 && shoutboxOnPage) {
+			window.document.title = $('<div></div>').html(this.sb.vars.messages.alert.replace(/%u/g, data.user.username)).text();
 		}
-		if (parseInt(this.sb.settings.get('toggles.sound'), 10) === 1) {
+		if (parseInt(this.sb.settings.get('toggles.sound'), 10) === 1 && shoutboxOnPage) {
 			this.playSound('notification');
 		}
 	};

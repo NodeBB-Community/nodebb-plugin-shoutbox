@@ -6,8 +6,7 @@
 			if (argument.indexOf('@') === 0) {
 				argument = argument.slice(1);
 			}
-
-			return utils.slugify(argument);
+			return argument;
 		},
 	};
 
@@ -56,7 +55,7 @@
 			register: function (sbInstance) {
 				sbInstance.sockets.registerMessage(sound, 'plugins.shoutbox.' + sound);
 				sbInstance.sockets.registerEvent('event:shoutbox.' + sound, function () {
-					sbInstance.utils.playSound(sound);
+					sbInstance.utils.playSound('shoutbox-' + sound + '.mp3');
 				});
 			},
 			handlers: {

@@ -17,20 +17,24 @@
 			window.document.title = $('<div></div>').html(this.sb.vars.messages.alert.replace(/%u/g, data.user.username)).text();
 		}
 		if (parseInt(this.sb.settings.get('toggles.sound'), 10) === 1 && shoutboxOnPage) {
-			this.playSound('notification');
+			this.playSound('shoutbox-notification.mp3');
 		}
 	};
 
-	Utils.prototype.playSound = function (sound) {
-		var self = this;
-		if (sounds === null) {
-			require(['sounds'], function (s) {
-				sounds = s;
+	Utils.prototype.playSound = function (file) {
+		if (!file) {
+			return;
+		}
+		var audio = new Audio(
+			config.relative_path + '/plugins/nodebb-plugin-shoutbox/assets/sounds/' + file
+		);
 
-				self.playSound(sound);
-			});
-		} else {
-			sounds.playSound('Shoutbox | shoutbox-' + sound);
+		audio.pause();
+		audio.currentTime = 0;
+		try {
+			audio.play();
+		} catch (err) {
+			console.error(err);
 		}
 	};
 

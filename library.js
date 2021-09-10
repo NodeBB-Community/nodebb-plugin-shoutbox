@@ -3,6 +3,7 @@
 const NodeBB = require('./lib/nodebb');
 const Config = require('./lib/config');
 const Sockets = require('./lib/sockets');
+require('./lib/commands');
 
 let app;
 

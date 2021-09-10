@@ -34,7 +34,6 @@
 	function setupDependencies() {
 		this.utils = Shoutbox.utils.init(this);
 		this.sockets = Shoutbox.sockets.init(this);
-		this.settings = Shoutbox.settings.init(this);
 		this.actions = Shoutbox.actions.init(this);
 		this.commands = Shoutbox.commands.init(this);
 	}

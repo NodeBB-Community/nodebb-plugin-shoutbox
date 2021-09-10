@@ -20,11 +20,6 @@
                                     <input type="checkbox" data-key="toggles.guestsAllowed" data-trim="false"> [[admin:allow_guest_read_access]]
                                 </label>
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" data-key="toggles.headerLink" data-trim="false"> [[admin:show_navigation_link]]
-                                </label>
-                            </div>
                         </div>
                     </div>
                 </div>

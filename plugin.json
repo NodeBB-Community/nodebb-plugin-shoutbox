@@ -6,12 +6,13 @@
   "library": "./library.js",
   "hooks": [
     { "hook": "static:app.load", "method": "init.load" },
+    { "hook": "filter:config.get", "method": "init.filterConfigGet" },
+
     { "hook": "filter:admin.header.build", "method": "init.addAdminNavigation" },
-    { "hook": "filter:header.build", "method": "init.addGlobalNavigation" },
 
     { "hook": "filter:user.customSettings", "method": "settings.addUserSettings" },
-    { "hook": "filter:user.getSettings", "method": "settings.getUserSettings" },
-    { "hook": "action:user.saveSettings", "method": "settings.saveUserSettings" },
+    { "hook": "filter:user.getSettings", "method": "settings.filterUserGetSettings" },
+    { "hook": "filter:user.saveSettings", "method": "settings.filterUserSaveSettings" },
     { "hook": "filter:user.whitelistFields", "method": "settings.addUserFieldWhitelist" },
 
     { "hook": "filter:widgets.getWidgets", "method": "widget.define" },

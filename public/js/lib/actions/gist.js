@@ -3,7 +3,7 @@
 (function (Shoutbox) {
 	var Gist = function (sbInstance) {
 		this.register = function () {
-			ajaxify.loadTemplate('shoutbox/features/gist', function (tpl) {
+			app.parseAndTranslate('shoutbox/features/gist', {}, function (tpl) {
 				$(document.body).append(tpl);
 
 				var gistModal = $('#shoutbox-modal-gist');

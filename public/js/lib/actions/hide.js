@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-(function(Shoutbox) {
-	var Hide = function(sbInstance) {
-		this.register = function() {
+(function (Shoutbox) {
+	var Hide = function (sbInstance) {
+		this.register = function () {
 			sbInstance.settings
 				.off('toggles.hide')
 				.on('toggles.hide', handle);
@@ -18,6 +18,7 @@
 			}
 		}
 	};
-
-	Shoutbox.actions.register('hide', Hide);
-})(window.Shoutbox);
+	$(window).on('action:app.load', function () {
+		Shoutbox.actions.register('hide', Hide);
+	});
+}(window.Shoutbox));

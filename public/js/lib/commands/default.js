@@ -1,27 +1,26 @@
-/* global utils */
-"use strict";
+'use strict';
 
-(function(Shoutbox) {
+(function (Shoutbox) {
 	var ArgumentHandlers = {
-		username: function(argument) {
+		username: function (argument) {
 			if (argument.indexOf('@') === 0) {
 				argument = argument.slice(1);
 			}
 
 			return utils.slugify(argument);
-		}
+		},
 	};
 
 	var DefaultCommands = {
 		help: {
 			info: {
 				usage: '/help',
-				description: 'Displays the available commands'
+				description: 'Displays the available commands',
 			},
 			handlers: {
-				action: function(argument, sendShout, sbInstance) {
-					var message = '<strong>Available commands:</strong><br>',
-						commands = sbInstance.commands.getCommands();
+				action: function (argument, sendShout, sbInstance) {
+					var message = '<strong>Available commands:</strong><br>';
+					var commands = sbInstance.commands.getCommands();
 
 					for (var c in commands) {
 						if (commands.hasOwnProperty(c)) {
@@ -30,50 +29,50 @@
 					}
 
 					sbInstance.utils.showOverlay(message);
-				}
-			}
+				},
+			},
 		},
 		thisagain: {
 			info: {
 				usage: '/thisagain',
-				description: 'Remind the n00bs of the obvious'
+				description: 'Remind the n00bs of the obvious',
 			},
 			handlers: {
-				action: function(argument, sendShout) {
+				action: function (argument, sendShout) {
 					sendShout('This again... Clear your cache and refresh.');
-				}
-			}
+				},
+			},
 		},
 		wobble: soundCommand('wobble', 'WOBULLY SASUGE'),
-		cena: soundCommand('cena', 'AND HIS NAME IS')
+		cena: soundCommand('cena', 'AND HIS NAME IS'),
 	};
 
 	function soundCommand(sound, description) {
 		return {
 			info: {
 				usage: '/' + sound + ' &lt;username&gt;',
-				description: description
+				description: description,
 			},
-			register: function(sbInstance) {
+			register: function (sbInstance) {
 				sbInstance.sockets.registerMessage(sound, 'plugins.shoutbox.' + sound);
-				sbInstance.sockets.registerEvent('event:shoutbox.' + sound, function() {
+				sbInstance.sockets.registerEvent('event:shoutbox.' + sound, function () {
 					sbInstance.utils.playSound(sound);
 				});
 			},
 			handlers: {
-				action: function(argument, sendShout, sbInstance) {
+				action: function (argument, sendShout, sbInstance) {
 					sbInstance.sockets[sound]({
-						victim: ArgumentHandlers.username(argument)
+						victim: ArgumentHandlers.username(argument),
 					});
-				}
+				},
+			},
+		};
+	}
+	$(window).on('action:app.load', function () {
+		for (var c in DefaultCommands) {
+			if (DefaultCommands.hasOwnProperty(c)) {
+				Shoutbox.commands.register(c, DefaultCommands[c]);
 			}
 		}
-	}
-
-	for (var c in DefaultCommands) {
-		if (DefaultCommands.hasOwnProperty(c)) {
-			Shoutbox.commands.register(c, DefaultCommands[c]);
-		}
-	}
-
-})(window.Shoutbox);
+	});
+}(window.Shoutbox));

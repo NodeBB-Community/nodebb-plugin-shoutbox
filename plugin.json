@@ -29,9 +29,9 @@
     "public/js/loader.js",
     "public/js/lib/"
   ],
-  "acpScripts": [
-    "public/js/admin.js"
-  ],
+  "modules": {
+    "../admin/plugins/shoutbox.js": "public/js/admin.js"
+  },
   "languages": "languages",
   "templates": "./templates"
 }

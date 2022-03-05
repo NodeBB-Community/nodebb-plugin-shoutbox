@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/plugins/shoutbox', ['settings'], function (Settings) {
+define('admin/plugins/shoutbox', ['settings', 'alerts'], function (Settings, alerts) {
 	var wrapper;
 
 	var ACP = {};
@@ -29,9 +29,9 @@ define('admin/plugins/shoutbox', ['settings'], function (Settings) {
 				if (confirm) {
 					socket.emit('plugins.shoutbox.removeAll', { which: 'deleted' }, function (err) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err.message);
 						}
-						app.alertSuccess('Successfully removed all shouts marked as deleted from the database');
+						alerts.success('Successfully removed all shouts marked as deleted from the database');
 					});
 				}
 			});
@@ -42,9 +42,9 @@ define('admin/plugins/shoutbox', ['settings'], function (Settings) {
 				if (confirm) {
 					socket.emit('plugins.shoutbox.removeAll', { which: 'all' }, function (err) {
 						if (err) {
-							return app.alertError(err.message);
+							return alerts.error(err.message);
 						}
-						app.alertSuccess('Successfully removed all shouts from the database');
+						alerts.success('Successfully removed all shouts from the database');
 					});
 				}
 			});

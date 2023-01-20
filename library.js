@@ -62,6 +62,9 @@ Shoutbox.widget.define = function (widgets, callback) {
 };
 
 Shoutbox.widget.render = async function (widget) {
+	if (widget.templateData.template.shoutbox) {
+		return null;
+	}
 	// Remove any container
 	widget.data.container = '';
 

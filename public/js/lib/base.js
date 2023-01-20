@@ -94,6 +94,7 @@
 			shouts: shouts,
 		}, function (html) {
 			self.dom.shoutsContainer.append(html);
+			html.find('.timeago').timeago();
 			self.utils.scrollToBottom(shouts.length > 1);
 		});
 	};

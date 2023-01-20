@@ -96,6 +96,18 @@
   }
 }
 
+[data-widget-area] {
+  .shoutbox-content, .shoutbox-archive-content {
+    height: 200px;
+    overflow-y: scroll;
+    padding-top: 0;
+    position: relative;
+    & p {
+      margin: 0;
+    }
+  }
+}
+
 .shoutbox-shout {
   display: flex;
   margin-left: @avatar-size + 5px;
@@ -147,7 +159,7 @@
   }
 
   &-content, &-archive-content {
-    height: 200px;
+    height: calc(75vh - var(--panel-offset));
     overflow-y: scroll;
     padding-top: 0;
     position: relative;

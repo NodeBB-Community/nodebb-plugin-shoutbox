@@ -5,7 +5,7 @@
 		typing: function (sbInstance) {
 			this.register = function () {
 				sbInstance.dom.container.find('.shoutbox-message-input')
-					.off('keyup.typing').on('keyup.typing', handle);
+					.off('keyup.typing').on('keyup.typing', utils.throttle(handle, 250));
 			};
 
 			function handle() {

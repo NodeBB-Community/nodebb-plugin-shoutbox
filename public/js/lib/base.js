@@ -11,6 +11,7 @@
 		setupDependencies.apply(this);
 
 		this.settings.load();
+		this.createAutoComplete();
 		getShouts();
 
 		window.sb = this;
@@ -141,6 +142,35 @@
 				setStatus(uid[i], status);
 			}
 		}
+	};
+
+	Instance.prototype.createAutoComplete = function () {
+		if (!this.dom.textInput) {
+			return;
+		}
+		const element = $(this.dom.textInput);
+		require(['composer/autocomplete'], function (autocomplete) {
+			const data = {
+				element: element,
+				strategies: [],
+				options: {
+					style: {
+						'z-index': 20000,
+						flex: 0,
+						top: 'inherit',
+					},
+					placement: 'bottom',
+				},
+			};
+
+			$(window).trigger('chat:autocomplete:init', data);
+			if (data.strategies.length) {
+				const autoComplete = autocomplete.setup(data);
+				$(window).one('action:ajaxify.start', () => {
+					autoComplete.destroy();
+				});
+			}
+		});
 	};
 
 	Instance.prototype.showUserPanel = function () {

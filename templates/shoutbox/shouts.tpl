@@ -21,7 +21,7 @@
 </div>
 <!-- ENDIF !shouts.isChained -->
 
-<div class="shoutbox-shout {shouts.typeClasses}" data-sid="{shouts.sid}" data-uid="{shouts.fromuid}">
+<div class="shoutbox-shout {shouts.typeClasses}" data-sid="{shouts.sid}" data-index="{shouts.index}" data-uid="{shouts.fromuid}">
     <div class="shoutbox-shout-text">{shouts.content}</div>
 
     <!-- IF shouts.user.isMod -->

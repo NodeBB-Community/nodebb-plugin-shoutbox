@@ -12,12 +12,31 @@
 
 		this.settings.load();
 		this.createAutoComplete();
-		getShouts();
+
+		const shoutsPerPage = config.shoutbox.settings['shoutbox:shoutLimit'];
+
+		if (this.dom.shoutsContainer) {
+			const container = $(this.dom.shoutsContainer)
+			$(this.dom.shoutsContainer).on('scroll', utils.debounce(function () {
+				const st = container.scrollTop();
+				if (st < 150) {
+					const first = container.find('.shoutbox-shout[data-index]');
+					if (first.length) {
+						const index = parseInt(first.attr('data-index'), 10) - shoutsPerPage;
+						getShouts(index, 'before');
+					}
+				}
+			}, 500));
+		}
+
+		getShouts(-shoutsPerPage);
 
 		window.sb = this;
 
-		function getShouts() {
-			self.sockets.getShouts(function (err, shouts) {
+		function getShouts(start, direction) {
+			self.sockets.getShouts({
+				start: start,
+			}, function (err, shouts) {
 				if (err) {
 					return app.alertError(err);
 				}
@@ -28,7 +47,7 @@
 				if (shouts.length === 0) {
 					self.utils.showOverlay(self.vars.messages.empty);
 				} else {
-					self.addShouts(shouts);
+					self.addShouts(shouts, direction);
 				}
 			});
 		}
@@ -42,7 +61,7 @@
 		this.commands = Shoutbox.commands.init(this);
 	}
 
-	Instance.prototype.addShouts = function (shouts) {
+	Instance.prototype.addShouts = function (shouts, direction = 'after') {
 		if (!shouts.length) {
 			return;
 		}
@@ -94,9 +113,13 @@
 		app.parseAndTranslate('shoutbox/shouts', {
 			shouts: shouts,
 		}, function (html) {
-			self.dom.shoutsContainer.append(html);
+			if (direction === 'before') {
+				self.dom.shoutsContainer.prepend(html);
+			} else {
+				self.dom.shoutsContainer.append(html);
+				self.utils.scrollToBottom(shouts.length > 1);
+			}
 			html.find('.timeago').timeago();
-			self.utils.scrollToBottom(shouts.length > 1);
 		});
 	};
 

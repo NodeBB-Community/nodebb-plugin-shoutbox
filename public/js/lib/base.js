@@ -16,7 +16,7 @@
 		const shoutsPerPage = config.shoutbox.settings['shoutbox:shoutLimit'];
 
 		if (this.dom.shoutsContainer) {
-			const container = $(this.dom.shoutsContainer)
+			const container = $(this.dom.shoutsContainer);
 			$(this.dom.shoutsContainer).on('scroll', utils.debounce(function () {
 				const st = container.scrollTop();
 				if (st < 150) {

@@ -182,7 +182,7 @@
 						flex: 0,
 						top: 'inherit',
 					},
-					placement: 'bottom',
+					placement: 'top',
 				},
 			};
 

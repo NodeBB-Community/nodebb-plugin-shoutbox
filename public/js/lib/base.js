@@ -117,6 +117,14 @@
 				self.dom.shoutsContainer.prepend(html);
 			} else {
 				self.dom.shoutsContainer.append(html);
+				if (shouts.length === 1 && shouts[0].isChained) {
+					const timeagoEl = self.dom.shoutsContainer
+						.children('.shoutbox-user')
+						.last()
+						.find('.shoutbox-shout-timestamp .timeago');
+					timeagoEl.attr('title', shouts[0].timeString);
+					timeagoEl.timeago('update', shouts[0].timeString);
+				}
 				self.utils.scrollToBottom(shouts.length > 1);
 			}
 			html.find('.timeago').timeago();

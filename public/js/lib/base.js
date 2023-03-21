@@ -228,7 +228,7 @@
 				});
 				var userString = usernames.join('; ');
 
-				self.dom.onlineUsers.find('.panel-body').text(userString);
+				self.dom.onlineUsers.find('.card-body').text(userString);
 				self.dom.onlineUsers.find('.panel-title').text('Users (' + userCount + ')');
 			});
 

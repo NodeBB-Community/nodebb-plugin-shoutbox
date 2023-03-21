@@ -9,7 +9,7 @@
 		};
 
 		function handle(value) {
-			var body = sbInstance.dom.container.find('.panel-body');
+			var body = sbInstance.dom.container.find('.card-body');
 
 			if (value === 1) {
 				body.slideUp();

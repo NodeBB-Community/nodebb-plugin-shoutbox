@@ -1,27 +1,27 @@
-<div class="shoutbox" id="shoutbox-main">
-    <div class="panel panel-default">
-        <div class="panel-heading">
+<div class="shoutbox mb-3" id="shoutbox-main">
+    <div class="card">
+        <div class="card-header">
             <h3 class="panel-title">
                 <a href="/shoutbox" title="Shoutbox">[[shoutbox:shoutbox]]</a>
             </h3>
 
-            <div class="btn-group pull-right">
-                <a href="#" class="shoutbox-button-settings dropdown-toggle" data-toggle="dropdown">
+            <div class="btn-group float-end">
+                <a href="#" class="shoutbox-button-settings dropdown-toggle" data-bs-toggle="dropdown">
                     <span class="fa fa-wrench"></span>
                 </a>
                 <ul class="shoutbox-settings-menu dropdown-menu">
                     <li>
-                        <a data-shoutbox-setting="toggles.sound" href="#">
+                        <a class="dropdown-item" data-shoutbox-setting="toggles.sound" href="#">
                             <span class="fa fa-check"></span> [[shoutbox:sound]]
                         </a>
                     </li>
                     <li>
-                        <a data-shoutbox-setting="toggles.notification" href="#">
+                        <a class="dropdown-item" data-shoutbox-setting="toggles.notification" href="#">
                             <span class="fa fa-check"></span> [[shoutbox:notification]]
                         </a>
                     </li>
                     <li>
-                        <a data-shoutbox-setting="toggles.hide" href="#">
+                        <a class="dropdown-item" data-shoutbox-setting="toggles.hide" href="#">
                             <span class="fa fa-check"></span> [[shoutbox:hide]]
                         </a>
                     </li>
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div class="panel-body" style="{hiddenStyle}">
+        <div class="card-body" style="{hiddenStyle}">
             <div class="shoutbox-content-container">
                 <div class="shoutbox-content-overlay">
                     <a href="#" class="shoutbox-content-overlay-close fa fa-times"></a>
@@ -49,7 +49,7 @@
             <div class="shoutbox-message-buttons">
                 <!-- BEGIN features -->
                 <!-- IF features.enabled -->
-                <button type="button" class="shoutbox-button-{features.id} btn btn-primary btn-xs">
+                <button type="button" class="shoutbox-button-{features.id} btn btn-primary btn-sm">
                     <span class="fa {features.icon}"></span> {features.button}
                 </button>
                 <!-- ENDIF features.enabled -->

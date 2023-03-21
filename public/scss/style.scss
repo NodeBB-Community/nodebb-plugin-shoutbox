@@ -1,14 +1,14 @@
 /* Dimensions */
-@border-size: 2px;
-@avatar-size: 30px;
-@avatar-image-size: @avatar-size - (2 * @border-size);
-@chain-margin: 10px;
+$border-size: 2px;
+$avatar-size: 30px;
+$avatar-image-size: $avatar-size - (2 * $border-size);
+$chain-margin: 10px;
 
 /* Colours */
-@status-online: #4caf50;
-@status-away: #ff6d00;
-@status-dnd: #f44336;
-@status-offline: #555;
+$status-online: #4caf50;
+$status-away: #ff6d00;
+$status-dnd: #f44336;
+$status-offline: #555;
 
 .shoutbox-opacity-transition {
   opacity: 0;
@@ -16,41 +16,44 @@
 }
 
 .shoutbox-avatar {
-  .img-circle();
+  border-radius: 50%;
   position: absolute;
   left: 0;
-  border: 2px solid @status-offline;
+  border: 2px solid $status-offline;
 
-  margin-top: @chain-margin;
-  margin-left: 10px;
+  margin-top: $chain-margin;
   margin-right: 10px;
 
   &.online {
-    border: 2px solid @status-online;
+    border: 2px solid $status-online;
   }
 
   &.away {
-    border: 2px solid @status-away;
+    border: 2px solid $status-away;
   }
 
   &.dnd {
-    border: 2px solid @status-dnd;
+    border: 2px solid $status-dnd;
   }
 
   &.offline {
-    border: 2px solid @status-offline;
+    border: 2px solid $status-offline;
   }
 
   .shoutbox-avatar-image {
     border-radius: inherit;
-    width: @avatar-image-size;
-    height: @avatar-image-size;
-    line-height: @avatar-image-size;
+    width: $avatar-image-size;
+    height: $avatar-image-size;
+    line-height: $avatar-image-size;
   }
 
   .shoutbox-avatar-icon {
-    .shoutbox-avatar-image;
+    @extend .shoutbox-avatar-image;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 2px;
+    color: #fff;
   }
 
   .shoutbox-avatar-overlay {
@@ -62,7 +65,7 @@
     height: 100%;
     border-radius: inherit;
     text-align: center;
-    line-height: @avatar-image-size;
+    line-height: $avatar-image-size;
   }
 
   &.isTyping {
@@ -76,19 +79,19 @@
   }
 
   .shoutbox-avatar-overlay, .shoutbox-avatar-typing {
-    .shoutbox-opacity-transition;
+    @extend .shoutbox-opacity-transition;
   }
 }
 
 .shoutbox-user {
-  margin-top: @chain-margin;
-  margin-left: @avatar-size + 5px;
+  margin-top: $chain-margin;
+  margin-left: $avatar-size + 5px;
   margin-bottom: 3px;
-  font-size: @font-size-base;
-  line-height: @font-size-base;
+  font-size: $font-size-base;
+  line-height: $font-size-base;
 
   .shoutbox-shout-timestamp {
-    .shoutbox-opacity-transition;
+    @extend .shoutbox-opacity-transition;
   }
 
   &:hover .shoutbox-shout-timestamp {
@@ -110,10 +113,10 @@
 
 .shoutbox-shout {
   display: flex;
-  margin-left: @avatar-size + 5px;
+  margin-left: $avatar-size + 5px;
   margin-bottom: 3px;
-  font-size: @font-size-base;
-  line-height: @font-size-base;
+  font-size: $font-size-base;
+  line-height: $font-size-base;
 
   .shoutbox-shout-text {
     //flex-grow: 1;
@@ -128,14 +131,14 @@
     font: normal normal normal 14px/1 FontAwesome;
     font-size: 10px;
     text-rendering: auto;
-    color: @text-muted;
+    color: $text-muted;
     margin-left: 5px;
   }
 
   .shoutbox-shout-options {
+    @extend .shoutbox-opacity-transition;
     white-space: nowrap;
     margin-left: 5px;
-    .shoutbox-opacity-transition;
   }
 
   &:hover {
@@ -150,7 +153,7 @@
 }
 
 .shoutbox {
-  & .panel-heading .btn-group {
+  & .card-header .btn-group {
     display: block;
   }
 
@@ -185,7 +188,7 @@
     width: 15px;
   }
 
-  & .panel-body .btn-group {
+  & .card-body .btn-group {
     margin-top: 5px;
   }
 
@@ -193,15 +196,15 @@
     position: relative;
 
     .shoutbox-content-overlay {
+      @extend .shoutbox-opacity-transition;
       width: 100%;
       max-height: 100%;
       padding: 10px;
       position: absolute;
-      background-color: @body-bg;
+      background-color: $body-bg;
       overflow-y: auto;
       z-index: 1;
       visibility: hidden;
-      .shoutbox-opacity-transition;
 
       &.active {
         opacity: 0.9;

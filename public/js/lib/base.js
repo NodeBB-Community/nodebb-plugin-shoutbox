@@ -44,7 +44,7 @@
 					return el !== null;
 				});
 
-				if (shouts.length === 0) {
+				if (shouts.length === 0 && direction !== 'before') {
 					self.utils.showOverlay(self.vars.messages.empty);
 				} else {
 					self.addShouts(shouts, direction);

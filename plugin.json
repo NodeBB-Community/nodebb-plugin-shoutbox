@@ -22,8 +22,8 @@
     "public": "./public",
     "assets": "./assets"
   },
-  "less": [
-    "public/less/style.less"
+  "scss": [
+    "public/scss/style.scss"
   ],
   "scripts": [
     "public/js/loader.js",

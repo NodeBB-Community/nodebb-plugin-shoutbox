@@ -106,9 +106,9 @@
 
 				sbInstance.sockets.removeShout({ sid: sid }, function (err, result) {
 					if (result === true) {
-						app.alertSuccess('Successfully deleted shout!');
+						Shoutbox.alert('success', 'Successfully deleted shout!');
 					} else if (err) {
-						app.alertError('Error deleting shout: ' + err.message, 3000);
+						Shoutbox.alert('error', 'Error deleting shout: ' + err.message);
 					}
 				});
 
@@ -170,7 +170,7 @@
 
 					sbInstance.sockets.getOriginalShout({ sid: sid }, function (err, orig) {
 						if (err) {
-							return app.alertError(err);
+							return Shoutbox.alert('error', err);
 						}
 						orig = orig[0].content;
 
@@ -204,9 +204,9 @@
 
 					sbInstance.sockets.editShout({ sid: sid, edited: msg }, function (err, result) {
 						if (result === true) {
-							app.alertSuccess('Successfully edited shout!');
+							Shoutbox.alert('success', 'Successfully edited shout!');
 						} else if (err) {
-							app.alertError('Error editing shout: ' + err.message, 3000);
+							Shoutbox.alert('error', 'Error editing shout: ' + err.message, 3000);
 						}
 						self.finish();
 					});

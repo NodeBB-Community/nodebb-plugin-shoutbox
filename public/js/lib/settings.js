@@ -56,7 +56,7 @@
 
 		this.sb.sockets.saveSettings({ settings: this.settings }, function (err) {
 			if (err) {
-				app.alertError('Error saving settings!');
+				Shoutbox.alert('error', 'Error saving settings!');
 			}
 		});
 	};

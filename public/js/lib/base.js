@@ -38,7 +38,7 @@
 				start: start,
 			}, function (err, shouts) {
 				if (err) {
-					return app.alertError(err);
+					return Shoutbox.alert('error', err);
 				}
 				shouts = shouts.filter(function (el) {
 					return el !== null;
@@ -140,7 +140,7 @@
 		var getStatus = function (uid) {
 			self.sockets.getUserStatus(uid, function (err, data) {
 				if (err) {
-					return app.alertError(err);
+					return Shoutbox.alert('error', err);
 				}
 				setStatus(uid, data.status);
 			});
@@ -220,7 +220,7 @@
 		function update() {
 			this.sockets.getUsers({ set: 'users:online', after: 0 }, function (err, data) {
 				if (err) {
-					return app.alertError(err);
+					return Shoutbox.alert('error', err);
 				}
 				var userCount = data.users.length;
 				var usernames = data.users.map(function (i) {

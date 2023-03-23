@@ -22,8 +22,7 @@
 			if (app.user.uid === null) {
 				gistModal.modal('hide');
 
-				app.alertError('Only registered users can create Gists!', 3000);
-
+				Shoutbox.alert('error', 'Only registered users can create Gists!');
 				return;
 			}
 
@@ -50,11 +49,10 @@
 				gistModal.modal('hide');
 				gistModal.find('textarea').val('');
 
-				app.alertSuccess('Successfully created Gist!', 3000);
+				Shoutbox.alert('success', 'Successfully created Gist!');
 			}).fail(function () {
 				gistModal.modal('hide');
-
-				app.alertError('Error while creating Gist, try again later!', 3000);
+				Shoutbox.alert('error', 'Error while creating Gist, try again later!');
 			});
 		}
 	};

@@ -1,9 +1,12 @@
-<div class="checkbox">
-    <label><input type="checkbox" data-property="shoutbox:toggles:hide" <!-- IF settings.shoutbox:toggles:hide -->checked<!-- ENDIF settings.shoutbox:toggles:hide -->> [[shoutbox:hide_shoutbox]]</label>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" data-property="shoutbox:toggles:hide" {{{ if settings.shoutbox:toggles:hide }}}checked{{{ end }}}>
+    <label class="form-check-label text-sm">[[shoutbox:hide_shoutbox]]</label>
 </div>
-<div class="checkbox">
-    <label><input type="checkbox" data-property="shoutbox:toggles:sound" <!-- IF settings.shoutbox:toggles:sound -->checked<!-- ENDIF settings.shoutbox:toggles:sound -->> [[shoutbox:play_sound]]</label>
+<div class="form-check">
+    <input type="checkbox" data-property="shoutbox:toggles:sound" {{{ if settings.shoutbox:toggles:sound }}}checked{{{ end }}}>
+    <label class="form-check-label text-sm">[[shoutbox:play_sound]]</label>
 </div>
-<div class="checkbox">
-    <label><input type="checkbox" data-property="shoutbox:toggles:notification" <!-- IF settings.shoutbox:toggles:notification -->checked<!-- ENDIF settings.shoutbox:toggles:notification -->> [[shoutbox:show_notification]]</label>
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" data-property="shoutbox:toggles:notification" {{{ if settings.shoutbox:toggles:notification }}}checked{{{ end }}}>
+    <label class="form-check-label text-sm">[[shoutbox:show_notification]]</label>
 </div>

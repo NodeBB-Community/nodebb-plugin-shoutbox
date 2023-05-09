@@ -72,6 +72,8 @@ Shoutbox.widget.render = async function (widget) {
 	const data = Config.getTemplateData();
 	data.title = widget.data.title || '';
 	data.hiddenStyle = '';
+	data.features = data.features.filter(f => f && f.enabled);
+
 	if (settings && parseInt(settings['shoutbox:toggles:hide'], 10) === 1) {
 		data.hiddenStyle = 'display: none;';
 	}

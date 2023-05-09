@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="card-body" style="{hiddenStyle}">
+        <div class="card-body d-flex flex-column gap-1" style="{hiddenStyle}">
             <div class="shoutbox-content-container">
                 <div class="shoutbox-content-overlay">
                     <a href="#" class="shoutbox-content-overlay-close fa fa-times"></a>
@@ -43,18 +43,17 @@
                 </span>
             </div>
 
-            <!-- IF features.length -->
+            {{{ if features.length }}}
             <div class="shoutbox-message-buttons">
-                <!-- BEGIN features -->
-                <!-- IF features.enabled -->
-                <button type="button" class="shoutbox-button-{features.id} btn btn-primary btn-sm">
-                    <span class="fa {features.icon}"></span> {features.button}
+                {{{ each features }}}
+                {{{ if ./enabled }}}
+                <button type="button" class="shoutbox-button-{./id} btn btn-primary btn-sm">
+                    <span class="fa {./icon}"></span> {./button}
                 </button>
-                <!-- ENDIF features.enabled -->
-                <!-- END features -->
+                {{{ end }}}
+                {{{ end }}}
             </div>
-            <!-- ENDIF features.length -->
-
+            {{{ end }}}
         </div>
     </div>
 </div>

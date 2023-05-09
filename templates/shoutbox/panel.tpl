@@ -1,11 +1,9 @@
 <div class="shoutbox mb-3" id="shoutbox-main">
     <div class="card">
-        <div class="card-header">
-            <h3 class="panel-title">
-                <a href="/shoutbox" title="Shoutbox">[[shoutbox:shoutbox]]</a>
-            </h3>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <a class="fs-5 fw-semibold" href="/shoutbox" title="Shoutbox">{{{ if title }}}{title}{{{ else}}}[[shoutbox:shoutbox]]{{{ end }}}</a>
 
-            <div class="btn-group float-end">
+            <div class="btn-group">
                 <a href="#" class="shoutbox-button-settings dropdown-toggle" data-bs-toggle="dropdown">
                     <span class="fa fa-wrench"></span>
                 </a>

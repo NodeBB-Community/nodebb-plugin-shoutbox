@@ -7,7 +7,7 @@
                 <a href="#" class="shoutbox-button-settings dropdown-toggle" data-bs-toggle="dropdown">
                     <span class="fa fa-wrench"></span>
                 </a>
-                <ul class="shoutbox-settings-menu dropdown-menu">
+                <ul class="shoutbox-settings-menu dropdown-menu dropdown-menu-end">
                     <li>
                         <a class="dropdown-item" data-shoutbox-setting="toggles.sound" href="#">
                             <span class="fa fa-check"></span> [[shoutbox:sound]]

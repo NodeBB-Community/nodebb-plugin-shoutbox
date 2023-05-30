@@ -162,7 +162,7 @@ $status-offline: #555;
   }
 
   &-content, &-archive-content {
-    height: calc(75vh - var(--panel-offset));
+    height: calc(60vh - var(--panel-offset));
     overflow-y: scroll;
     padding-top: 0;
     position: relative;

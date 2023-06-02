@@ -1,6 +1,6 @@
 /* Dimensions */
 $border-size: 2px;
-$avatar-size: 30px;
+$avatar-size: 28px;
 $avatar-image-size: $avatar-size - (2 * $border-size);
 $chain-margin: 10px;
 
@@ -19,41 +19,28 @@ $status-offline: #555;
   border-radius: 50%;
   position: absolute;
   left: 0;
-  border: 2px solid $status-offline;
+  .avatar {
+    border: $border-size solid $status-offline;
+  }
+
 
   margin-top: $chain-margin;
   margin-right: 10px;
 
-  &.online {
-    border: 2px solid $status-online;
+  &.online .avatar {
+    border: $border-size solid $status-online;
   }
 
-  &.away {
-    border: 2px solid $status-away;
+  &.away .avatar {
+    border: $border-size solid $status-away;
   }
 
-  &.dnd {
-    border: 2px solid $status-dnd;
+  &.dnd .avatar {
+    border: $border-size solid $status-dnd;
   }
 
-  &.offline {
-    border: 2px solid $status-offline;
-  }
-
-  .shoutbox-avatar-image {
-    border-radius: inherit;
-    width: $avatar-image-size;
-    height: $avatar-image-size;
-    line-height: $avatar-image-size;
-  }
-
-  .shoutbox-avatar-icon {
-    @extend .shoutbox-avatar-image;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
-    color: #fff;
+  &.offline .avatar {
+    border: $border-size solid $status-offline;
   }
 
   .shoutbox-avatar-overlay {
@@ -65,7 +52,7 @@ $status-offline: #555;
     height: 100%;
     border-radius: inherit;
     text-align: center;
-    line-height: $avatar-image-size;
+    line-height: $avatar-image-size + $border-size * 2;
   }
 
   &.isTyping {
@@ -85,22 +72,14 @@ $status-offline: #555;
 
 .shoutbox-user {
   margin-top: $chain-margin;
-  margin-left: $avatar-size + 5px;
+  margin-left: $avatar-size + 8px;
   margin-bottom: 3px;
   font-size: $font-size-base;
   line-height: $font-size-base;
-
-  .shoutbox-shout-timestamp {
-    @extend .shoutbox-opacity-transition;
-  }
-
-  &:hover .shoutbox-shout-timestamp {
-    opacity: 1;
-  }
 }
 
 [data-widget-area] {
-  .shoutbox-content, .shoutbox-archive-content {
+  .shoutbox-content {
     height: 200px;
     overflow-y: scroll;
     padding-top: 0;
@@ -112,18 +91,15 @@ $status-offline: #555;
 }
 
 .shoutbox-shout {
-  display: flex;
-  margin-left: $avatar-size + 5px;
-  margin-bottom: 3px;
-  font-size: $font-size-base;
-  line-height: $font-size-base;
-
+  margin-left: $avatar-size + 8px;
   .shoutbox-shout-text {
-    //flex-grow: 1;
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: break-all;
     hyphens: auto;
+    .plugin-mentions-user {
+      font-weight: bold;
+    }
   }
 
   .shoutbox-shout-edited p:after {
@@ -138,7 +114,6 @@ $status-offline: #555;
   .shoutbox-shout-options {
     @extend .shoutbox-opacity-transition;
     white-space: nowrap;
-    margin-left: 5px;
   }
 
   &:hover {
@@ -153,15 +128,7 @@ $status-offline: #555;
 }
 
 .shoutbox {
-  & .card-header .btn-group {
-    display: block;
-  }
-
-  & .panel-title {
-    display: inline-block;
-  }
-
-  &-content, &-archive-content {
+  &-content {
     height: calc(60vh - var(--panel-offset));
     overflow-y: scroll;
     padding-top: 0;
@@ -170,26 +137,6 @@ $status-offline: #555;
     & p {
       margin: 0;
     }
-  }
-
-  & .shoutbox-message-buttons {
-    margin-top: 5px;
-  }
-
-  &-archive-content {
-    height: 300px;
-  }
-
-  & .shoutbox-button-settings {
-    color: inherit;
-  }
-
-  &-settings-menu span {
-    width: 15px;
-  }
-
-  & .card-body .btn-group {
-    margin-top: 5px;
   }
 
   .shoutbox-content-container {
@@ -210,10 +157,6 @@ $status-offline: #555;
         opacity: 0.9;
         visibility: visible;
         transition-delay: 0s;
-      }
-
-      .shoutbox-content-overlay-close {
-        float: right;
       }
     }
   }

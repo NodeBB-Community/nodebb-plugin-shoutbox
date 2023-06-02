@@ -10,12 +10,7 @@
 
 		function handle(value) {
 			var body = sbInstance.dom.container.find('.card-body');
-
-			if (value === 1) {
-				body.slideUp();
-			} else {
-				body.slideDown();
-			}
+			body.toggleClass('hidden', value === 1);
 		}
 	};
 	$(window).on('action:app.load', function () {

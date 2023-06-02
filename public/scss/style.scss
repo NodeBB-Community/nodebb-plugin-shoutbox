@@ -82,10 +82,6 @@ $status-offline: #555;
 
 .shoutbox-shout {
   .shoutbox-shout-text {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-all;
-    hyphens: auto;
     .plugin-mentions-user {
       font-weight: bold;
     }

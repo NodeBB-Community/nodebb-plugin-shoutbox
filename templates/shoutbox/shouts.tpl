@@ -19,7 +19,7 @@
 <!-- ENDIF !shouts.isChained -->
 
 <div class="shoutbox-shout {shouts.typeClasses} d-flex align-items-center mb-1 gap-2" data-sid="{shouts.sid}" data-index="{shouts.index}" data-uid="{shouts.fromuid}">
-    <div class="shoutbox-shout-text">{shouts.content}</div>
+    <div class="shoutbox-shout-text text-break">{shouts.content}</div>
 
     <!-- IF shouts.user.isMod -->
     <div class="shoutbox-shout-options d-flex gap-2">

@@ -17,15 +17,11 @@ $status-offline: #555;
 
 .shoutbox-avatar {
   border-radius: 50%;
-  position: absolute;
-  left: 0;
+  width: $avatar-size;
+  height: $avatar-size;
   .avatar {
     border: $border-size solid $status-offline;
   }
-
-
-  margin-top: $chain-margin;
-  margin-right: 10px;
 
   &.online .avatar {
     border: $border-size solid $status-online;
@@ -44,12 +40,9 @@ $status-offline: #555;
   }
 
   .shoutbox-avatar-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
     background-color: black;
-    width: 100%;
-    height: 100%;
+    width: $avatar-size;
+    height: $avatar-size;
     border-radius: inherit;
     text-align: center;
     line-height: $avatar-image-size + $border-size * 2;
@@ -70,14 +63,6 @@ $status-offline: #555;
   }
 }
 
-.shoutbox-user {
-  margin-top: $chain-margin;
-  margin-left: $avatar-size + 8px;
-  margin-bottom: 3px;
-  font-size: $font-size-base;
-  line-height: $font-size-base;
-}
-
 [data-widget-area] {
   .shoutbox {
     .card {
@@ -96,7 +81,6 @@ $status-offline: #555;
 }
 
 .shoutbox-shout {
-  margin-left: $avatar-size + 8px;
   .shoutbox-shout-text {
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -149,16 +133,8 @@ $status-offline: #555;
   }
 
   .shoutbox-content-container {
-    position: relative;
-
     .shoutbox-content-overlay {
       @extend .shoutbox-opacity-transition;
-      width: 100%;
-      max-height: 100%;
-      padding: 10px;
-      position: absolute;
-      background-color: $body-bg;
-      overflow-y: auto;
       z-index: 1;
       visibility: hidden;
 

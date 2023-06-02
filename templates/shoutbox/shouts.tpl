@@ -1,17 +1,17 @@
 <!-- BEGIN shouts -->
 <!-- IF !shouts.isChained -->
-<a class="shoutbox-avatar {shouts.user.status} {shouts.typeClasses}" href="/user/{shouts.user.userslug}" data-uid="{shouts.fromuid}">
-    {buildAvatar(shouts.user, "28px", true)}
+<div class="shoutbox-user mt-2 d-flex gap-1 align-items-center {shouts.typeClasses}" data-uid="{shouts.fromuid}">
+    <a class="d-flex justify-content-center align-items-center shoutbox-avatar position-relative text-decoration-none {shouts.user.status} {shouts.typeClasses}" href="/user/{shouts.user.userslug}" data-uid="{shouts.fromuid}">
+        {buildAvatar(shouts.user, "28px", true)}
 
-    <div class="shoutbox-avatar-overlay">
-        <span class="shoutbox-avatar-typing">
-            <i class="text-muted fa fa-keyboard-o"></i>
-        </span>
-    </div>
-</a>
+        <div class="shoutbox-avatar-overlay position-absolute top-0 start-0">
+            <span class="shoutbox-avatar-typing">
+                <i class="text-muted fa fa-keyboard-o"></i>
+            </span>
+        </div>
+    </a>
 
-<div class="shoutbox-user {shouts.typeClasses}" data-uid="{shouts.fromuid}">
-    <a class="me-2" href="/user/{shouts.user.userslug}">{shouts.user.username}</a>
+    <a class="me-2 fw-semibold" href="/user/{shouts.user.userslug}">{shouts.user.username}</a>
     <span class="shoutbox-shout-timestamp">
         <span class="text-muted text-xs timeago timeago-update" title="{shouts.timeString}"></span>
     </span>

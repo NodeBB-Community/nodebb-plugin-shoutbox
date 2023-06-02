@@ -27,16 +27,16 @@
             </div>
         </div>
 
-        <div class="card-body d-flex flex-column gap-1 {{{ if config.shoutbox.settings.shoutbox:toggles:hide}}}hidden{{{ end }}}" style="min-height:0px;">
-            <div class="shoutbox-content-container" style="min-height:0px;">
-                <div class="shoutbox-content-overlay">
-                    <a href="#" class="shoutbox-content-overlay-close fa fa-times float-end"></a>
+        <div class="card-body d-flex flex-column gap-1 p-0 pb-2 {{{ if config.shoutbox.settings.shoutbox:toggles:hide}}}hidden{{{ end }}}" style="min-height:0px;">
+            <div class="shoutbox-content-container position-relative" style="min-height:0px;">
+                <div class="shoutbox-content-overlay p-2 position-absolute bg-body w-100 mh-100 border-bottom overflow-auto d-flex align-items-center justify-content-between">
                     <span class="shoutbox-content-overlay-message"></span>
+                    <a href="#" class="shoutbox-content-overlay-close fa fa-times"></a>
                 </div>
-                <div class="shoutbox-content h-100"></div>
+                <div class="shoutbox-content h-100 p-2 text-sm"></div>
             </div>
 
-            <div class="d-flex gap-1 mb-2">
+            <div class="d-flex gap-1 px-2">
                 <input type="text" placeholder="[[shoutbox:enter_message]]" name="shoutbox-message" class="shoutbox-message-input form-control">
                 <span class="input-group-btn">
                     <button class="shoutbox-message-send-btn btn btn-primary" type="button">[[shoutbox:send_message]]</button>
@@ -44,7 +44,7 @@
             </div>
 
             {{{ if features.length }}}
-            <div class="shoutbox-message-buttons">
+            <div class="shoutbox-message-buttons px-2">
                 {{{ each features }}}
                 {{{ if ./enabled }}}
                 <button type="button" class="shoutbox-button-{./id} btn btn-primary btn-sm">

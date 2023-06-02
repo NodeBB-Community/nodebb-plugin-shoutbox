@@ -23,8 +23,8 @@
 
     <!-- IF shouts.user.isMod -->
     <div class="shoutbox-shout-options d-flex gap-2">
-        <a href="#" class="shoutbox-shout-option-edit fa fa-pencil text-decoration-none"></a>
-        <a href="#" class="shoutbox-shout-option-close fa fa-trash-o text-decoration-none"></a>
+        <a href="#" class="btn btn-light btn-sm shoutbox-shout-option-edit text-decoration-none"><i class="fa fa-pencil text-primary"></i></a>
+        <a href="#" class="btn btn-light btn-sm shoutbox-shout-option-close text-decoration-none"><i class="fa fa-trash-o text-danger"></i></a>
     </div>
     <!-- ENDIF shouts.user.isMod -->
 </div>

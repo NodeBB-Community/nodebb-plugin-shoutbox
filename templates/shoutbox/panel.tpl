@@ -27,13 +27,13 @@
             </div>
         </div>
 
-        <div class="card-body d-flex flex-column gap-1 {{{ if config.shoutbox.settings.shoutbox:toggles:hide}}}hidden{{{ end }}}">
-            <div class="shoutbox-content-container">
+        <div class="card-body d-flex flex-column gap-1 {{{ if config.shoutbox.settings.shoutbox:toggles:hide}}}hidden{{{ end }}}" style="min-height:0px;">
+            <div class="shoutbox-content-container" style="min-height:0px;">
                 <div class="shoutbox-content-overlay">
                     <a href="#" class="shoutbox-content-overlay-close fa fa-times float-end"></a>
                     <span class="shoutbox-content-overlay-message"></span>
                 </div>
-                <div class="shoutbox-content well well-sm"></div>
+                <div class="shoutbox-content h-100"></div>
             </div>
 
             <div class="d-flex gap-1 mb-2">

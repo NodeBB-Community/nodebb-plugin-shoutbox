@@ -204,38 +204,6 @@
 		});
 	};
 
-	Instance.prototype.showUserPanel = function () {
-		this.dom.onlineUsers.parent().removeClass('hidden');
-	};
-
-	Instance.prototype.hideUserPanel = function () {
-		this.dom.onlineUsers.parent().addClass('hidden');
-	};
-
-	Instance.prototype.startUserPanelUpdater = function () {
-		var self = this;
-
-		update();
-
-		function update() {
-			this.sockets.getUsers({ set: 'users:online', after: 0 }, function (err, data) {
-				if (err) {
-					return Shoutbox.alert('error', err);
-				}
-				var userCount = data.users.length;
-				var usernames = data.users.map(function (i) {
-					return (i.username === null ? 'Anonymous' : i.username);
-				});
-				var userString = usernames.join('; ');
-
-				self.dom.onlineUsers.find('.card-body').text(userString);
-				self.dom.onlineUsers.find('.panel-title').text('Users (' + userCount + ')');
-			});
-
-			setInterval(update, 10000);
-		}
-	};
-
 	function setupDom(container) {
 		this.dom = {};
 		this.dom.container = container;
@@ -245,12 +213,6 @@
 		this.dom.settingsMenu = container.find('.shoutbox-settings-menu');
 		this.dom.textInput = container.find('.shoutbox-message-input');
 		this.dom.sendButton = container.find('.shoutbox-message-send-btn');
-		this.dom.onlineUsers = container.parents('.shoutbox-row').find('.shoutbox-users');
-
-		if (this.options.showUserPanel) {
-			this.showUserPanel();
-			this.startUserPanelUpdater();
-		}
 	}
 
 	function setupVars() {

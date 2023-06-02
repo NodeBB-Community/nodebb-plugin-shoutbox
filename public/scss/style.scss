@@ -79,13 +79,18 @@ $status-offline: #555;
 }
 
 [data-widget-area] {
-  .shoutbox-content {
-    height: 200px;
-    overflow-y: scroll;
-    padding-top: 0;
-    position: relative;
-    & p {
-      margin: 0;
+  .shoutbox {
+    .card {
+      height: 400px!important;
+    }
+    .shoutbox-content {
+
+      overflow-y: scroll;
+      padding-top: 0;
+      position: relative;
+      & p {
+        margin: 0;
+      }
     }
   }
 }
@@ -128,9 +133,13 @@ $status-offline: #555;
 }
 
 .shoutbox {
+  .card {
+    height: calc(70vh - var(--panel-offset));
+    overflow: hidden;
+  }
+
   &-content {
-    height: calc(60vh - var(--panel-offset));
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-top: 0;
     position: relative;
 

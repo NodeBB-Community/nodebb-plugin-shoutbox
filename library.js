@@ -14,15 +14,16 @@ Shoutbox.widget = {};
 Shoutbox.settings = {};
 
 Shoutbox.init.load = function (params, callback) {
-	const { router, middleware } = params;
+	const { router } = params;
 	const routeHelpers = require.main.require('./src/routes/helpers');
-	routeHelpers.setupPageRoute(router, `/${Config.plugin.id}`, middleware, [], async (req, res) => {
+	routeHelpers.setupPageRoute(router, `/${Config.plugin.id}`, async (req, res) => {
 		const data = Config.getTemplateData();
 		res.render(Config.plugin.id, data);
 	});
 
-	routeHelpers.setupAdminPageRoute(router, `/admin/plugins/${Config.plugin.id}`, middleware, [], async (req, res) => {
+	routeHelpers.setupAdminPageRoute(router, `/admin/plugins/${Config.plugin.id}`, async (req, res) => {
 		const data = Config.getTemplateData();
+		data.title = Config.plugin.name;
 		res.render(`admin/plugins/${Config.plugin.id}`, data);
 	});
 

@@ -18,6 +18,9 @@ Shoutbox.init.load = function (params, callback) {
 	const routeHelpers = require.main.require('./src/routes/helpers');
 	routeHelpers.setupPageRoute(router, `/${Config.plugin.id}`, middleware, [], async (req, res) => {
 		const data = Config.getTemplateData();
+		if (parseInt(req.query.popout, 10) === 1) {
+			data.bodyClasses = ['shoutbox-popout'];
+		}
 		res.render(Config.plugin.id, data);
 	});
 

@@ -3,7 +3,12 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <a class="fs-5 fw-semibold" href="/shoutbox" title="Shoutbox">{{{ if title }}}{title}{{{ else}}}[[shoutbox:shoutbox]]{{{ end }}}</a>
 
-            <div class="btn-group">
+            <div class="d-flex gap-3">
+                <a href="#" class="popout-button text-reset" onclick="window.open(config.relative_path + '/shoutbox?popout=1', '_blank', 'width=400,height=550,scrollbars=no,status=no');">
+                    <span class="fa fa-arrow-up-right-from-square"></span>
+                </a>
+
+
                 <a href="#" class="shoutbox-button-settings dropdown-toggle text-reset" data-bs-toggle="dropdown">
                     <span class="fa fa-wrench"></span>
                 </a>
@@ -28,7 +33,7 @@
         </div>
 
         <div class="card-body d-flex flex-column gap-1 p-0 pb-2 {{{ if config.shoutbox.settings.shoutbox:toggles:hide}}}hidden{{{ end }}}" style="min-height:0px;">
-            <div class="shoutbox-content-container position-relative" style="min-height:0px;">
+            <div class="shoutbox-content-container position-relative flex-grow-1" style="min-height:0px;">
                 <div class="shoutbox-content-overlay p-2 position-absolute bg-body w-100 mh-100 border-bottom overflow-auto d-flex align-items-center justify-content-between">
                     <span class="shoutbox-content-overlay-message"></span>
                     <a href="#" class="shoutbox-content-overlay-close fa fa-times"></a>

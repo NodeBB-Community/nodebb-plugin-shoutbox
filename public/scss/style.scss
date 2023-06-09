@@ -69,7 +69,6 @@ $status-offline: #555;
       height: 400px!important;
     }
     .shoutbox-content {
-
       overflow-y: scroll;
       padding-top: 0;
       position: relative;
@@ -141,4 +140,21 @@ $status-offline: #555;
       }
     }
   }
+}
+
+.shoutbox-popout {
+  .popout-button { display: none;}
+  .shoutbox {
+    .card {
+      height: 90vh;
+    }
+  }
+  // widgets
+  [data-widget-area="footer"], [data-widget-area="header"] {
+    display: none!important;
+  }
+  // harmony
+  .brand-container { display: none!important; }
+  .bottombar { display: none!important; }
+
 }

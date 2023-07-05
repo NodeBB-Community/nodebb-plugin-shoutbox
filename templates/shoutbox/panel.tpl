@@ -28,7 +28,7 @@
         </div>
 
         <div class="card-body d-flex flex-column gap-1 p-0 pb-2 {{{ if config.shoutbox.settings.shoutbox:toggles:hide}}}hidden{{{ end }}}" style="min-height:0px;">
-            <div class="shoutbox-content-container position-relative" style="min-height:0px;">
+            <div class="shoutbox-content-container position-relative h-100" style="min-height:0px;">
                 <div class="shoutbox-content-overlay p-2 position-absolute bg-body w-100 mh-100 border-bottom overflow-auto d-flex align-items-center justify-content-between">
                     <span class="shoutbox-content-overlay-message"></span>
                     <a href="#" class="shoutbox-content-overlay-close fa fa-times"></a>

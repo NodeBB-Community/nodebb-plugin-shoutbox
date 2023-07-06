@@ -92,6 +92,7 @@
 				}
 
 				sbInstance.dom.textInput.val('');
+				sbInstance.sockets.notifyStopTyping();
 			}
 		},
 		delete: function (sbInstance) {
@@ -223,6 +224,7 @@
 				sbInstance.actions.edit.register();
 
 				sbInstance.vars.editing = 0;
+				sbInstance.sockets.notifyStopTyping();
 			};
 		},
 	};

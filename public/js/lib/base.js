@@ -51,6 +51,17 @@
 				}
 			});
 		}
+
+		$('[component="shoutbox/random-user"]').on('click', function () {
+			const cutoff = $(this).attr('data-cutoff');
+			socket.emit('admin.plugins.shoutbox.getRandomUser', { cutoffMinutes: cutoff }, async function (err, user) {
+				if (err) {
+					return Shoutbox.alert('error', err);
+				}
+				const bootbox = await app.require('bootbox');
+				bootbox.alert(`Picked user <a href="${config.relative_path}/user/${user.userslug}">${user.username}</a>`);
+			});
+		});
 	};
 
 	function setupDependencies() {

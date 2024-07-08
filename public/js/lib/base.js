@@ -62,6 +62,31 @@
 				bootbox.alert(`Picked user <a href="${config.relative_path}/user/${user.userslug}">${user.username}</a>`);
 			});
 		});
+
+		$('[component="shoutbox/random-user-log"]').on('click', function () {
+			socket.emit('admin.plugins.shoutbox.getPastRandomUsers', {}, async function (err, users) {
+				if (err) {
+					return Shoutbox.alert('error', err);
+				}
+				const bootbox = await app.require('bootbox');
+				const html = users.map(u => `
+					<li>
+						<div class="d-flex justify-content-between gap-3">
+							<a href="${config.relative_path}/user/${u.userslug}">${u.username}</a>
+							<span>${new Date(u.timePicked).toLocaleString()}</span>
+						</div>
+					</li>
+				`).join('');
+				const dialog = bootbox.dialog({
+					title: 'Past Winners',
+					message: `<ul>${html}</ul>`,
+					onEscape: true,
+				});
+				dialog.on('click', 'a', function () {
+					dialog.modal('hide');
+				});
+			});
+		});
 	};
 
 	function setupDependencies() {

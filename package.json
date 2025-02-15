@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-shoutbox",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "NodeBB Shoutbox Plugin",
   "main": "library.js",
   "scripts": {

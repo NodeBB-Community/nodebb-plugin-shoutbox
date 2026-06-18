@@ -15,7 +15,7 @@ Shoutbox.settings = {};
 
 Shoutbox.init.load = function (params, callback) {
 	const { router } = params;
-	const routeHelpers = require.main.require('./src/routes/helpers');
+	const routeHelpers = nodebb.require('./src/routes/helpers');
 	routeHelpers.setupPageRoute(router, `/${Config.plugin.id}`, async (req, res) => {
 		const data = Config.getTemplateData();
 		res.render(Config.plugin.id, data);

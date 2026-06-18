@@ -1,7 +1,7 @@
 'use strict';
 
 (function (Shoutbox) {
-	var Hide = function (sbInstance) {
+	const Hide = function (sbInstance) {
 		this.register = function () {
 			sbInstance.settings
 				.off('toggles.hide')
@@ -9,7 +9,7 @@
 		};
 
 		function handle(value) {
-			var body = sbInstance.dom.container.find('.card-body');
+			const body = sbInstance.dom.container.find('.card-body');
 			body.toggleClass('hidden', value === 1);
 		}
 	};

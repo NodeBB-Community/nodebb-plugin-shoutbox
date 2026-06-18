@@ -1,7 +1,7 @@
 'use strict';
 
 (function (Shoutbox) {
-	var Utils = function (instance) {
+	const Utils = function (instance) {
 		this.sb = instance;
 	};
 
@@ -23,7 +23,7 @@
 		if (!file) {
 			return;
 		}
-		var audio = new Audio(
+		const audio = new Audio(
 			config.relative_path + '/plugins/nodebb-plugin-shoutbox/assets/sounds/' + file
 		);
 
@@ -46,9 +46,9 @@
 	};
 
 	Utils.prototype.scrollToBottom = function (force) {
-		var	shoutsContainer = this.sb.dom.shoutsContainer;
-		var lastShoutHeight = shoutsContainer.find('[data-sid]:last').height();
-		var scrollHeight = getScrollHeight(shoutsContainer) - lastShoutHeight;
+		const shoutsContainer = this.sb.dom.shoutsContainer;
+		const lastShoutHeight = shoutsContainer.find('[data-sid]:last').height();
+		const scrollHeight = getScrollHeight(shoutsContainer) - lastShoutHeight;
 
 		if (scrollHeight < this.sb.vars.scrollBreakpoint || force) {
 			shoutsContainer.scrollTop(
@@ -59,7 +59,7 @@
 
 	function getScrollHeight(container) {
 		if (container[0]) {
-			var padding = container.css('padding-top').replace('px', '') + container.css('padding-bottom').replace('px', '');
+			const padding = container.css('padding-top').replace('px', '') + container.css('padding-bottom').replace('px', '');
 			return (((container[0].scrollHeight - container.scrollTop()) - container.height()) - padding);
 		}
 		return -1;

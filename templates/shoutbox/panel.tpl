@@ -1,25 +1,25 @@
 <div class="shoutbox mb-3" id="shoutbox-main">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <a class="fs-5 fw-semibold" href="/shoutbox" title="Shoutbox">{{{ if title }}}{title}{{{ else}}}[[shoutbox:shoutbox]]{{{ end }}}</a>
+            <a class="fs-5 fw-semibold" href="/shoutbox" title="Shoutbox">{{{ if title }}}{tx(title)}{{{ else}}}[[shoutbox:shoutbox]]{{{ end }}}</a>
 
             <div class="btn-group">
                 <a href="#" class="shoutbox-button-settings dropdown-toggle text-reset" data-bs-toggle="dropdown">
                     <span class="fa fa-wrench"></span>
                 </a>
-                <ul class="shoutbox-settings-menu dropdown-menu dropdown-menu-end">
+                <ul class="shoutbox-settings-menu dropdown-menu p-1 dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" data-shoutbox-setting="toggles.sound" href="#">
+                        <a class="dropdown-item rounded-1" data-shoutbox-setting="toggles.sound" href="#">
                             <span class="fa fa-fw fa-check"></span> [[shoutbox:sound]]
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" data-shoutbox-setting="toggles.notification" href="#">
+                        <a class="dropdown-item rounded-1" data-shoutbox-setting="toggles.notification" href="#">
                             <span class="fa fa-fw fa-check"></span> [[shoutbox:notification]]
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" data-shoutbox-setting="toggles.hide" href="#">
+                        <a class="dropdown-item rounded-1" data-shoutbox-setting="toggles.hide" href="#">
                             <span class="fa fa-fw fa-check"></span> [[shoutbox:hide]]
                         </a>
                     </li>

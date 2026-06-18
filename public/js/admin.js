@@ -1,9 +1,9 @@
 'use strict';
 
-define('admin/plugins/shoutbox', ['settings', 'alerts'], function (Settings, alerts) {
-	var wrapper;
+define('admin/plugins/shoutbox', ['settings', 'alerts', 'modals'], function (Settings, alerts, modals) {
+	let wrapper;
 
-	var ACP = {};
+	const ACP = {};
 
 	ACP.init = function () {
 		wrapper = $('.shoutbox-settings');
@@ -25,7 +25,7 @@ define('admin/plugins/shoutbox', ['settings', 'alerts'], function (Settings, ale
 
 	function prepareButtons() {
 		$('#shoutbox-remove-deleted-button').off('click').on('click', function () {
-			bootbox.confirm('Are you sure you wish to remove all shouts marked as deleted from the database?', function (confirm) {
+			modals.confirm('Are you sure you wish to remove all shouts marked as deleted from the database?', function (confirm) {
 				if (confirm) {
 					socket.emit('plugins.shoutbox.removeAll', { which: 'deleted' }, function (err) {
 						if (err) {
@@ -38,7 +38,7 @@ define('admin/plugins/shoutbox', ['settings', 'alerts'], function (Settings, ale
 		});
 
 		$('#shoutbox-remove-all-button').off('click').on('click', function () {
-			bootbox.confirm('Are you sure you wish to remove all shouts from the database?', function (confirm) {
+			modals.confirm('Are you sure you wish to remove all shouts from the database?', function (confirm) {
 				if (confirm) {
 					socket.emit('plugins.shoutbox.removeAll', { which: 'all' }, function (err) {
 						if (err) {

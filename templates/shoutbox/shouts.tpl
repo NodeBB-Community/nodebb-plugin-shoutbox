@@ -2,7 +2,7 @@
 <!-- IF !shouts.isChained -->
 <div class="shoutbox-user mt-2 d-flex gap-1 align-items-center {shouts.typeClasses}" data-uid="{shouts.fromuid}">
     <a class="d-flex justify-content-center align-items-center shoutbox-avatar position-relative text-decoration-none {shouts.user.status} {shouts.typeClasses}" href="/user/{shouts.user.userslug}" data-uid="{shouts.fromuid}">
-        {buildAvatar(shouts.user, "28px", true)}
+        {{buildAvatar(shouts.user, "28px", true)}}
 
         <div class="shoutbox-avatar-overlay position-absolute top-0 start-0">
             <span class="shoutbox-avatar-typing">
@@ -19,7 +19,7 @@
 <!-- ENDIF !shouts.isChained -->
 
 <div class="shoutbox-shout {shouts.typeClasses} d-flex align-items-center mb-1 gap-2" data-sid="{shouts.sid}" data-index="{shouts.index}" data-uid="{shouts.fromuid}">
-    <div class="shoutbox-shout-text text-break">{shouts.content}</div>
+    <div class="shoutbox-shout-text text-break">{{txEscape(shouts.content)}}</div>
 
     <!-- IF shouts.user.isMod -->
     <div class="shoutbox-shout-options d-flex gap-2">

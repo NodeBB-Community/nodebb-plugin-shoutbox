@@ -1,8 +1,8 @@
 'use strict';
 
 (function (Shoutbox) {
-	var Instance = function (container, options) {
-		var self = this;
+	const Instance = function (container, options) {
+		const self = this;
 
 		this.options = options || {};
 
@@ -101,16 +101,16 @@
 		if (!shouts.length) {
 			return;
 		}
-		var self = this;
-		var lastUid = this.vars.lastUid;
-		var lastSid = this.vars.lastSid;
-		var uid;
-		var sid;
+		const self = this;
+		let lastUid = this.vars.lastUid;
+		let lastSid = this.vars.lastSid;
+		let uid;
+		let sid;
 
 
 		for (let i = shouts.length - 1; i > 0; i -= 1) {
-			var s = shouts[i];
-			var prev = shouts[i - 1];
+			const s = shouts[i];
+			const prev = shouts[i - 1];
 			if (parseInt(s.fromuid, 10) === parseInt(prev.fromuid, 10)) {
 				prev.timestamp = s.timestamp;
 			}
@@ -168,12 +168,12 @@
 	};
 
 	Instance.prototype.updateUserStatus = function (uid, status) {
-		var self = this;
-		var setStatus = function (uid, status) {
+		const self = this;
+		const setStatus = function (uid, status) {
 			self.dom.shoutsContainer.find('[data-uid="' + uid + '"].shoutbox-avatar').removeClass().addClass('shoutbox-avatar ' + status);
 		};
 
-		var getStatus = function (uid) {
+		const getStatus = function (uid) {
 			self.sockets.getUserStatus(uid, function (err, data) {
 				if (err) {
 					return Shoutbox.alert('error', err);

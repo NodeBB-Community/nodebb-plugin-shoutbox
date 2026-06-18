@@ -1,12 +1,12 @@
 'use strict';
 
 (function (Shoutbox) {
-	var Gist = function (sbInstance) {
+	const Gist = function (sbInstance) {
 		this.register = function () {
 			app.parseAndTranslate('shoutbox/features/gist', {}, function (tpl) {
 				$(document.body).append(tpl);
 
-				var gistModal = $('#shoutbox-modal-gist');
+				const gistModal = $('#shoutbox-modal-gist');
 
 				sbInstance.dom.container.find('.shoutbox-button-gist').off('click').on('click', function () {
 					gistModal.modal('show');
@@ -26,7 +26,7 @@
 				return;
 			}
 
-			var json = {
+			const json = {
 				description: 'Gist created from NodeBB shoutbox',
 				public: true,
 				files: {
@@ -37,8 +37,8 @@
 			};
 
 			$.post('https://api.github.com/gists', JSON.stringify(json), function (data) {
-				var input = sbInstance.dom.textInput;
-				var link = data.html_url;
+				const input = sbInstance.dom.textInput;
+				let link = data.html_url;
 
 				if (input.val().length > 0) {
 					link = ' ' + link;

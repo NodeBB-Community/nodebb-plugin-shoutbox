@@ -1,7 +1,7 @@
 'use strict';
 
 (function (Shoutbox) {
-	var Settings = function (sbInstance) {
+	const Settings = function (sbInstance) {
 		this.register = function () {
 			sbInstance.dom.container
 				.off('click', '.shoutbox-settings-menu a')
@@ -9,10 +9,10 @@
 		};
 
 		function handle() {
-			var el = $(this);
-			var key = el.data('shoutbox-setting');
-			var statusEl = el.find('span');
-			var status = statusEl.hasClass('fa-check');
+			const el = $(this);
+			const key = el.data('shoutbox-setting');
+			const statusEl = el.find('span');
+			let status = statusEl.hasClass('fa-check');
 
 			if (status) {
 				statusEl.removeClass('fa-check').addClass('fa-times');

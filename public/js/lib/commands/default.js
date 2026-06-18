@@ -1,7 +1,7 @@
 'use strict';
 
 (function (Shoutbox) {
-	var ArgumentHandlers = {
+	const ArgumentHandlers = {
 		username: function (argument) {
 			if (argument.indexOf('@') === 0) {
 				argument = argument.slice(1);
@@ -10,7 +10,7 @@
 		},
 	};
 
-	var DefaultCommands = {
+	const DefaultCommands = {
 		help: {
 			info: {
 				usage: '/help',
@@ -18,13 +18,11 @@
 			},
 			handlers: {
 				action: function (argument, sendShout, sbInstance) {
-					var message = '<strong>Available commands:</strong><br>';
-					var commands = sbInstance.commands.getCommands();
+					let message = '<strong>Available commands:</strong><br>';
+					const commands = sbInstance.commands.getCommands();
 
-					for (var c in commands) {
-						if (commands.hasOwnProperty(c)) {
-							message += commands[c].info.usage + ' - ' + commands[c].info.description + '<br>';
-						}
+					for (const c of Object.keys(commands)) {
+						message += commands[c].info.usage + ' - ' + commands[c].info.description + '<br>';
 					}
 
 					sbInstance.utils.showOverlay(message);
@@ -68,10 +66,8 @@
 		};
 	}
 	$(window).on('action:app.load', function () {
-		for (var c in DefaultCommands) {
-			if (DefaultCommands.hasOwnProperty(c)) {
-				Shoutbox.commands.register(c, DefaultCommands[c]);
-			}
+		for (const c of Object.keys(DefaultCommands)) {
+			Shoutbox.commands.register(c, DefaultCommands[c]);
 		}
 	});
 }(window.Shoutbox));

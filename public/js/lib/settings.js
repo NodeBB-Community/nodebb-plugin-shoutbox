@@ -1,14 +1,14 @@
 'use strict';
 
 (function (Shoutbox) {
-	var Settings = function (instance) {
+	const Settings = function (instance) {
 		this.sb = instance;
 		this.settings = null;
 		this.listeners = {};
 	};
 
 	Settings.prototype.load = function () {
-		var self = this;
+		const self = this;
 		this.sb.sockets.getSettings(function (err, result) {
 			if (err || !result || !result.settings) {
 				return;
@@ -19,20 +19,17 @@
 		});
 
 		function parse(settings) {
-			var settingsMenu = self.sb.dom.container;
+			const settingsMenu = self.sb.dom.container;
 
-			for (var key in settings) {
-				if (settings.hasOwnProperty(key)) {
-					var value = settings[key];
-					key = prettyString(key);
-					var el = settingsMenu.find('[data-shoutbox-setting="' + key + '"] span');
+			for (const key of Object.keys(settings)) {
+				const value = settings[key];
+				const el = settingsMenu.find('[data-shoutbox-setting="' + prettyString(key) + '"] span');
 
-					if (el.length > 0) {
-						if (parseInt(value, 10) === 1) {
-							el.removeClass('fa-times').addClass('fa-check');
-						} else {
-							el.removeClass('fa-check').addClass('fa-times');
-						}
+				if (el.length > 0) {
+					if (parseInt(value, 10) === 1) {
+						el.removeClass('fa-times').addClass('fa-check');
+					} else {
+						el.removeClass('fa-check').addClass('fa-times');
 					}
 				}
 			}
@@ -45,7 +42,7 @@
 	};
 
 	Settings.prototype.set = function (key, value) {
-		var fullKey = formalString(key);
+		const fullKey = formalString(key);
 		this.settings[fullKey] = value;
 
 		if (this.listeners.hasOwnProperty(key)) {

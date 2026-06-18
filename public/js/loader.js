@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals Shoutbox, app */
+/* globals Shoutbox */
 
 $(window).on('action:ajaxify.end', function () {
 	if ($('#shoutbox-main').length > 0) {

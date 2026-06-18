@@ -1,7 +1,7 @@
 'use strict';
 
 (function (Shoutbox) {
-	var DefaultActions = {
+	const DefaultActions = {
 		typing: function (sbInstance) {
 			this.register = function () {
 				sbInstance.dom.container.find('.shoutbox-message-input')
@@ -30,8 +30,8 @@
 		},
 		scrolling: function (sbInstance) {
 			this.register = function () {
-				var t;
-				var shoutContent = sbInstance.dom.shoutsContainer;
+				let t;
+				const shoutContent = sbInstance.dom.shoutsContainer;
 
 				shoutContent.scroll(function () {
 					clearTimeout(t);
@@ -51,13 +51,13 @@
 			};
 
 			function handle() {
-				var shoutContent = sbInstance.dom.shoutsContainer;
-				var shoutOverlay = sbInstance.dom.overlay;
-				var scrollHeight = Shoutbox.utils.getScrollHeight(shoutContent);
+				const shoutContent = sbInstance.dom.shoutsContainer;
+				const shoutOverlay = sbInstance.dom.overlay;
+				const scrollHeight = Shoutbox.utils.getScrollHeight(shoutContent);
 
-				var overlayActive = shoutOverlay.hasClass('active');
-				var pastScrollBreakpoint = scrollHeight >= sbInstance.vars.scrollBreakpoint;
-				var scrollMessageShowing = sbInstance.vars.scrollMessageShowing;
+				const overlayActive = shoutOverlay.hasClass('active');
+				const pastScrollBreakpoint = scrollHeight >= sbInstance.vars.scrollBreakpoint;
+				const scrollMessageShowing = sbInstance.vars.scrollMessageShowing;
 
 				if (!overlayActive && pastScrollBreakpoint && !scrollMessageShowing) {
 					sbInstance.utils.showOverlay(sbInstance.vars.messages.scrolled);
@@ -83,7 +83,7 @@
 			};
 
 			function handle() {
-				var msg = utils.stripHTMLTags(sbInstance.dom.textInput.val());
+				const msg = utils.stripHTMLTags(sbInstance.dom.textInput.val());
 
 				if (msg.length) {
 					sbInstance.commands.parse(msg, function (msg) {
@@ -103,7 +103,7 @@
 			};
 
 			function handle() {
-				var sid = $(this).parents('[data-sid]').data('sid');
+				const sid = $(this).parents('[data-sid]').data('sid');
 
 				sbInstance.sockets.removeShout({ sid: sid }, function (err, result) {
 					if (result === true) {
@@ -117,7 +117,7 @@
 			}
 		},
 		edit: function (sbInstance) {
-			var self = this;
+			const self = this;
 
 			this.register = function () {
 				function eventsOff() {
@@ -164,7 +164,7 @@
 			};
 
 			function handle(sid) {
-				var shout = sbInstance.dom.shoutsContainer.find('[data-sid="' + sid + '"]');
+				const shout = sbInstance.dom.shoutsContainer.find('[data-sid="' + sid + '"]');
 
 				if (shout.data('uid') === app.user.uid || app.user.isAdmin || app.user.isGlobalMod) {
 					sbInstance.vars.editing = sid;
@@ -197,7 +197,7 @@
 				}
 
 				function edit(orig) {
-					var msg = utils.stripHTMLTags(sbInstance.dom.textInput.val());
+					const msg = utils.stripHTMLTags(sbInstance.dom.textInput.val());
 
 					if (msg === orig || msg === '' || msg === null) {
 						return self.finish();
@@ -230,10 +230,8 @@
 	};
 
 	$(window).on('action:app.load', function () {
-		for (var a in DefaultActions) {
-			if (DefaultActions.hasOwnProperty(a)) {
-				Shoutbox.actions.register(a, DefaultActions[a]);
-			}
+		for (const a of Object.keys(DefaultActions)) {
+			Shoutbox.actions.register(a, DefaultActions[a]);
 		}
 	});
 }(window.Shoutbox));

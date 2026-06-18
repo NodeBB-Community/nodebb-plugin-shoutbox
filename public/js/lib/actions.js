@@ -1,12 +1,11 @@
 'use strict';
 
 (function (Shoutbox) {
-	var allActions = [];
+	const allActions = [];
 
-	var Actions = function (sbInstance) {
-		var action;
+	const Actions = function (sbInstance) {
 		allActions.forEach(function (actObj) {
-			action = new actObj.obj(sbInstance);
+			const action = new actObj.obj(sbInstance);
 			action.register();
 
 			this[actObj.name] = action;

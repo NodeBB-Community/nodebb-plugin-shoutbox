@@ -1,22 +1,19 @@
 'use strict';
 
 (function (Shoutbox) {
-	var regex = /^\/(\w+)\s?(.+)?/;
-	var allCommands = {};
+	const regex = /^\/(\w+)\s?(.+)?/;
+	const allCommands = {};
 
-	var Commands = function (instance) {
+	const Commands = function (instance) {
 		this.sb = instance;
 		this.commands = {};
 
 		// TODO: Permission based
-		for (var c in allCommands) {
-			if (allCommands.hasOwnProperty(c)) {
-				if (typeof allCommands[c].register === 'function') {
-					allCommands[c].register(this.sb);
-				}
-
-				this.commands[c] = allCommands[c];
+		for (const c of Object.keys(allCommands)) {
+			if (typeof allCommands[c].register === 'function') {
+				allCommands[c].register(this.sb);
 			}
+			this.commands[c] = allCommands[c];
 		}
 	};
 
@@ -25,7 +22,7 @@
 	};
 
 	Commands.prototype.parse = function (msg, sendShout) {
-		var match = msg.match(regex);
+		const match = msg.match(regex);
 
 		if (match && match.length > 0 && this.commands.hasOwnProperty(match[1])) {
 			this.commands[match[1]].handlers.action(match[2] || '', sendShout, this.sb);

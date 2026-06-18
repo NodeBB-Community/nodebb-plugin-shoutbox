@@ -1,7 +1,7 @@
 'use strict';
 
 (function (Shoutbox) {
-	var Messages = {
+	const Messages = {
 		getShouts: 'plugins.shoutbox.get',
 		sendShout: 'plugins.shoutbox.send',
 		removeShout: 'plugins.shoutbox.remove',
@@ -15,7 +15,7 @@
 		getUserStatus: 'user.checkStatus',
 	};
 
-	var Events = {
+	const Events = {
 		onUserStatusChange: 'event:user_status_change',
 		onReceive: 'event:shoutbox.receive',
 		onDelete: 'event:shoutbox.delete',
@@ -24,9 +24,9 @@
 		onStopTyping: 'event:shoutbox.stopTyping',
 	};
 
-	var Handlers = {
+	const Handlers = {
 		defaultSocketHandler: function (message) {
-			var self = this;
+			const self = this;
 			this.message = message;
 
 			return function (data, callback) {
@@ -40,7 +40,7 @@
 		},
 	};
 
-	var Sockets = function (sbInstance) {
+	const Sockets = function (sbInstance) {
 		this.sb = sbInstance;
 
 		this.messages = Messages;
@@ -55,17 +55,17 @@
 				}
 			},
 			onDelete: function (data) {
-				var shout = $('[data-sid="' + data.sid + '"]');
-				var uid = shout.data('uid');
+				const shout = $('[data-sid="' + data.sid + '"]');
+				const uid = shout.data('uid');
 
-				var prevUser = shout.prev('[data-uid].shoutbox-user');
-				var prevUserUid = parseInt(prevUser.data('uid'), 10);
+				const prevUser = shout.prev('[data-uid].shoutbox-user');
+				const prevUserUid = parseInt(prevUser.data('uid'), 10);
 
-				var nextShout = shout.next('[data-uid].shoutbox-shout');
-				var nextShoutUid = parseInt(nextShout.data('uid'), 10);
+				const nextShout = shout.next('[data-uid].shoutbox-shout');
+				const nextShoutUid = parseInt(nextShout.data('uid'), 10);
 
-				var prevUserIsSelf = prevUser.length > 0 && prevUserUid === parseInt(uid, 10);
-				var nextShoutIsSelf = nextShout.length > 0 && nextShoutUid === parseInt(uid, 10);
+				const prevUserIsSelf = prevUser.length > 0 && prevUserUid === parseInt(uid, 10);
+				const nextShoutIsSelf = nextShout.length > 0 && nextShoutUid === parseInt(uid, 10);
 
 				if (shout.length > 0) {
 					shout.remove();
@@ -75,7 +75,7 @@
 					prevUser.prev('.shoutbox-avatar').remove();
 					prevUser.remove();
 
-					var lastShout = sbInstance.dom.shoutsContainer.find('[data-sid]:last');
+					const lastShout = sbInstance.dom.shoutsContainer.find('[data-sid]:last');
 					if (lastShout.length > 0) {
 						sbInstance.vars.lastUid = parseInt(lastShout.data('uid'), 10);
 						sbInstance.vars.lastSid = parseInt(lastShout.data('sid'), 10);
@@ -104,16 +104,12 @@
 			},
 		};
 
-		for (var e in this.events) {
-			if (this.events.hasOwnProperty(e)) {
-				this.registerEvent(this.events[e], this.handlers[e]);
-			}
+		for (const e of Object.keys(this.events)) {
+			this.registerEvent(this.events[e], this.handlers[e]);
 		}
 
-		for (var m in this.messages) {
-			if (this.messages.hasOwnProperty(m)) {
-				this.registerMessage(m, this.messages[m]);
-			}
+		for (const m of Object.keys(this.messages)) {
+			this.registerMessage(m, this.messages[m]);
 		}
 	};
 

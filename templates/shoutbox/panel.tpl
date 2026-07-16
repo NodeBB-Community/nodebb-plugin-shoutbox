@@ -1,7 +1,7 @@
 <div class="shoutbox mb-3" id="shoutbox-main">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <a class="fs-5 fw-semibold" href="/shoutbox" title="Shoutbox">{{{ if title }}}{tx(title)}{{{ else}}}[[shoutbox:shoutbox]]{{{ end }}}</a>
+            <a class="fs-5 fw-semibold" href="/shoutbox" title="Shoutbox">{{{ if title }}}{{tx(title)}}{{{ else}}}{{tx("shoutbox:shoutbox")}}{{{ end }}}</a>
 
             <div class="btn-group">
                 <a href="#" class="shoutbox-button-settings dropdown-toggle text-reset" data-bs-toggle="dropdown">
@@ -10,17 +10,17 @@
                 <ul class="shoutbox-settings-menu dropdown-menu p-1 dropdown-menu-end">
                     <li>
                         <a class="dropdown-item rounded-1" data-shoutbox-setting="toggles.sound" href="#">
-                            <span class="fa fa-fw fa-check"></span> [[shoutbox:sound]]
+                            <span class="fa fa-fw fa-check"></span> {{tx("shoutbox:sound")}}
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item rounded-1" data-shoutbox-setting="toggles.notification" href="#">
-                            <span class="fa fa-fw fa-check"></span> [[shoutbox:notification]]
+                            <span class="fa fa-fw fa-check"></span> {{tx("shoutbox:notification")}}
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item rounded-1" data-shoutbox-setting="toggles.hide" href="#">
-                            <span class="fa fa-fw fa-check"></span> [[shoutbox:hide]]
+                            <span class="fa fa-fw fa-check"></span> {{tx("shoutbox:hide")}}
                         </a>
                     </li>
                 </ul>
@@ -37,9 +37,9 @@
             </div>
 
             <div class="d-flex gap-1 px-2">
-                <input type="text" placeholder="[[shoutbox:enter_message]]" name="shoutbox-message" class="shoutbox-message-input form-control">
+                <input type="text" placeholder="{{tx("shoutbox:enter_message")}}" name="shoutbox-message" class="shoutbox-message-input form-control">
                 <span class="input-group-btn">
-                    <button class="shoutbox-message-send-btn btn btn-primary" type="button">[[shoutbox:send_message]]</button>
+                    <button class="shoutbox-message-send-btn btn btn-primary" type="button">{{tx("shoutbox:send_message")}}</button>
                 </span>
             </div>
 
@@ -48,7 +48,7 @@
                 {{{ each features }}}
                 {{{ if ./enabled }}}
                 <button type="button" class="shoutbox-button-{./id} btn btn-primary btn-sm">
-                    <span class="fa {./icon}"></span> {./button}
+                    <span class="fa {./icon}"></span> {{tx(./button)}}
                 </button>
                 {{{ end }}}
                 {{{ end }}}
